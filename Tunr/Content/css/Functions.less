@@ -1,0 +1,19 @@
+﻿.transition(@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	-o-transition: @transition;
+	transition: @transition;
+}
+.transform(@transform) {
+	-webkit-transform: @transform;
+	-moz-transform: @transform;
+	-ms-transform: @transform;
+	-o-transform: @transform;
+	transform: @transform;
+}
+.scale_transform_transition(@transform_transition) {
+	-webkit-transition: -webkit-transform @transform_transition;
+	-moz-transition: -moz-transform @transform_transition;
+	-o-transition: -o-transform @transform_transition;
+	transition: transform @transform_transition;
+}

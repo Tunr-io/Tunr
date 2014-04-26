@@ -1,0 +1,25 @@
+﻿/*
+ * Dialog Styles, used for pop-up dialogs of any sort.
+ */
+
+// Vertical style dialog - extends from top to bottom of page.
+div.dialog.vertical {
+	position:fixed;
+	width:800px;
+	height:500px;
+	top:50%;
+	margin-top:-250px;
+	left:50%;
+	margin-left:-400px;
+	background-color:@fg-color;
+
+	h1 {
+		font-family:'Open Sans';
+		font-weight:100;
+		font-size:136px;
+		color:@bg-color;
+		line-height:1;
+		//opacity:0.8;
+		margin:-20px 0 0 -12px;
+	}
+}

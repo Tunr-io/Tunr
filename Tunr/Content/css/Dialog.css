@@ -1,0 +1,12 @@
+﻿/*
+ * Dialog Styles, used for pop-up dialogs of any sort.
+ */
+div.dialog.vertical {
+  position: fixed;
+  width: 600px;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -300px;
+}
+/*# sourceMappingURL=Dialog.css.map */

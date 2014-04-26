@@ -1,0 +1,91 @@
+﻿@import "Functions.less";
+@import "Fonts.less";
+
+@fg-color: #fff;
+@bg-color: #0d0d0d;
+
+body {
+	font-family:'Open Sans';
+	font-weight:normal;
+	color:#fff;
+	background-color: @bg-color;
+}
+
+@import "Dialog.less";
+
+div.loginbg
+{
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color:@fg-color;
+	div.dialog {
+		position:fixed;
+		width:600px;
+		height:350px;
+		top:50%;
+		margin-top:-175px;
+		left:50%;
+		margin-left:-300px;
+		text-align:center;
+		h1 {
+			font-family:'Open Sans';
+			font-weight:100;
+			letter-spacing:-2px;
+			font-size:96px;
+			text-align:center;
+			color:@bg-color;
+			margin:0;
+		}
+		form {
+			input[type=email], input[type=password] {
+				font-family:'Open Sans';
+				font-size:22px;
+				font-weight:900;
+				text-align:center;
+				width:220px;
+				letter-spacing:-1.5px;
+				border-top:none;
+				border-left:none;
+				border-right:none;
+				border-bottom:2px solid #000;
+				display:block;
+				margin:12px auto;
+				padding:4px 8px;
+
+				.transition(opacity 300ms ease-in-out);
+
+				&:-ms-input-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+				&::-moz-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+				&::-webkit-input-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+			}
+			input[type=submit] {
+				cursor:pointer;
+				width:236px;
+				font-family:'Open Sans';
+				text-transform:uppercase;
+				font-weight:900;
+				font-size:18px;
+				background-color:@bg-color;
+				color:@fg-color;
+				border:0;
+				padding:10px 0;
+				margin:12px 0;
+			}
+		}
+	}
+}

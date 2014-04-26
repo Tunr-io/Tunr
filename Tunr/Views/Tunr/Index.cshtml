@@ -7,11 +7,26 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Welcome to Tunr</title>
+    <title>Tunr</title>
+	@Styles.Render("~/bundles/css")
 </head>
 <body>
-    <div>
-    
-    </div>
+	<noscript>
+		<h1>Tunr</h1>
+		<p>Tunr requires a modern browser with JavaScript support.</p>
+		<p>Please enable JavaScript, or download a modern browser such as Internet Explorer 11 or Google Chrome.</p>
+	</noscript>
+	<div class="loginbg">
+		<div class="dialog">
+			<h1>Tunr</h1>
+			<form>
+				<input name="email" type="email" placeholder="e-mail address"/>
+				<input name="password" type="password" placeholder="password" />
+				<input type="submit" value="Log In" />
+			</form>
+		</div>
+	</div>
+	@Scripts.Render("~/bundles/js")
+	@Scripts.Render("~/bundles/ts")
 </body>
 </html>
