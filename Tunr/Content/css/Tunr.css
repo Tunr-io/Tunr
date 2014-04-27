@@ -179,6 +179,7 @@ div.loginbg {
   right: 0;
   width: 100%;
   background-color: #ffffff;
+  z-index: 15;
 }
 div.loginbg div.dialog {
   position: fixed;
@@ -345,6 +346,35 @@ div.loginbg div.dialog div.progress.showing {
   top: 0;
   bottom: 0;
   background-color: #ffffff;
+  z-index: 20;
+}
+.librarypane nav a {
+  font-family: 'Open Sans';
+  font-weight: 100;
+  font-size: 64px;
+  color: #0d0d0d;
+  text-decoration: none;
+  line-height: 0.9;
+  opacity: 0.3;
+  display: block;
+  text-transform: lowercase;
+  white-space: nowrap;
+  -webkit-transition: opacity 150ms ease-in-out;
+  -moz-transition: opacity 150ms ease-in-out;
+  -o-transition: opacity 150ms ease-in-out;
+  transition: opacity 150ms ease-in-out;
+}
+.librarypane nav a:hover {
+  opacity: 1;
+}
+.librarypane nav a:first-child {
+  font-size: 96px;
+}
+.librarypane nav a:nth-child(3) {
+  font-size: 52px;
+}
+.librarypane nav a:last-child {
+  opacity: 1.0;
 }
 @-moz-keyframes anim_librarypane_in {
   from {
@@ -366,6 +396,49 @@ div.loginbg div.dialog div.progress.showing {
   -o-animation-name: anim_librarypane_in;
   -webkit-animation-name: anim_librarypane_in;
   animation-name: anim_librarypane_in;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.playlistpane {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 300px;
+  width: 300px;
+  z-index: 10;
+}
+.playlistpane h1 {
+  font-family: 'Open Sans';
+  font-weight: 100;
+  font-size: 48px;
+  margin: 24px 0 12px 24px;
+}
+@-moz-keyframes anim_playlistpane_in {
+  from {
+    left: 0;
+  }
+}
+@-webkit-keyframes anim_playlistpane_in {
+  from {
+    left: 0;
+  }
+}
+@keyframes anim_playlistpane_in {
+  from {
+    left: 0;
+  }
+}
+.animated.anim_playlistpane_in {
+  -moz-animation-name: anim_playlistpane_in;
+  -o-animation-name: anim_playlistpane_in;
+  -webkit-animation-name: anim_playlistpane_in;
+  animation-name: anim_playlistpane_in;
   -moz-animation-duration: 300ms;
   -o-animation-duration: 300ms;
   -webkit-animation-duration: 300ms;

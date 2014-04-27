@@ -11,6 +11,8 @@ var Tunr = (function () {
     Tunr.prototype.initialize = function () {
         this.librarypane = new LibraryPane();
         this.librarypane.show();
+        this.playlistpane = new PlaylistPane();
+        this.playlistpane.show();
     };
     return Tunr;
 })();

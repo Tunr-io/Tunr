@@ -1,0 +1,43 @@
+﻿.playlistpane {
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:@library_pane_width;
+	width:@library_pane_width;
+	z-index:10;
+
+	h1 {
+		font-family:'Open Sans';
+		font-weight:100;
+		font-size:48px;
+		margin:24px 0 12px 24px;
+	}
+}
+
+@-moz-keyframes anim_playlistpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_playlistpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+@keyframes anim_playlistpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+
+.animated.anim_playlistpane_in {
+	.animation-name(anim_playlistpane_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+}

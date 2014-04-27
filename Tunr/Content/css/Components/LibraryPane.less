@@ -5,6 +5,36 @@
 	top:0;
 	bottom:0;
 	background-color:@fg-color;
+	z-index:20;
+
+	nav {
+		a {
+			font-family:'Open Sans';
+			font-weight:100;
+			font-size:64px;
+			color:@bg-color;
+			text-decoration:none;
+			line-height:0.9;
+			opacity:0.3;
+			display:block;
+			text-transform:lowercase;
+			white-space:nowrap;
+			.transition(opacity 150ms ease-in-out);
+			&:hover {
+				opacity:1;
+			}
+			&:first-child {
+				font-size:96px;
+			}
+			&:nth-child(3) {
+				font-size:52px;
+			}
+			&:last-child {
+				opacity:1.0;
+			}
+		}
+	}
+
 }
 
 @-moz-keyframes anim_librarypane_in {

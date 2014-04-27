@@ -212,6 +212,9 @@
     <Content Include="Content\css\Components\LibraryPane.css">
       <DependentUpon>LibraryPane.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\PlaylistPane.css">
+      <DependentUpon>PlaylistPane.less</DependentUpon>
+    </Content>
     <Content Include="Content\css\Dialog.css">
       <DependentUpon>Dialog.less</DependentUpon>
     </Content>
@@ -252,6 +255,10 @@
       <DependentUpon>Animations.css</DependentUpon>
     </Content>
     <Content Include="Content\css\Components\LibraryPane.less" />
+    <Content Include="Content\css\Components\PlaylistPane.less" />
+    <Content Include="Content\css\Components\PlaylistPane.css.map">
+      <DependentUpon>PlaylistPane.css</DependentUpon>
+    </Content>
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\TunrController.cs" />
     <None Include="Controllers\MeController.cs.bak" />
@@ -265,6 +272,7 @@
     <Compile Include="Startup.cs" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
     <Content Include="Views\Tunr\Components\LibraryPane.cshtml" />
+    <Content Include="Views\Tunr\Components\PlaylistPane.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -321,6 +329,7 @@
     <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\LibraryPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
+    <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
   </ItemGroup>
   <PropertyGroup>
