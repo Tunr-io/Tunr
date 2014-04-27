@@ -209,6 +209,9 @@
     <Content Include="Content\css\Animations.css">
       <DependentUpon>Animations.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\LibraryPane.css">
+      <DependentUpon>LibraryPane.less</DependentUpon>
+    </Content>
     <Content Include="Content\css\Dialog.css">
       <DependentUpon>Dialog.less</DependentUpon>
     </Content>
@@ -248,6 +251,7 @@
     <Content Include="Content\css\Animations.css.map">
       <DependentUpon>Animations.css</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\LibraryPane.less" />
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\TunrController.cs" />
     <None Include="Controllers\MeController.cs.bak" />
@@ -260,6 +264,7 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
+    <Content Include="Views\Tunr\Components\LibraryPane.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -314,6 +319,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\ts\Component.ts" />
     <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
+    <TypeScriptCompile Include="Scripts\ts\components\LibraryPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
   </ItemGroup>

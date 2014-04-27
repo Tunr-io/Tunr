@@ -14,6 +14,7 @@ var Login = (function (_super) {
             _this.getElement().getElementsByClassName("submit")[0].classList.add("pressed");
             _this.getElement().getElementsByClassName("progress")[0].classList.add("showing");
             setTimeout(function () {
+                Tunr.instance.initialize();
                 _this.hide();
             }, 1000);
         });

@@ -8,6 +8,10 @@ var Tunr = (function () {
         var l = new Login();
         l.show();
     }
+    Tunr.prototype.initialize = function () {
+        this.librarypane = new LibraryPane();
+        this.librarypane.show();
+    };
     return Tunr;
 })();
 

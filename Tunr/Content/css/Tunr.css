@@ -304,17 +304,17 @@ div.loginbg div.dialog div.progress.showing {
 }
 @-moz-keyframes anim_login_out {
   to {
-    width: 320px;
+    width: 300px;
   }
 }
 @-webkit-keyframes anim_login_out {
   to {
-    width: 320px;
+    width: 300px;
   }
 }
 @keyframes anim_login_out {
   to {
-    width: 320px;
+    width: 300px;
   }
 }
 .animated.anim_login_out {
@@ -337,5 +337,42 @@ div.loginbg div.dialog div.progress.showing {
   -o-animation-fill-mode: forwards;
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
+}
+.librarypane {
+  position: absolute;
+  width: 300px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #ffffff;
+}
+@-moz-keyframes anim_librarypane_in {
+  from {
+    left: -300px;
+  }
+}
+@-webkit-keyframes anim_librarypane_in {
+  from {
+    left: -300px;
+  }
+}
+@keyframes anim_librarypane_in {
+  from {
+    left: -300px;
+  }
+}
+.animated.anim_librarypane_in {
+  -moz-animation-name: anim_librarypane_in;
+  -o-animation-name: anim_librarypane_in;
+  -webkit-animation-name: anim_librarypane_in;
+  animation-name: anim_librarypane_in;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 /*# sourceMappingURL=Tunr.css.map */

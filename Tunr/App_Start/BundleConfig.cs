@@ -18,6 +18,7 @@ namespace Tunr
 				"~/Scripts/ts/Animator.js",
 				"~/Scripts/ts/Component.js",
 				"~/Scripts/ts/components/Login.js",
+				"~/Scripts/ts/components/LibraryPane.js",
 				"~/Scripts/ts/Tunr.js"
 				));
 

@@ -6,6 +6,7 @@
 			(<HTMLElement>this.getElement().getElementsByClassName("submit")[0]).classList.add("pressed");
 			(<HTMLElement>this.getElement().getElementsByClassName("progress")[0]).classList.add("showing");
 			setTimeout(() => {
+				Tunr.instance.initialize();
 				this.hide();
 			}, 1000);
 		});
