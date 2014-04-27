@@ -25,6 +25,131 @@ body {
   color: #fff;
   background-color: #0d0d0d;
 }
+.COMPONENT {
+  display: none;
+}
+/* Fade in/out animations */
+@-moz-keyframes anim_fadeout {
+  to {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes anim_fadeout {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes anim_fadeout {
+  to {
+    opacity: 0;
+  }
+}
+.animated.anim_fadeout {
+  -moz-animation-name: anim_fadeout;
+  -o-animation-name: anim_fadeout;
+  -webkit-animation-name: anim_fadeout;
+  animation-name: anim_fadeout;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -o-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+@-moz-keyframes anim_fadein {
+  from {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes anim_fadein {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes anim_fadein {
+  from {
+    opacity: 0;
+  }
+}
+.animated.anim_fadein {
+  -moz-animation-name: anim_fadein;
+  -o-animation-name: anim_fadein;
+  -webkit-animation-name: anim_fadein;
+  animation-name: anim_fadein;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -o-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+/* Shove in animations */
+@-moz-keyframes anim_shovein_top {
+  from {
+    -webkit-transform: translate3d(0, -60px, 0);
+    -moz-transform: translate3d(0, -60px, 0);
+    -ms-transform: translate3d(0, -60px, 0);
+    -o-transform: translate3d(0, -60px, 0);
+    transform: translate3d(0, -60px, 0);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes anim_shovein_top {
+  from {
+    -webkit-transform: translate3d(0, -60px, 0);
+    -moz-transform: translate3d(0, -60px, 0);
+    -ms-transform: translate3d(0, -60px, 0);
+    -o-transform: translate3d(0, -60px, 0);
+    transform: translate3d(0, -60px, 0);
+    opacity: 0;
+  }
+}
+@keyframes anim_shovein_top {
+  from {
+    -webkit-transform: translate3d(0, -60px, 0);
+    -moz-transform: translate3d(0, -60px, 0);
+    -ms-transform: translate3d(0, -60px, 0);
+    -o-transform: translate3d(0, -60px, 0);
+    transform: translate3d(0, -60px, 0);
+    opacity: 0;
+  }
+}
+.animated.anim_shovein_top {
+  -moz-animation-name: anim_shovein_top;
+  -o-animation-name: anim_shovein_top;
+  -webkit-animation-name: anim_shovein_top;
+  animation-name: anim_shovein_top;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
 /*
  * Dialog Styles, used for pop-up dialogs of any sort.
  */
@@ -52,6 +177,7 @@ div.loginbg {
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   background-color: #ffffff;
 }
 div.loginbg div.dialog {
@@ -114,6 +240,7 @@ div.loginbg div.dialog form input[type=password]::-webkit-input-placeholder {
 div.loginbg div.dialog form input[type=submit] {
   cursor: pointer;
   width: 236px;
+  height: 48px;
   font-family: 'Open Sans';
   text-transform: uppercase;
   font-weight: 900;
@@ -122,6 +249,93 @@ div.loginbg div.dialog form input[type=submit] {
   color: #ffffff;
   border: 0;
   padding: 10px 0;
-  margin: 12px 0;
+  margin: 12px 0 0 0;
+  -moz-transform-origin: top center;
+  -ms-transform-origin: top center;
+  -o-transform-origin: top center;
+  -webkit-transform-origin: top center;
+  transform-origin: top center;
+  -webkit-transition: -webkit-transform 300ms ease-in-out;
+  -moz-transition: -moz-transform 300ms ease-in-out;
+  -o-transition: -o-transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out;
+}
+div.loginbg div.dialog form input[type=submit].pressed {
+  -webkit-transform: scale3d(1, 0, 1);
+  -moz-transform: scale3d(1, 0, 1);
+  -ms-transform: scale3d(1, 0, 1);
+  -o-transform: scale3d(1, 0, 1);
+  transform: scale3d(1, 0, 1);
+}
+div.loginbg div.dialog div.progress {
+  cursor: pointer;
+  width: 236px;
+  height: 28px;
+  font-family: 'Open Sans';
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: 18px;
+  background-color: #0d0d0d;
+  color: #ffffff;
+  border: 0;
+  padding: 10px 0;
+  margin: 0 auto;
+  -moz-transform-origin: top center;
+  -ms-transform-origin: top center;
+  -o-transform-origin: top center;
+  -webkit-transform-origin: top center;
+  transform-origin: top center;
+  -webkit-transform: scale3d(1, 0.00001, 1);
+  -moz-transform: scale3d(1, 0.00001, 1);
+  -ms-transform: scale3d(1, 0.00001, 1);
+  -o-transform: scale3d(1, 0.00001, 1);
+  transform: scale3d(1, 0.00001, 1);
+  -webkit-transition: -webkit-transform 300ms ease-in-out;
+  -moz-transition: -moz-transform 300ms ease-in-out;
+  -o-transition: -o-transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out;
+}
+div.loginbg div.dialog div.progress.showing {
+  -webkit-transform: translate3d(0, -48px, 0);
+  -moz-transform: translate3d(0, -48px, 0);
+  -ms-transform: translate3d(0, -48px, 0);
+  -o-transform: translate3d(0, -48px, 0);
+  transform: translate3d(0, -48px, 0);
+}
+@-moz-keyframes anim_login_out {
+  to {
+    width: 320px;
+  }
+}
+@-webkit-keyframes anim_login_out {
+  to {
+    width: 320px;
+  }
+}
+@keyframes anim_login_out {
+  to {
+    width: 320px;
+  }
+}
+.animated.anim_login_out {
+  -moz-animation-name: anim_login_out;
+  -o-animation-name: anim_login_out;
+  -webkit-animation-name: anim_login_out;
+  animation-name: anim_login_out;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -o-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 }
 /*# sourceMappingURL=Tunr.css.map */

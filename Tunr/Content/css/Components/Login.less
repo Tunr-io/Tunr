@@ -1,0 +1,137 @@
+﻿div.loginbg
+{
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	width:100%;
+	background-color:@fg-color;
+	div.dialog {
+		position:fixed;
+		width:600px;
+		height:350px;
+		top:50%;
+		margin-top:-175px;
+		left:50%;
+		margin-left:-300px;
+		text-align:center;
+		h1 {
+			font-family:'Open Sans';
+			font-weight:100;
+			letter-spacing:-2px;
+			font-size:96px;
+			text-align:center;
+			color:@bg-color;
+			margin:0;
+		}
+		form {
+			input[type=email], input[type=password] {
+				font-family:'Open Sans';
+				font-size:22px;
+				font-weight:900;
+				text-align:center;
+				width:220px;
+				letter-spacing:-1.5px;
+				border-top:none;
+				border-left:none;
+				border-right:none;
+				border-bottom:2px solid #000;
+				display:block;
+				margin:12px auto;
+				padding:4px 8px;
+
+				.transition(opacity 300ms ease-in-out);
+
+				&:-ms-input-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+				&::-moz-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+				&::-webkit-input-placeholder {
+					font-weight:100;
+					opacity:0.5;
+					letter-spacing:1px;
+				}
+			}
+			input[type=submit] {
+				cursor:pointer;
+				width:236px;
+				height:48px;
+				font-family:'Open Sans';
+				text-transform:uppercase;
+				font-weight:900;
+				font-size:18px;
+				background-color:@bg-color;
+				color:@fg-color;
+				border:0;
+				padding:10px 0;
+				margin:12px 0 0 0;
+				.transform_origin(top center);
+				.transform_transition(300ms ease-in-out);
+
+				&.pressed {
+					.transform(scale3d(1,0,1));
+				}
+			}
+		}
+		div.progress {
+			cursor:pointer;
+			width:236px;
+			height:28px;
+			font-family:'Open Sans';
+			text-transform:uppercase;
+			font-weight:900;
+			font-size:18px;
+			background-color:@bg-color;
+			color:@fg-color;
+			border:0;
+			padding:10px 0;
+			margin:0 auto;
+			.transform_origin(top center);
+			.transform(scale3d(1,0.00001,1));
+			.transform_transition(300ms ease-in-out);
+			&.showing {
+				.transform(translate3d(0, -48px, 0));
+			}
+		}
+	}
+}
+
+@-moz-keyframes anim_login_out {
+	from {
+		
+	}
+	to {
+		width:320px;
+	}
+}
+@-webkit-keyframes anim_login_out {
+	from {
+		
+	}
+	to {
+		width:320px;
+	}
+}
+@keyframes anim_login_out {
+	from {
+		
+	}
+	to {
+		width:320px;
+	}
+}
+
+.animated.anim_login_out {
+	.animation-name(anim_login_out);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+	.animation-iteration-count(1);
+	.animation-fill-mode(forwards);
+}

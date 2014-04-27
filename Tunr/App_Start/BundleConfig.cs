@@ -15,6 +15,9 @@ namespace Tunr
 				));
 
 			bundles.Add(new ScriptBundle("~/bundles/ts").Include(
+				"~/Scripts/ts/Animator.js",
+				"~/Scripts/ts/Component.js",
+				"~/Scripts/ts/components/Login.js",
 				"~/Scripts/ts/Tunr.js"
 				));
 

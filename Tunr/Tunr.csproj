@@ -206,6 +206,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Content Include="Content\css\Animations.css">
+      <DependentUpon>Animations.less</DependentUpon>
+    </Content>
     <Content Include="Content\css\Dialog.css">
       <DependentUpon>Dialog.less</DependentUpon>
     </Content>
@@ -240,6 +243,11 @@
       <DependentUpon>Dialog.css</DependentUpon>
     </Content>
     <Content Include="Content\css\Functions.less" />
+    <Content Include="Content\css\Components\Login.less" />
+    <Content Include="Content\css\Animations.less" />
+    <Content Include="Content\css\Animations.css.map">
+      <DependentUpon>Animations.css</DependentUpon>
+    </Content>
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\TunrController.cs" />
     <None Include="Controllers\MeController.cs.bak" />
@@ -251,6 +259,7 @@
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Content Include="Views\Tunr\Components\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -295,6 +304,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\js\" />
+    <Folder Include="Scripts\ts\data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -302,6 +312,9 @@
     <Content Include="Views\Tunr\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Scripts\ts\Component.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
+    <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
   </ItemGroup>
   <PropertyGroup>

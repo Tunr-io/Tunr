@@ -11,7 +11,14 @@
 	-o-transform: @transform;
 	transform: @transform;
 }
-.scale_transform_transition(@transform_transition) {
+.transform_origin(@transform_origin) {
+	-moz-transform-origin: @transform_origin;
+	-ms-transform-origin: @transform_origin;
+	-o-transform-origin: @transform_origin;
+	-webkit-transform-origin: @transform_origin;
+	transform-origin: @transform_origin;
+}
+.transform_transition(@transform_transition) {
 	-webkit-transition: -webkit-transform @transform_transition;
 	-moz-transition: -moz-transform @transform_transition;
 	-o-transition: -o-transform @transform_transition;

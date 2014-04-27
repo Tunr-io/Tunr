@@ -1,1 +1,1 @@
-{"version":3,"file":"Tunr.js","sourceRoot":"","sources":["Tunr.ts"],"names":[],"mappings":""}
+{"version":3,"file":"Tunr.js","sourceRoot":"","sources":["Tunr.ts"],"names":["Tunr","Tunr.constructor"],"mappings":"AAAA;;;EAGG;AACH;IAECA;QACCC,IAAIA,CAACA,QAAQA,GAAGA,IAAIA,EAAEA,sCAAsCA;QAC5DA,IAAIA,CAACA,GAAGA,IAAIA,KAAKA,CAACA,CAACA;QACnBA,CAACA,CAACA,IAAIA,CAACA,CAACA;IACTA,CAACA;IACFD,YAACA;AAADA,CAACA,IAAA;;AAED,gBAAgB;AAChB,IAAI,IAAI,CAAC,CAAC"}
