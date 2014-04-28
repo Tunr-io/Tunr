@@ -411,6 +411,7 @@ div.loginbg div.dialog div.progress.showing {
   bottom: 0;
   left: 300px;
   width: 300px;
+  background-color: #0d0d0d;
   z-index: 10;
 }
 .playlistpane h1 {
@@ -439,6 +440,66 @@ div.loginbg div.dialog div.progress.showing {
   -o-animation-name: anim_playlistpane_in;
   -webkit-animation-name: anim_playlistpane_in;
   animation-name: anim_playlistpane_in;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.playingpane {
+  position: absolute;
+  left: 600px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding-left: 24px;
+}
+.playingpane h1 {
+  font-family: 'Open Sans';
+  font-weight: 900;
+  font-size: 52px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 32px 0 0 0;
+}
+.playingpane h2 {
+  font-family: 'Open Sans';
+  font-weight: 100;
+  font-size: 36px;
+  margin: 0 0 16px 0;
+  text-transform: lowercase;
+  color: #ffffff;
+}
+.playingpane img {
+  margin: 16px 0 0 0;
+  width: 225px;
+  height: 225px;
+  border: 2px solid #fff;
+}
+@-moz-keyframes anim_playingpane_in {
+  from {
+    left: 0;
+  }
+}
+@-webkit-keyframes anim_playingpane_in {
+  from {
+    left: 0;
+  }
+}
+@keyframes anim_playingpane_in {
+  from {
+    left: 0;
+  }
+}
+.animated.anim_playingpane_in {
+  -moz-animation-name: anim_playingpane_in;
+  -o-animation-name: anim_playingpane_in;
+  -webkit-animation-name: anim_playingpane_in;
+  animation-name: anim_playingpane_in;
   -moz-animation-duration: 300ms;
   -o-animation-duration: 300ms;
   -webkit-animation-duration: 300ms;

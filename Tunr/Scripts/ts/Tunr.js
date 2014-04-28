@@ -13,6 +13,8 @@ var Tunr = (function () {
         this.librarypane.show();
         this.playlistpane = new PlaylistPane();
         this.playlistpane.show();
+        this.playingpane = new PlayingPane();
+        this.playingpane.show();
     };
     return Tunr;
 })();

@@ -20,6 +20,7 @@ namespace Tunr
 				"~/Scripts/ts/components/Login.js",
 				"~/Scripts/ts/components/LibraryPane.js",
 				"~/Scripts/ts/components/PlaylistPane.js",
+				"~/Scripts/ts/components/PlayingPane.js",
 				"~/Scripts/ts/Tunr.js"
 				));
 

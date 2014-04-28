@@ -1,0 +1,59 @@
+﻿.playingpane {
+	position:absolute;
+	left:@library_pane_width*2;
+	right:0;
+	top:0;
+	bottom:0;
+	padding-left:24px;
+	h1 {
+		font-family:'Open Sans';
+		font-weight:900;
+		font-size:52px;
+		line-height:1;
+		text-transform:uppercase;
+		color:@fg-color;
+		margin:32px 0 0 0;
+	}
+	h2 {
+		font-family:'Open Sans';
+		font-weight:100;
+		font-size:36px;
+		margin:0 0 16px 0;
+		text-transform:lowercase;
+		color:@fg-color;
+	}
+	img {
+		margin:16px 0 0 0;
+		width:225px;
+		height:225px;
+		border:2px solid #fff;
+	}
+}
+
+@-moz-keyframes anim_playingpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_playingpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+@keyframes anim_playingpane_in {
+	from {
+		left:0;
+	}
+	to {
+	}
+}
+
+.animated.anim_playingpane_in {
+	.animation-name(anim_playingpane_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+}
