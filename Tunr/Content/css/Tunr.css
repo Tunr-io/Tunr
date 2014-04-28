@@ -220,22 +220,27 @@ div.loginbg div.dialog form input[type=password] {
   -o-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
+div.loginbg div.dialog form input[type=email]:focus,
+div.loginbg div.dialog form input[type=password]:focus {
+  opacity: 1;
+  outline: none;
+}
 div.loginbg div.dialog form input[type=email]:-ms-input-placeholder,
 div.loginbg div.dialog form input[type=password]:-ms-input-placeholder {
   font-weight: 100;
-  opacity: 0.5;
+  opacity: 0.7;
   letter-spacing: 1px;
 }
 div.loginbg div.dialog form input[type=email]::-moz-placeholder,
 div.loginbg div.dialog form input[type=password]::-moz-placeholder {
   font-weight: 100;
-  opacity: 0.5;
+  opacity: 0.7;
   letter-spacing: 1px;
 }
 div.loginbg div.dialog form input[type=email]::-webkit-input-placeholder,
 div.loginbg div.dialog form input[type=password]::-webkit-input-placeholder {
   font-weight: 100;
-  opacity: 0.5;
+  opacity: 0.7;
   letter-spacing: 1px;
 }
 div.loginbg div.dialog form input[type=submit] {
@@ -418,6 +423,7 @@ div.loginbg div.dialog div.progress.showing {
   font-family: 'Open Sans';
   font-weight: 100;
   font-size: 48px;
+  text-transform: lowercase;
   margin: 24px 0 12px 24px;
 }
 @-moz-keyframes anim_playlistpane_in {
