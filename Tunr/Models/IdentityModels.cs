@@ -18,6 +18,19 @@ namespace Tunr.Models
 			// Add custom user claims here
 			return userIdentity;
 		}
+
+		public TunrUserViewModel toViewModel()
+		{
+			return new TunrUserViewModel()
+			{
+				DisplayName = this.DisplayName
+			};
+		}
+	}
+
+	public class TunrUserViewModel
+	{
+		public string DisplayName { get; set; }
 	}
 
 	public class ApplicationDbContext : IdentityDbContext<TunrUser>
