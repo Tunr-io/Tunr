@@ -1,1 +1,1 @@
-{"version":3,"file":"LibraryPane.js","sourceRoot":"","sources":["LibraryPane.ts"],"names":["LibraryPane","LibraryPane.constructor"],"mappings":";;;;;;AAAA;IAA0BA,8BAASA;IAClCA;QACCC,WAAMA,OAAAA,aAAaA,CAACA;IACrBA,CAACA;IACFD,mBAACA;AAADA,CAACA,EAJyB,SAAS,EAIlC"}
+{"version":3,"file":"LibraryPane.js","sourceRoot":"","sources":["LibraryPane.ts"],"names":["LibraryPane","LibraryPane.constructor"],"mappings":";;;;;;AAAA;IAA0BA,8BAASA;IAClCA,qBAAYA,IAAUA;QACrBC,WAAMA,OAAAA,IAAIA,EAAEA,aAAaA,CAACA;IAC3BA,CAACA;IACFD,mBAACA;AAADA,CAACA,EAJyB,SAAS,EAIlC"}

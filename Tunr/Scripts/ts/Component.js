@@ -4,14 +4,25 @@
 * More specific behaviors are to be implemented by each individual component.
 */
 var Component = (function () {
-    function Component(component_id) {
-        // Get the component ID, grab the
+    function Component(tunr, component_id) {
+        // Get the component ID, grab the HTML
         this.component_id = component_id;
         this.element = document.getElementById("component_" + this.component_id).cloneNode(true);
         this.element.classList.remove("COMPONENT");
         this.element.id = '';
         this.animator = new Animator(this);
+
+        // Make sure we're associated with an application instance...
+        if (tunr != null) {
+            this.tunr = tunr;
+        } else {
+            this.tunr = Tunr.instance; // Default instance if undefined
+        }
     }
+    Component.prototype.getTunr = function () {
+        return this.tunr;
+    };
+
     Component.prototype.getElement = function () {
         return this.element;
     };

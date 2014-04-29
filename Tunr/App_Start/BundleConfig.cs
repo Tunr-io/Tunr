@@ -11,7 +11,7 @@ namespace Tunr
 		public static void RegisterBundles(BundleCollection bundles)
 		{
 			bundles.Add(new ScriptBundle("~/bundles/js").Include(
-				
+				"~/Scripts/js/jquery-2.1.0.min.js"
 				));
 
 			bundles.Add(new ScriptBundle("~/bundles/ts").Include(
@@ -21,6 +21,7 @@ namespace Tunr
 				"~/Scripts/ts/components/LibraryPane.js",
 				"~/Scripts/ts/components/PlaylistPane.js",
 				"~/Scripts/ts/components/PlayingPane.js",
+				"~/Scripts/ts/API.js",
 				"~/Scripts/ts/Tunr.js"
 				));
 

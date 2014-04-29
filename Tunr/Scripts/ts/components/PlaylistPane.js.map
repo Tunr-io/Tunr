@@ -1,1 +1,1 @@
-{"version":3,"file":"PlaylistPane.js","sourceRoot":"","sources":["PlaylistPane.ts"],"names":["PlaylistPane","PlaylistPane.constructor"],"mappings":";;;;;;AAAA;IAA2BA,+BAASA;IACnCA;QACCC,WAAMA,OAAAA,cAAcA,CAACA;IACtBA,CAACA;IACFD,oBAACA;AAADA,CAACA,EAJ0B,SAAS,EAInC"}
+{"version":3,"file":"PlaylistPane.js","sourceRoot":"","sources":["PlaylistPane.ts"],"names":["PlaylistPane","PlaylistPane.constructor"],"mappings":";;;;;;AAAA;IAA2BA,+BAASA;IACnCA,sBAAYA,IAAUA;QACrBC,WAAMA,OAAAA,IAAIA,EAAEA,cAAcA,CAACA;IAC5BA,CAACA;IACFD,oBAACA;AAADA,CAACA,EAJ0B,SAAS,EAInC"}

@@ -1,5 +1,5 @@
 ﻿class LibraryPane extends Component {
-	constructor() {
-		super("LibraryPane");
+	constructor(tunr: Tunr) {
+		super(tunr, "LibraryPane");
 	}
 } 

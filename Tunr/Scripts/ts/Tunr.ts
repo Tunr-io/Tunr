@@ -4,21 +4,23 @@
  */
 class Tunr {
 	public static instance: Tunr;
+	public api: API;
 	public librarypane: LibraryPane;
 	public playlistpane: PlaylistPane;
 	public playingpane: PlayingPane;
 	constructor() {
 		Tunr.instance = this; // Set the current running instance...
-		var l = new Login(); // Just show a log in for now.
+		this.api = new API(); // Instantiate the API.
+		var l = new Login(this); // Just show a log in for now.
 		l.show();
 	}
 
 	initialize(): void {
-		this.librarypane = new LibraryPane();
+		this.librarypane = new LibraryPane(this);
 		this.librarypane.show();
-		this.playlistpane = new PlaylistPane();
+		this.playlistpane = new PlaylistPane(this);
 		this.playlistpane.show();
-		this.playingpane = new PlayingPane();
+		this.playingpane = new PlayingPane(this);
 		this.playingpane.show();
 	}
 }

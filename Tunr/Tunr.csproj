@@ -273,13 +273,18 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <None Include="Scripts\js\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\js\jquery-2.1.0.js" />
+    <Content Include="Scripts\js\jquery-2.1.0.min.js" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
     <Content Include="Views\Tunr\Components\LibraryPane.cshtml" />
     <Content Include="Views\Tunr\Components\PlaylistPane.cshtml" />
     <Content Include="Views\Tunr\Components\PlayingPane.cshtml" />
+    <Content Include="Scripts\js\jquery-2.1.0.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -323,7 +328,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\js\" />
     <Folder Include="Scripts\ts\data\" />
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +336,7 @@
     <Content Include="Views\Tunr\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Scripts\ts\API.ts" />
     <TypeScriptCompile Include="Scripts\ts\Component.ts" />
     <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\LibraryPane.ts" />
@@ -339,6 +344,7 @@
     <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

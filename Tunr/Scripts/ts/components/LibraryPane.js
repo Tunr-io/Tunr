@@ -6,8 +6,8 @@
 };
 var LibraryPane = (function (_super) {
     __extends(LibraryPane, _super);
-    function LibraryPane() {
-        _super.call(this, "LibraryPane");
+    function LibraryPane(tunr) {
+        _super.call(this, tunr, "LibraryPane");
     }
     return LibraryPane;
 })(Component);

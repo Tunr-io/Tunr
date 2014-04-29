@@ -1,5 +1,5 @@
 ﻿class PlaylistPane extends Component {
-	constructor() {
-		super("PlaylistPane");
+	constructor(tunr: Tunr) {
+		super(tunr, "PlaylistPane");
 	}
 } 

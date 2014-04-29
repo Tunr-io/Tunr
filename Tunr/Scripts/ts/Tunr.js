@@ -5,15 +5,16 @@
 var Tunr = (function () {
     function Tunr() {
         Tunr.instance = this; // Set the current running instance...
-        var l = new Login();
+        this.api = new API(); // Instantiate the API.
+        var l = new Login(this);
         l.show();
     }
     Tunr.prototype.initialize = function () {
-        this.librarypane = new LibraryPane();
+        this.librarypane = new LibraryPane(this);
         this.librarypane.show();
-        this.playlistpane = new PlaylistPane();
+        this.playlistpane = new PlaylistPane(this);
         this.playlistpane.show();
-        this.playingpane = new PlayingPane();
+        this.playingpane = new PlayingPane(this);
         this.playingpane.show();
     };
     return Tunr;

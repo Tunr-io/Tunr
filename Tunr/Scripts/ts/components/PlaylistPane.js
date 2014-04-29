@@ -6,8 +6,8 @@
 };
 var PlaylistPane = (function (_super) {
     __extends(PlaylistPane, _super);
-    function PlaylistPane() {
-        _super.call(this, "PlaylistPane");
+    function PlaylistPane(tunr) {
+        _super.call(this, tunr, "PlaylistPane");
     }
     return PlaylistPane;
 })(Component);

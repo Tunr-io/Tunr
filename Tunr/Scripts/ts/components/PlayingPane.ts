@@ -1,5 +1,5 @@
 ﻿class PlayingPane extends Component {
-	constructor() {
-		super("PlayingPane");
+	constructor(tunr: Tunr) {
+		super(tunr, "PlayingPane");
 	}
 } 

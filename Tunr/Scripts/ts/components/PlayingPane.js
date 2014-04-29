@@ -6,8 +6,8 @@
 };
 var PlayingPane = (function (_super) {
     __extends(PlayingPane, _super);
-    function PlayingPane() {
-        _super.call(this, "PlayingPane");
+    function PlayingPane(tunr) {
+        _super.call(this, tunr, "PlayingPane");
     }
     return PlayingPane;
 })(Component);

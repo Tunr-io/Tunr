@@ -17,12 +17,12 @@ namespace Tunr
 		// Enable the application to use OAuthAuthorization. You can then secure your Web APIs
 		static Startup()
 		{
-			PublicClientId = "web";
+			PublicClientId = "roomie";
 
 			OAuthOptions = new OAuthAuthorizationServerOptions
 			{
 				TokenEndpointPath = new PathString("/Token"),
-				/* AuthorizeEndpointPath = new PathString("/Account/Authorize"), */
+				//AuthorizeEndpointPath = new PathString("/Account/Authorize"), 
 				Provider = new ApplicationOAuthProvider(PublicClientId),
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
 				AllowInsecureHttp = true

@@ -4,17 +4,29 @@
  * More specific behaviors are to be implemented by each individual component.
  */
 class Component {
+	private tunr: Tunr;
 	private component_id: string;
 	private element: HTMLElement;
 	private animator: Animator;
 
-	constructor(component_id: string) {
-		// Get the component ID, grab the 
+	constructor(tunr: Tunr, component_id: string) {
+		// Get the component ID, grab the HTML
 		this.component_id = component_id;
 		this.element = <HTMLDivElement> document.getElementById("component_" + this.component_id).cloneNode(true);
 		this.element.classList.remove("COMPONENT");
 		this.element.id = '';
 		this.animator = new Animator(this);
+
+		// Make sure we're associated with an application instance...
+		if (tunr != null) {
+			this.tunr = tunr;
+		} else {
+			this.tunr = Tunr.instance; // Default instance if undefined
+		}
+	}
+
+	public getTunr(): Tunr {
+		return this.tunr;
 	}
 
 	public getElement(): HTMLElement {
