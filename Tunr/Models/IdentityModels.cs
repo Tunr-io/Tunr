@@ -32,17 +32,4 @@ namespace Tunr.Models
 	{
 		public string DisplayName { get; set; }
 	}
-
-	public class ApplicationDbContext : IdentityDbContext<TunrUser>
-	{
-		public ApplicationDbContext()
-			: base("DefaultConnection", throwIfV1Schema: false)
-		{
-		}
-
-		public static ApplicationDbContext Create()
-		{
-			return new ApplicationDbContext();
-		}
-	}
 }
