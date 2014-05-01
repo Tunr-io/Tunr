@@ -52,7 +52,7 @@
 		var songs: Array<string> = new Array<string>();
 		for (var i = 0; i < this.songs.length; i++) {
 			if (this.songs[i].album == album) {
-				songs.push(this.songs[i].album);
+				songs.push(this.songs[i].title);
 			}
 		}
 		return songs;

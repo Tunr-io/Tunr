@@ -354,6 +354,8 @@ div.loginbg div.dialog div.progress.showing {
   z-index: 20;
 }
 .librarypane nav a {
+  cursor: pointer;
+  overflow: hidden;
   font-family: 'Open Sans';
   font-weight: 100;
   font-size: 64px;
@@ -364,10 +366,28 @@ div.loginbg div.dialog div.progress.showing {
   display: block;
   text-transform: lowercase;
   white-space: nowrap;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   -webkit-transition: opacity 150ms ease-in-out;
   -moz-transition: opacity 150ms ease-in-out;
   -o-transition: opacity 150ms ease-in-out;
   transition: opacity 150ms ease-in-out;
+}
+.librarypane nav a:not(:first-child) {
+  -moz-animation-name: anim_librarypane_list_in;
+  -o-animation-name: anim_librarypane_list_in;
+  -webkit-animation-name: anim_librarypane_list_in;
+  animation-name: anim_librarypane_list_in;
+  -moz-animation-duration: 250ms;
+  -o-animation-duration: 250ms;
+  -webkit-animation-duration: 250ms;
+  animation-duration: 250ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 .librarypane nav a:hover {
   opacity: 1;
@@ -394,6 +414,42 @@ div.loginbg div.dialog div.progress.showing {
   bottom: 0;
   right: 0;
   list-style-type: none;
+  -moz-animation-name: anim_librarypane_list_in;
+  -o-animation-name: anim_librarypane_list_in;
+  -webkit-animation-name: anim_librarypane_list_in;
+  animation-name: anim_librarypane_list_in;
+  -moz-animation-duration: 200ms;
+  -o-animation-duration: 200ms;
+  -webkit-animation-duration: 200ms;
+  animation-duration: 200ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-transition: opacity 200ms ease-in-out;
+  -moz-transition: opacity 200ms ease-in-out;
+  -o-transition: opacity 200ms ease-in-out;
+  transition: opacity 200ms ease-in-out;
+  z-index: 10;
+}
+.librarypane ul.hidden {
+  -moz-animation-name: anim_librarypane_list_out;
+  -o-animation-name: anim_librarypane_list_out;
+  -webkit-animation-name: anim_librarypane_list_out;
+  animation-name: anim_librarypane_list_out;
+  -moz-animation-duration: 200ms;
+  -o-animation-duration: 200ms;
+  -webkit-animation-duration: 200ms;
+  animation-duration: 200ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  opacity: 0;
+  z-index: 9;
 }
 .librarypane ul.artists {
   margin: 16px 0 0 20px;
@@ -404,14 +460,47 @@ div.loginbg div.dialog div.progress.showing {
   font-weight: 100;
 }
 .librarypane ul.artists li {
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   padding: 4px 0;
   white-space: nowrap;
 }
 .librarypane ul.albums {
-  display: none;
+  margin: 16px 8px 0 8px;
+  padding: 0;
+}
+.librarypane ul.albums li {
+  cursor: pointer;
+  background-color: #808080;
+  display: block;
+  float: left;
+  width: 128px;
+  height: 128px;
+  margin: 6px;
 }
 .librarypane ul.songs {
-  display: none;
+  margin: 16px 0 0 32px;
+  padding: 0;
+  color: #0d0d0d;
+  font-family: "Open Sans";
+  font-size: 20px;
+  font-weight: 100;
+}
+.librarypane ul.songs li {
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  padding: 4px 0;
+  white-space: nowrap;
+}
+.librarypane ul.songs li .track {
+  font-size: 24px;
+  padding-right: 6px;
 }
 @-moz-keyframes anim_librarypane_in {
   from {
@@ -441,6 +530,60 @@ div.loginbg div.dialog div.progress.showing {
   -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+@-moz-keyframes anim_librarypane_list_in {
+  from {
+    -webkit-transform: translate3d(300px, 0, 0);
+    -moz-transform: translate3d(300px, 0, 0);
+    -ms-transform: translate3d(300px, 0, 0);
+    -o-transform: translate3d(300px, 0, 0);
+    transform: translate3d(300px, 0, 0);
+  }
+}
+@-webkit-keyframes anim_librarypane_list_in {
+  from {
+    -webkit-transform: translate3d(300px, 0, 0);
+    -moz-transform: translate3d(300px, 0, 0);
+    -ms-transform: translate3d(300px, 0, 0);
+    -o-transform: translate3d(300px, 0, 0);
+    transform: translate3d(300px, 0, 0);
+  }
+}
+@keyframes anim_librarypane_list_in {
+  from {
+    -webkit-transform: translate3d(300px, 0, 0);
+    -moz-transform: translate3d(300px, 0, 0);
+    -ms-transform: translate3d(300px, 0, 0);
+    -o-transform: translate3d(300px, 0, 0);
+    transform: translate3d(300px, 0, 0);
+  }
+}
+@-moz-keyframes anim_librarypane_list_out {
+  to {
+    -webkit-transform: translate3d(-300px, 0, 0);
+    -moz-transform: translate3d(-300px, 0, 0);
+    -ms-transform: translate3d(-300px, 0, 0);
+    -o-transform: translate3d(-300px, 0, 0);
+    transform: translate3d(-300px, 0, 0);
+  }
+}
+@-webkit-keyframes anim_librarypane_list_out {
+  to {
+    -webkit-transform: translate3d(-300px, 0, 0);
+    -moz-transform: translate3d(-300px, 0, 0);
+    -ms-transform: translate3d(-300px, 0, 0);
+    -o-transform: translate3d(-300px, 0, 0);
+    transform: translate3d(-300px, 0, 0);
+  }
+}
+@keyframes anim_librarypane_list_out {
+  to {
+    -webkit-transform: translate3d(-300px, 0, 0);
+    -moz-transform: translate3d(-300px, 0, 0);
+    -ms-transform: translate3d(-300px, 0, 0);
+    -o-transform: translate3d(-300px, 0, 0);
+    transform: translate3d(-300px, 0, 0);
+  }
 }
 .playlistpane {
   position: fixed;

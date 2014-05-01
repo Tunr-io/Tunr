@@ -382,6 +382,7 @@
     <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>

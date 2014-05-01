@@ -24,3 +24,10 @@
 	-o-transition: -o-transform @transform_transition;
 	transition: transform @transform_transition;
 }
+
+.user_select(@user_select) {
+	-moz-user-select: @user_select;
+	-ms-user-select: @user_select;
+	-webkit-user-select: @user_select;
+	user-select: @user_select;
+}

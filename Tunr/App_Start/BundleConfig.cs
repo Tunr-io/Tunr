@@ -23,6 +23,7 @@ namespace Tunr
 				"~/Scripts/ts/components/PlayingPane.js",
 				"~/Scripts/ts/data/Library.js",
 				"~/Scripts/ts/API.js",
+				"~/Scripts/ts/Misc.js",
 				"~/Scripts/ts/Tunr.js"
 				));
 

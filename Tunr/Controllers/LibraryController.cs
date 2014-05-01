@@ -176,6 +176,8 @@ namespace Tunr.Controllers
 						{
 							blockBlob.UploadFromStream(fileStream);
 						}
+
+						System.IO.File.Delete(file.LocalFileName);
 					}
 					return Ok();
 				}
@@ -184,11 +186,6 @@ namespace Tunr.Controllers
 					return InternalServerError(e);
 				}
 			}
-		}
-
-		// PUT api/<controller>/5
-		public void Put(int id, [FromBody]string value)
-		{
 		}
 
 		// DELETE api/<controller>/5
