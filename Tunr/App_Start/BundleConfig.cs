@@ -26,7 +26,7 @@ namespace Tunr
 				));
 
 			bundles.Add(new StyleBundle("~/bundles/css").Include(
-				 "~/Content/css/Tunr.css"));
+				 "~/Content/css/Tunr.css", new CssRewriteUrlTransform()));
 
 			// Set EnableOptimizations to false for debugging. For more information,
 			// visit http://go.microsoft.com/fwlink/?LinkId=301862
