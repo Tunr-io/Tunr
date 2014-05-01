@@ -59,7 +59,7 @@ namespace Tunr.Controllers
 				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
 				if (user == null)
 				{
-					return InternalServerError();
+					return InternalServerError(new Exception("User could not be found"));
 				}
 				string root = HttpContext.Current.Server.MapPath("~/App_Data/uploads");
 				var provider = new MultipartFormDataStreamProvider(root);

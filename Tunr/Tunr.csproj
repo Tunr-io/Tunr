@@ -230,7 +230,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Content Include="App_Data\executables\fpcalc.exe" />
+    <Content Include="App_Data\executables\fpcalc.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\css\Animations.css">
       <DependentUpon>Animations.less</DependentUpon>
     </Content>
