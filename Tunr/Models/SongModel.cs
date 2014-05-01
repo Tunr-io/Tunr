@@ -22,5 +22,38 @@ namespace Tunr.Models
 		public int Year { get; set; }
 		public string Genre { get; set; }
 		public int Length { get; set; }
+
+		public SongViewModel toViewModel()
+		{
+			return new SongViewModel()
+			{
+				SongID = this.SongId,
+				//SongFingerPrint = this.SongFingerprint,
+				OwnerId = new Guid(this.Owner.Id),
+				Title = this.Title,
+				Artist = this.Artist,
+				Album = this.Album,
+				TrackNumber = this.TrackNumber,
+				DiscNumber = this.DiscNumber,
+				Year = this.Year,
+				Genre = this.Genre,
+				Length = this.Length
+			};
+		}
+	}
+
+	public class SongViewModel
+	{
+		public Guid SongID { get; set; }
+		//public string SongFingerPrint { get; set; }
+		public Guid OwnerId { get; set; }
+		public string Title { get; set; }
+		public string Artist { get; set; }
+		public string Album { get; set; }
+		public int TrackNumber { get; set; }
+		public int DiscNumber { get; set; }
+		public int Year { get; set; }
+		public string Genre { get; set; }
+		public int Length { get; set; }
 	}
 }

@@ -5,6 +5,7 @@
 class Tunr {
 	public static instance: Tunr;
 	public api: API;
+	public library: Library;
 	public librarypane: LibraryPane;
 	public playlistpane: PlaylistPane;
 	public playingpane: PlayingPane;
@@ -16,6 +17,7 @@ class Tunr {
 	}
 
 	initialize(): void {
+		this.library = new Library(this);
 		this.librarypane = new LibraryPane(this);
 		this.librarypane.show();
 		this.playlistpane = new PlaylistPane(this);

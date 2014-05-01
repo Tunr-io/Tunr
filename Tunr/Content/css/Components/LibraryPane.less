@@ -1,5 +1,5 @@
 ﻿.librarypane {
-	position:absolute;
+	position:fixed;
 	width:@library_pane_width;
 	left:0;
 	top:0;
@@ -34,7 +34,42 @@
 			}
 		}
 	}
+	div.container {
+		position:relative;
+		height: calc(~"100% - 120px");
+		overflow-y: auto;
+		overflow-x:hidden;
+	}
+	ul {
+		position:absolute;
+		top:0;
+		left:0;
+		bottom:0;
+		right:0;
+		list-style-type: none;
 
+		&.artists {
+			margin: 16px 0 0 20px;
+			padding: 0;
+			color: @bg-color;
+			font-family: "Open Sans";
+			font-size: 24px;
+			font-weight: 100;
+
+			li {
+				padding:4px 0;
+				white-space:nowrap;
+			}
+		}
+
+		&.albums {
+			display:none;
+		}
+
+		&.songs {
+			display:none;
+		}
+	}
 }
 
 @-moz-keyframes anim_librarypane_in {

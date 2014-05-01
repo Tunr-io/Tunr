@@ -367,9 +367,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\ts\data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
@@ -383,6 +381,7 @@
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
+    <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>

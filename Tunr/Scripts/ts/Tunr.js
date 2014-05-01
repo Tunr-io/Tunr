@@ -10,6 +10,7 @@ var Tunr = (function () {
         l.show();
     }
     Tunr.prototype.initialize = function () {
+        this.library = new Library(this);
         this.librarypane = new LibraryPane(this);
         this.librarypane.show();
         this.playlistpane = new PlaylistPane(this);

@@ -30,11 +30,32 @@ namespace Tunr.Controllers
 			}
 		}
 
+		// GET api/Library
+		[Route("")]
+		public IEnumerable<SongViewModel> Get()
+		{
+			using (var db = new ApplicationDbContext())
+			{
+				var uid = User.Identity.GetUserId();
+				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+
+				var songs = db.Songs.Where(u => u.Owner.Id == user.Id).Select(u => u).ToList().Select(u => u.toViewModel());
+				return songs;
+			}
+		}
+
 		// GET api/Library/Artists
 		[Route("Artists")]
 		public IEnumerable<string> GetArtists()
 		{
-			return new string[] { "value1", "value2" };
+			using (var db = new ApplicationDbContext())
+			{
+				var uid = User.Identity.GetUserId();
+				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+
+				var artists = db.Songs.Where(u => u.Owner.Id == user.Id).Select(u => u.Artist).Distinct().ToList();
+				return artists;
+			}
 		}
 
 		// GET api/<controller>/5
