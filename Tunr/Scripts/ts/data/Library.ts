@@ -25,7 +25,7 @@
 				artists.push(this.songs[i].artist);
 			}
 		}
-		return artists;
+		return artists.sort();
 	}
 
 	public albumsin(artist: string) {
@@ -35,7 +35,7 @@
 				albums.push(this.songs[i].album);
 			}
 		}
-		return albums;
+		return albums.sort();
 	}
 
 	public albums(): Array<string> {
@@ -48,14 +48,16 @@
 		return albums;
 	}
 
-	public songsin(album: string): Array<string> {
-		var songs: Array<string> = new Array<string>();
+	public songsin(album: string): Array<Song> {
+		var songs: Array<Song> = new Array<Song>();
 		for (var i = 0; i < this.songs.length; i++) {
 			if (this.songs[i].album == album) {
-				songs.push(this.songs[i].title);
+				songs.push(this.songs[i]);
 			}
 		}
-		return songs;
+		return songs.sort((a, b) => {
+			return a.trackNumber - b.trackNumber;
+		});
 	}
 }
 

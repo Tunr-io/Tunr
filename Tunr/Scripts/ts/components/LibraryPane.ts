@@ -109,14 +109,14 @@
 	}
 
 	public loadSongs(album: string): void {
-		var songs: Array<string> = this.getTunr().library.songsin(album);
+		var songs: Array<Song> = this.getTunr().library.songsin(album);
 		this.songs_element.innerHTML = "";
 		for (var i = 0; i < songs.length; i++) {
 			var li = document.createElement("li");
-			li.innerHTML = '<span class="track">' + ('00').slice(-2) + '</span>' + htmlEscape(songs[i]); //TODO: we need the track number
-			((song, element) => {
+			li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
+			((song: Song, element) => {
 				element.addEventListener("click", () => {
-					console.log("played song" + song);
+					this.selectSong(song);
 				});
 			})(songs[i], li);
 			this.songs_element.appendChild(li);
@@ -130,5 +130,9 @@
 		this.albums_element.classList.add("hidden");
 		// Show songs
 		this.songs_element.classList.remove("hidden");
+	}
+
+	public selectSong(song: Song): void {
+		this.getTunr().playlistpane.addSong(song);
 	}
 } 

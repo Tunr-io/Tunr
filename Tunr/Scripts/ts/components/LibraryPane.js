@@ -117,14 +117,15 @@ var LibraryPane = (function (_super) {
     };
 
     LibraryPane.prototype.loadSongs = function (album) {
+        var _this = this;
         var songs = this.getTunr().library.songsin(album);
         this.songs_element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = '<span class="track">' + ('00').slice(-2) + '</span>' + htmlEscape(songs[i]); //TODO: we need the track number
+            li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
             (function (song, element) {
                 element.addEventListener("click", function () {
-                    console.log("played song" + song);
+                    _this.selectSong(song);
                 });
             })(songs[i], li);
             this.songs_element.appendChild(li);
@@ -140,6 +141,10 @@ var LibraryPane = (function (_super) {
 
         // Show songs
         this.songs_element.classList.remove("hidden");
+    };
+
+    LibraryPane.prototype.selectSong = function (song) {
+        this.getTunr().playlistpane.addSong(song);
     };
     return LibraryPane;
 })(Component);

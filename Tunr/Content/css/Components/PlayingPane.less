@@ -1,32 +1,119 @@
 ﻿.playingpane {
+	@albumart-size: 220px;
+
 	position:absolute;
 	left:@library_pane_width*2;
 	right:0;
 	top:0;
 	bottom:0;
-	padding-left:24px;
-	h1 {
-		font-family:'Open Sans';
-		font-weight:900;
-		font-size:52px;
-		line-height:1;
-		text-transform:uppercase;
-		color:@fg-color;
-		margin:32px 0 0 0;
+	margin-left:32px;
+	overflow:hidden;
+
+	div.title {
+		position:absolute;
+		top:0;
+		left:0;
+		right:0;
+		overflow:hidden;
+
+		h1 {
+			font-family:'Open Sans';
+			font-weight:900;
+			font-size:52px;
+			line-height:1;
+			text-transform:uppercase;
+			color:@fg-color;
+			margin:32px 0 0 0;
+			white-space:nowrap;
+		}
+		h2 {
+			font-family:'Open Sans';
+			font-weight:100;
+			font-size:36px;
+			line-height:1;
+			margin:0 0 16px 0;
+			text-transform:uppercase;
+			color:@fg-color;
+			white-space:nowrap;
+		}
 	}
-	h2 {
-		font-family:'Open Sans';
-		font-weight:100;
-		font-size:36px;
-		margin:0 0 16px 0;
-		text-transform:uppercase;
-		color:@fg-color;
-	}
+	
 	img {
-		margin:16px 0 0 0;
-		width:225px;
-		height:225px;
-		border:2px solid #fff;
+		position:absolute;
+		display:block;
+		top:150px;
+		left:0;
+		width:@albumart-size;
+		height:@albumart-size;
+		background-color:#1f1f1f;
+	}
+
+	ul.controls {
+		@button-size:56px;
+		@button-margin:5px;
+		position:absolute;
+		top:@albumart-size+170px;
+		list-style-type:none;
+		margin:0;
+		padding:0;
+		width: (@button-size*3)+(@button-margin*2*3);
+		margin-left: (@albumart-size - ((@button-size*3)+(@button-margin*2*3)))/2;
+		
+		li {
+			display:block;
+			float:left;
+			width: @button-size;
+			height: @button-size;
+			margin:0 @button-margin;
+			button {
+				cursor:pointer;
+				width: @button-size;
+				height: @button-size;
+				border-radius:28px;
+				border:2.5px solid @fg-color;
+				background-position:12px 12px;
+				background-color:transparent;
+				background-size: 28px;
+				background-repeat:no-repeat;
+				&:active {
+					background-color:white;
+				}
+			}
+		}
+		li.prev button {
+			
+			background-image:url("../../svg/prev_white.svg");
+			&:active {
+				background-image:url("../../svg/prev_black.svg");
+			}
+		}
+		li.next button {
+			background-image:url("../../svg/next_white.svg");
+			&:active {
+				background-image:url("../../svg/next_black.svg");
+			}
+		}
+		li.play button {
+			background-image:url("../../svg/play_white.svg");
+			&:active {
+				background-image:url("../../svg/play_black.svg");
+			}
+		}
+		li.pause button {
+			background-image:url("../../svg/pause_white.svg");
+			&:active {
+				background-image:url("../../svg/pause_black.svg");
+			}
+		}
+		&.playing li.play {
+			display:none;
+		}
+		li.pause {
+			display:none;
+		}
+		&.playing li.pause {
+			display:block;
+		}
 	}
 }
 
@@ -56,4 +143,66 @@
 	.animation-name(anim_playingpane_in);
 	.animation-duration(300ms);
 	.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+}
+
+@-moz-keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+@-webkit-keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+@keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+
+.animated.anim_playingtitle_out {
+	.animation-name(anim_playingtitle_out);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.860, 0.000, 0.070, 1.000));
+}
+
+@-moz-keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+@keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+
+.animated.anim_playingtitle_in {
+	.animation-name(anim_playingtitle_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.860, 0.000, 0.070, 1.000));
 }

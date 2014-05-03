@@ -22,6 +22,7 @@ namespace Tunr
 				"~/Scripts/ts/components/PlaylistPane.js",
 				"~/Scripts/ts/components/PlayingPane.js",
 				"~/Scripts/ts/data/Library.js",
+				"~/Scripts/ts/data/Playlist.js",
 				"~/Scripts/ts/API.js",
 				"~/Scripts/ts/Misc.js",
 				"~/Scripts/ts/Tunr.js"

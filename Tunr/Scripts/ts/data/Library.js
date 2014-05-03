@@ -23,7 +23,7 @@
                 artists.push(this.songs[i].artist);
             }
         }
-        return artists;
+        return artists.sort();
     };
 
     Library.prototype.albumsin = function (artist) {
@@ -33,7 +33,7 @@
                 albums.push(this.songs[i].album);
             }
         }
-        return albums;
+        return albums.sort();
     };
 
     Library.prototype.albums = function () {
@@ -50,10 +50,12 @@
         var songs = new Array();
         for (var i = 0; i < this.songs.length; i++) {
             if (this.songs[i].album == album) {
-                songs.push(this.songs[i].title);
+                songs.push(this.songs[i]);
             }
         }
-        return songs;
+        return songs.sort(function (a, b) {
+            return a.trackNumber - b.trackNumber;
+        });
     };
     return Library;
 })();

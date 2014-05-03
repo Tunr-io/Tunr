@@ -235,6 +235,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\uploads\uploads.txt" />
+    <Content Include="Attribution.txt" />
     <Content Include="Content\css\Animations.css">
       <DependentUpon>Animations.less</DependentUpon>
     </Content>
@@ -320,6 +321,14 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Startup.cs" />
     <None Include="Scripts\js\jquery-2.1.0.intellisense.js" />
+    <Content Include="Content\svg\pause_black.svg" />
+    <Content Include="Content\svg\pause_white.svg" />
+    <Content Include="Content\svg\play_black.svg" />
+    <Content Include="Content\svg\play_white.svg" />
+    <Content Include="Content\svg\next_black.svg" />
+    <Content Include="Content\svg\next_white.svg" />
+    <Content Include="Content\svg\prev_black.svg" />
+    <Content Include="Content\svg\prev_white.svg" />
     <Content Include="Scripts\js\jquery-2.1.0.js" />
     <Content Include="Scripts\js\jquery-2.1.0.min.js" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
@@ -383,6 +392,7 @@
     <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
+    <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
