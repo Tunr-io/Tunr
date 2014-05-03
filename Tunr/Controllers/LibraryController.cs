@@ -15,6 +15,9 @@ using Tunr.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace Tunr.Controllers
 {
@@ -58,10 +61,87 @@ namespace Tunr.Controllers
 			}
 		}
 
-		// GET api/<controller>/5
-		public string Get(int id)
+		// GET api/Library/{song}
+		[AllowAnonymous]
+		[Route("{songid}")]
+		public HttpResponseMessage Get(Guid songid)
 		{
-			return "value";
+			Process ffmpeg = new Process();
+			ProcessStartInfo startinfo = new ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffmpeg.exe"), "-i - -vn -ar 44100 -ac 2 -ab 128k -f mp3 - ");
+			startinfo.RedirectStandardError = true;
+			startinfo.RedirectStandardOutput = true;
+			startinfo.RedirectStandardInput = true;
+			startinfo.UseShellExecute = false;
+			startinfo.CreateNoWindow = true;
+			ffmpeg.StartInfo = startinfo;
+			ffmpeg.ErrorDataReceived += ffmpeg_ErrorDataReceived;
+			
+			//ffmpeg.BeginOutputReadLine();
+			
+			// Our response is a stream
+			var response = Request.CreateResponse();
+			response.StatusCode = HttpStatusCode.OK;
+
+			
+			//response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = "track.mp3" };
+
+			// Retrieve storage account from connection string.
+			CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+				CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+			// Create the blob client.
+			CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+			// Retrieve reference to a previously created container.
+			CloudBlobContainer container = blobClient.GetContainerReference("songs");
+
+			// Retrieve reference to a blob
+			CloudBlockBlob blockBlob = container.GetBlockBlobReference(songid.ToString());
+
+			ffmpeg.Start();
+			ffmpeg.BeginErrorReadLine();
+			response.Content = new StreamContent(ffmpeg.StandardOutput.BaseStream);
+			response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg");
+
+			// Read everything from the blob in a separate thread.
+			Task.Run(() =>
+			{
+				try
+				{
+					System.Diagnostics.Debug.WriteLine("Reading from blob...");
+					var blobstream = blockBlob.OpenRead();
+					byte[] buf = new byte[1024 * 32];
+					while (true)
+					{
+						int sz = blobstream.Read(buf, 0, buf.Length);
+						//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
+						if (sz <= 0) break;
+						ffmpeg.StandardInput.BaseStream.Write(buf, 0, sz);
+						ffmpeg.StandardInput.BaseStream.Flush();
+						//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
+						if (sz > buf.Length) break;
+					}
+					blobstream.Close();
+					ffmpeg.StandardInput.BaseStream.Close();
+				}
+				catch (Exception)
+				{
+					System.Diagnostics.Debug.WriteLine("something weird happened.");
+				}
+			});
+
+			System.Diagnostics.Debug.WriteLine("Returned response.");
+			return response;
+		}
+
+		void ffmpeg_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine(e.Data);
+		}
+
+		void ffmpeg_OutputDataReceived(object sender, DataReceivedEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine(e.Data);
 		}
 
 		// POST api/Library
@@ -187,10 +267,39 @@ namespace Tunr.Controllers
 				}
 			}
 		}
-
-		// DELETE api/<controller>/5
-		public void Delete(int id)
+	}
+	public class AudioStream
+	{
+		private readonly Stream _source_stream;
+		public AudioStream(Stream src)
 		{
+			_source_stream = src;
+		}
+
+		public async void WriteToStream(Stream outputStream, HttpContent content, TransportContext context)
+		{
+			try
+			{
+				var buffer = new byte[1024];
+				while (true)
+				{
+					int sz = await _source_stream.ReadAsync(buffer, 0, buffer.Length);
+					System.Diagnostics.Debug.WriteLine("READDDD " + sz + " bytes from ffmpeg.");
+					if (sz <= 0) break;
+					await outputStream.WriteAsync(buffer, 0, sz);
+					await outputStream.FlushAsync();
+				}
+			}
+			catch (HttpException ex)
+			{
+				return;
+			}
+			finally
+			{
+				outputStream.Close();
+			}
 		}
 	}
+
+
 }
