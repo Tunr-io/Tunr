@@ -67,6 +67,8 @@
 		.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
 		.transition(opacity 200ms ease-in-out);
 		z-index: 10;
+		.perspective(1500px);
+		.user_select(none);
 
 		&.hidden {
 			.animation-name(anim_librarypane_list_out);
@@ -87,7 +89,7 @@
 
 			li {
 				cursor: pointer;
-				.user_select(none);
+				
 				padding: 4px 0;
 				white-space: nowrap;
 			}

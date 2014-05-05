@@ -1,6 +1,7 @@
 ﻿class Login extends Component {
 	constructor(tunr: Tunr) {
 		super(tunr, "Login");
+		//TiltEffect.addTilt((<HTMLElement>this.getElement().getElementsByClassName("submit")[0])); // No can do for now...
 		this.getElement().getElementsByTagName("form")[0].addEventListener("submit", (e) => {
 			e.preventDefault();
 			this.login_submit();

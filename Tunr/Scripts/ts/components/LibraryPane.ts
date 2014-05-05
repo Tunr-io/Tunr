@@ -30,9 +30,10 @@
 		this.artists_element.innerHTML = ''; // clear existing entries
 		for (var i = 0; i < artists.length; i++) {
 			var li = document.createElement("li");
-			li.innerText = artists[i];
-			((artist, element) => {
-				element.addEventListener("click", () => {
+			li.innerHTML = htmlEscape(artists[i]);
+			((artist, element: HTMLElement) => {
+				TiltEffect.addTilt(element);
+				element.addEventListener("click", (e) => {
 					this.loadAlbums(artist);
 				});
 			})(artists[i],li);
@@ -87,8 +88,9 @@
 		this.albums_element.innerHTML = "";
 		for (var i = 0; i < albums.length; i++) {
 			var li = document.createElement("li");
-			li.innerText = albums[i];
+			li.innerHTML = htmlEscape(albums[i]);
 			((album, element) => {
+				TiltEffect.addTilt(element);
 				element.addEventListener("click", () => {
 					this.loadSongs(album);
 				});
@@ -97,7 +99,7 @@
 		}
 		// Add header
 		var nav = document.createElement("a");
-		nav.innerText = artist;
+		nav.innerHTML = htmlEscape(artist);
 		nav.addEventListener("click", () => {
 			this.showAlbums();
 		});
@@ -115,6 +117,7 @@
 			var li = document.createElement("li");
 			li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
 			((song: Song, element) => {
+				TiltEffect.addTilt(element);
 				element.addEventListener("click", () => {
 					this.selectSong(song);
 				});
@@ -124,7 +127,7 @@
 
 		// Add header
 		var nav = document.createElement("a");
-		nav.innerText = album;
+		nav.innerHTML = htmlEscape(album);
 		this.nav_element.appendChild(nav);
 		// Hide albums
 		this.albums_element.classList.add("hidden");

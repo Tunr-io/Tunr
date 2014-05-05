@@ -431,6 +431,14 @@ div.loginbg div.dialog div.progress.showing {
   -o-transition: opacity 200ms ease-in-out;
   transition: opacity 200ms ease-in-out;
   z-index: 10;
+  -moz-perspective: 1500px;
+  -ms-perspective: 1500px;
+  -webkit-perspective: 1500px;
+  perspective: 1500px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .librarypane ul.hidden {
   -moz-animation-name: anim_librarypane_list_out;
@@ -461,10 +469,6 @@ div.loginbg div.dialog div.progress.showing {
 }
 .librarypane ul.artists li {
   cursor: pointer;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
   padding: 4px 0;
   white-space: nowrap;
 }
@@ -770,6 +774,10 @@ div.loginbg div.dialog div.progress.showing {
   padding: 0;
   width: 198px;
   margin-left: 11px;
+  -moz-perspective: 1500px;
+  -ms-perspective: 1500px;
+  -webkit-perspective: 1500px;
+  perspective: 1500px;
 }
 .playingpane ul.controls li {
   display: block;

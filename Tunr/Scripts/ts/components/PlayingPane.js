@@ -13,6 +13,10 @@ var PlayingPane = (function (_super) {
         this.controls_element = this.getElement().getElementsByClassName("controls")[0];
 
         // Set up event handlers for control buttons...
+        TiltEffect.addTilt(this.controls_element.getElementsByClassName("play")[0]);
+        TiltEffect.addTilt(this.controls_element.getElementsByClassName("pause")[0]);
+        TiltEffect.addTilt(this.controls_element.getElementsByClassName("next")[0]);
+        TiltEffect.addTilt(this.controls_element.getElementsByClassName("prev")[0]);
         this.controls_element.getElementsByClassName("play")[0].addEventListener("click", function () {
             _this.getTunr().playlistpane.play();
         });

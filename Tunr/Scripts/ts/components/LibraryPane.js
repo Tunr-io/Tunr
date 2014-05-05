@@ -34,9 +34,10 @@ var LibraryPane = (function (_super) {
         this.artists_element.innerHTML = ''; // clear existing entries
         for (var i = 0; i < artists.length; i++) {
             var li = document.createElement("li");
-            li.innerText = artists[i];
+            li.innerHTML = htmlEscape(artists[i]);
             (function (artist, element) {
-                element.addEventListener("click", function () {
+                TiltEffect.addTilt(element);
+                element.addEventListener("click", function (e) {
                     _this.loadAlbums(artist);
                 });
             })(artists[i], li);
@@ -92,8 +93,9 @@ var LibraryPane = (function (_super) {
         this.albums_element.innerHTML = "";
         for (var i = 0; i < albums.length; i++) {
             var li = document.createElement("li");
-            li.innerText = albums[i];
+            li.innerHTML = htmlEscape(albums[i]);
             (function (album, element) {
+                TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
                     _this.loadSongs(album);
                 });
@@ -103,7 +105,7 @@ var LibraryPane = (function (_super) {
 
         // Add header
         var nav = document.createElement("a");
-        nav.innerText = artist;
+        nav.innerHTML = htmlEscape(artist);
         nav.addEventListener("click", function () {
             _this.showAlbums();
         });
@@ -124,6 +126,7 @@ var LibraryPane = (function (_super) {
             var li = document.createElement("li");
             li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
             (function (song, element) {
+                TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
                     _this.selectSong(song);
                 });
@@ -133,7 +136,7 @@ var LibraryPane = (function (_super) {
 
         // Add header
         var nav = document.createElement("a");
-        nav.innerText = album;
+        nav.innerHTML = htmlEscape(album);
         this.nav_element.appendChild(nav);
 
         // Hide albums

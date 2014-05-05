@@ -394,6 +394,7 @@
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
+    <TypeScriptCompile Include="Scripts\ts\TiltEffect.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
