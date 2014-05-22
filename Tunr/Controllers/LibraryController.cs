@@ -18,6 +18,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 
 namespace Tunr.Controllers
 {
@@ -220,6 +221,12 @@ namespace Tunr.Controllers
 						string fingerprint = fp.ToString();
 						fingerprint = fingerprint.Substring(fingerprint.IndexOf("FINGERPRINT=") + 12);
 
+						string sHash = "";
+						using (StreamReader sr = new StreamReader(file.LocalFileName)) {
+							MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
+							sHash = BitConverter.ToString(md5h.ComputeHash(sr.BaseStream)).Replace("-","");
+						}
+
 						var song = new Song()
 						{
 							Owner = user,
@@ -231,7 +238,8 @@ namespace Tunr.Controllers
 							TrackNumber = (int)tagFile.Tag.Track,
 							DiscNumber = (int)tagFile.Tag.Disc,
 							SongFingerprint = fingerprint,
-							Length = 0 //Todo
+							SongMD5 = sHash,
+							Length = tagFile.Properties.Duration.TotalSeconds
 						};
 
 						db.Songs.Add(song);

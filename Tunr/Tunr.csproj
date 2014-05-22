@@ -309,6 +309,14 @@
     <Compile Include="Migrations\201404302255096_Song.Designer.cs">
       <DependentUpon>201404302255096_Song.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201405220420563_SongMD5.cs" />
+    <Compile Include="Migrations\201405220420563_SongMD5.Designer.cs">
+      <DependentUpon>201405220420563_SongMD5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201405220440324_DoubleLength.cs" />
+    <Compile Include="Migrations\201405220440324_DoubleLength.Designer.cs">
+      <DependentUpon>201405220440324_DoubleLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -404,6 +412,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201404302255096_Song.resx">
       <DependentUpon>201404302255096_Song.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405220420563_SongMD5.resx">
+      <DependentUpon>201405220420563_SongMD5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405220440324_DoubleLength.resx">
+      <DependentUpon>201405220440324_DoubleLength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -13,6 +13,7 @@ namespace Tunr.Models
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid SongId { get; set; }
 		public string SongFingerprint { get; set; }
+		public string SongMD5 { get; set; }
 		public TunrUser Owner { get; set; }
 		public string Title { get; set; }
 		public string Artist { get; set; }
@@ -21,7 +22,7 @@ namespace Tunr.Models
 		public int DiscNumber { get; set; }
 		public int Year { get; set; }
 		public string Genre { get; set; }
-		public int Length { get; set; }
+		public double Length { get; set; }
 
 		public SongViewModel toViewModel()
 		{
@@ -29,6 +30,7 @@ namespace Tunr.Models
 			{
 				SongID = this.SongId,
 				//SongFingerPrint = this.SongFingerprint,
+				SongMD5 = this.SongMD5,
 				OwnerId = new Guid(this.Owner.Id),
 				Title = this.Title,
 				Artist = this.Artist,
@@ -47,6 +49,7 @@ namespace Tunr.Models
 		public Guid SongID { get; set; }
 		//public string SongFingerPrint { get; set; }
 		public Guid OwnerId { get; set; }
+		public string SongMD5 { get; set; }
 		public string Title { get; set; }
 		public string Artist { get; set; }
 		public string Album { get; set; }
@@ -54,6 +57,6 @@ namespace Tunr.Models
 		public int DiscNumber { get; set; }
 		public int Year { get; set; }
 		public string Genre { get; set; }
-		public int Length { get; set; }
+		public double Length { get; set; }
 	}
 }
