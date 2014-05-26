@@ -404,8 +404,11 @@ div.loginbg div.dialog div.progress.showing {
 .librarypane div.container {
   position: relative;
   height: calc(100% - 120px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+  -moz-perspective: 1500px;
+  -ms-perspective: 1500px;
+  -webkit-perspective: 1500px;
+  perspective: 1500px;
 }
 .librarypane ul {
   position: absolute;
@@ -431,10 +434,12 @@ div.loginbg div.dialog div.progress.showing {
   -o-transition: opacity 200ms ease-in-out;
   transition: opacity 200ms ease-in-out;
   z-index: 10;
-  -moz-perspective: 1500px;
-  -ms-perspective: 1500px;
-  -webkit-perspective: 1500px;
-  perspective: 1500px;
+  -moz-perspective: inherit;
+  -ms-perspective: inherit;
+  -webkit-perspective: inherit;
+  perspective: inherit;
+  overflow-y: auto;
+  overflow-x: hidden;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;

@@ -51,8 +51,8 @@
 	div.container {
 		position: relative;
 		height: calc(~"100% - 120px");
-		overflow-y: auto;
-		overflow-x: hidden;
+		overflow:hidden;
+		.perspective(1500px);
 	}
 
 	ul {
@@ -67,7 +67,9 @@
 		.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
 		.transition(opacity 200ms ease-in-out);
 		z-index: 10;
-		.perspective(1500px);
+		.perspective(inherit);
+		overflow-y:auto;
+		overflow-x:hidden;
 		.user_select(none);
 
 		&.hidden {
