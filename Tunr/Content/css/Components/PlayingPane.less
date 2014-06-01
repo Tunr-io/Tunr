@@ -1,6 +1,6 @@
-﻿.playingpane {
-	@albumart-size: 220px;
+﻿@albumart-size: 220px;
 
+.playingpane {
 	position:absolute;
 	left:@library_pane_width*2;
 	right:0;
@@ -38,7 +38,7 @@
 		}
 	}
 	
-	img {
+	div.art {
 		position:absolute;
 		display:block;
 		top:150px;
@@ -46,7 +46,16 @@
 		width:@albumart-size;
 		height:@albumart-size;
 		background-color:#1f1f1f;
+		overflow:hidden;
+		img {
+			position:absolute;
+			top:0;
+			left:0;
+			width: 100%;
+			height: 100%;
+		}
 	}
+	
 
 	ul.controls {
 		@button-size:56px;
@@ -206,4 +215,60 @@
 	.animation-name(anim_playingtitle_in);
 	.animation-duration(300ms);
 	.animation-timing-function(cubic-bezier(0.860, 0.000, 0.070, 1.000));
+}
+
+@-moz-keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+@keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+
+.animated.anim_albumart_in {
+	.animation-name(anim_albumart_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.075, 0.820, 0.165, 1.000));
+}
+
+@-moz-keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+@-webkit-keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+@keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+
+.animated.anim_albumart_out {
+	.animation-name(anim_albumart_out);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.075, 0.820, 0.165, 1.000));
 }

@@ -46,11 +46,13 @@
         return albums;
     };
 
-    Library.prototype.songsin = function (album) {
+    Library.prototype.songsin = function (album, artist) {
         var songs = new Array();
         for (var i = 0; i < this.songs.length; i++) {
             if (this.songs[i].album == album) {
-                songs.push(this.songs[i]);
+                if (typeof artist === undefined || this.songs[i].artist == artist) {
+                    songs.push(this.songs[i]);
+                }
             }
         }
         return songs.sort(function (a, b) {

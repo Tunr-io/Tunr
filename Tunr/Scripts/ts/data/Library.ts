@@ -48,11 +48,13 @@
 		return albums;
 	}
 
-	public songsin(album: string): Array<Song> {
+	public songsin(album: string, artist?: string): Array<Song> {
 		var songs: Array<Song> = new Array<Song>();
 		for (var i = 0; i < this.songs.length; i++) {
 			if (this.songs[i].album == album) {
-				songs.push(this.songs[i]);
+				if (typeof artist === undefined || this.songs[i].artist == artist) {
+					songs.push(this.songs[i]);
+				}
 			}
 		}
 		return songs.sort((a, b) => {

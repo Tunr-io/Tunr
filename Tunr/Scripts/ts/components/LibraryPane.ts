@@ -87,12 +87,22 @@
 		var albums: Array<string> = this.getTunr().library.albumsin(artist);
 		this.albums_element.innerHTML = "";
 		for (var i = 0; i < albums.length; i++) {
+			
+			var img = document.createElement("img");
+			img.src = '/api/LibraryData/' + urlEscape(artist) + '/' + urlEscape(albums[i]) + '/art';
+			img.alt = albums[i];
+			img.style.opacity = '0';
+			((imgel:HTMLImageElement) => {
+				imgel.addEventListener("load", (ev) => {
+					imgel.style.opacity = '1';
+				});
+			})(img);
 			var li = document.createElement("li");
-			li.innerHTML = '<img src="/api/LibraryData/' + artist + '/' + albums[i] + '/art" alt="' + albums[i] + '" />';
+			li.appendChild(img);
 			((album, element) => {
 				TiltEffect.addTilt(element);
 				element.addEventListener("click", () => {
-					this.loadSongs(album);
+					this.loadSongs(album,artist);
 				});
 			})(albums[i], li);
 			this.albums_element.appendChild(li);
@@ -110,8 +120,8 @@
 		this.albums_element.classList.remove("hidden");
 	}
 
-	public loadSongs(album: string): void {
-		var songs: Array<Song> = this.getTunr().library.songsin(album);
+	public loadSongs(album: string, artist?: string): void {
+		var songs: Array<Song> = this.getTunr().library.songsin(album,artist);
 		this.songs_element.innerHTML = "";
 		for (var i = 0; i < songs.length; i++) {
 			var li = document.createElement("li");

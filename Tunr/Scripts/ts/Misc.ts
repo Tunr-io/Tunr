@@ -6,3 +6,11 @@
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;');
 }
+
+function urlEscape(str: string): string {
+	str = encodeURI(str);
+	str = str.replace(/\//g, "-");
+	str = str.replace(/:/g, "%20");
+	str = str.replace(/\./g, "");
+	return str;
+}

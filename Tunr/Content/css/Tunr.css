@@ -179,6 +179,7 @@ div.loginbg {
   right: 0;
   width: 100%;
   background-color: #ffffff;
+  overflow: hidden;
   z-index: 15;
 }
 div.loginbg div.dialog {
@@ -483,7 +484,7 @@ div.loginbg div.dialog div.progress.showing {
 }
 .librarypane ul.albums li {
   cursor: pointer;
-  background-color: #bebebe;
+  background-color: #eee;
   display: block;
   float: left;
   width: 128px;
@@ -494,6 +495,10 @@ div.loginbg div.dialog div.progress.showing {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  -webkit-transition: opacity 300ms linear;
+  -moz-transition: opacity 300ms linear;
+  -o-transition: opacity 300ms linear;
+  transition: opacity 300ms linear;
 }
 .librarypane ul.songs {
   margin: 16px 0 0 16px;
@@ -767,7 +772,7 @@ div.loginbg div.dialog div.progress.showing {
   color: #ffffff;
   white-space: nowrap;
 }
-.playingpane img {
+.playingpane div.art {
   position: absolute;
   display: block;
   top: 150px;
@@ -775,6 +780,14 @@ div.loginbg div.dialog div.progress.showing {
   width: 220px;
   height: 220px;
   background-color: #1f1f1f;
+  overflow: hidden;
+}
+.playingpane div.art img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .playingpane ul.controls {
   position: absolute;
@@ -959,5 +972,87 @@ div.loginbg div.dialog div.progress.showing {
   -o-animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
   -webkit-animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
   animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+}
+@-moz-keyframes anim_albumart_in {
+  from {
+    -webkit-transform: translate3d(-220px, 0, 0);
+    -moz-transform: translate3d(-220px, 0, 0);
+    -ms-transform: translate3d(-220px, 0, 0);
+    -o-transform: translate3d(-220px, 0, 0);
+    transform: translate3d(-220px, 0, 0);
+  }
+}
+@-webkit-keyframes anim_albumart_in {
+  from {
+    -webkit-transform: translate3d(-220px, 0, 0);
+    -moz-transform: translate3d(-220px, 0, 0);
+    -ms-transform: translate3d(-220px, 0, 0);
+    -o-transform: translate3d(-220px, 0, 0);
+    transform: translate3d(-220px, 0, 0);
+  }
+}
+@keyframes anim_albumart_in {
+  from {
+    -webkit-transform: translate3d(-220px, 0, 0);
+    -moz-transform: translate3d(-220px, 0, 0);
+    -ms-transform: translate3d(-220px, 0, 0);
+    -o-transform: translate3d(-220px, 0, 0);
+    transform: translate3d(-220px, 0, 0);
+  }
+}
+.animated.anim_albumart_in {
+  -moz-animation-name: anim_albumart_in;
+  -o-animation-name: anim_albumart_in;
+  -webkit-animation-name: anim_albumart_in;
+  animation-name: anim_albumart_in;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+@-moz-keyframes anim_albumart_out {
+  to {
+    -webkit-transform: translate3d(220px, 0, 0);
+    -moz-transform: translate3d(220px, 0, 0);
+    -ms-transform: translate3d(220px, 0, 0);
+    -o-transform: translate3d(220px, 0, 0);
+    transform: translate3d(220px, 0, 0);
+  }
+}
+@-webkit-keyframes anim_albumart_out {
+  to {
+    -webkit-transform: translate3d(220px, 0, 0);
+    -moz-transform: translate3d(220px, 0, 0);
+    -ms-transform: translate3d(220px, 0, 0);
+    -o-transform: translate3d(220px, 0, 0);
+    transform: translate3d(220px, 0, 0);
+  }
+}
+@keyframes anim_albumart_out {
+  to {
+    -webkit-transform: translate3d(220px, 0, 0);
+    -moz-transform: translate3d(220px, 0, 0);
+    -ms-transform: translate3d(220px, 0, 0);
+    -o-transform: translate3d(220px, 0, 0);
+    transform: translate3d(220px, 0, 0);
+  }
+}
+.animated.anim_albumart_out {
+  -moz-animation-name: anim_albumart_out;
+  -o-animation-name: anim_albumart_out;
+  -webkit-animation-name: anim_albumart_out;
+  animation-name: anim_albumart_out;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 /*# sourceMappingURL=Tunr.css.map */

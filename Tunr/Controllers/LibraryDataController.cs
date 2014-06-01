@@ -26,8 +26,19 @@ namespace Tunr.Controllers
 			var data = test.GetAlbumMetaData(artist,album);
 
 			response.StatusCode = HttpStatusCode.Redirect;
-			response.Headers.Location = data.CoverLarge;
+			if (data.CoverLarge == null || data.CoverLarge.AbsoluteUri == "http://cdn.last.fm/flatness/catalogue/noimage/2/default_album_medium.png")
+			{
+				response.Headers.Location = new Uri(ConvertRelativeUrlToAbsoluteUrl("~/Content/svg/album_cover.svg"));
+			}
+			else
+			{
+				response.Headers.Location = data.CoverLarge;
+			}
 			return response;
+		}
+
+		public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl) {
+		   return string.Format("{0}://{1}{2}{3}", (Request.RequestUri.Scheme == Uri.UriSchemeHttps) ? "https" : "http", Request.RequestUri.Host, (Request.RequestUri.Port == 80) ? "" : ":"+Request.RequestUri.Port.ToString(), VirtualPathUtility.ToAbsolute(relativeUrl));
 		}
     }
 }

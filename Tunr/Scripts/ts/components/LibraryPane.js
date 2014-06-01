@@ -92,12 +92,21 @@ var LibraryPane = (function (_super) {
         var albums = this.getTunr().library.albumsin(artist);
         this.albums_element.innerHTML = "";
         for (var i = 0; i < albums.length; i++) {
+            var img = document.createElement("img");
+            img.src = '/api/LibraryData/' + urlEscape(artist) + '/' + urlEscape(albums[i]) + '/art';
+            img.alt = albums[i];
+            img.style.opacity = '0';
+            (function (imgel) {
+                imgel.addEventListener("load", function (ev) {
+                    imgel.style.opacity = '1';
+                });
+            })(img);
             var li = document.createElement("li");
-            li.innerHTML = '<img src="/api/LibraryData/' + artist + '/' + albums[i] + '/art" alt="' + albums[i] + '" />';
+            li.appendChild(img);
             (function (album, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
-                    _this.loadSongs(album);
+                    _this.loadSongs(album, artist);
                 });
             })(albums[i], li);
             this.albums_element.appendChild(li);
@@ -118,9 +127,9 @@ var LibraryPane = (function (_super) {
         this.albums_element.classList.remove("hidden");
     };
 
-    LibraryPane.prototype.loadSongs = function (album) {
+    LibraryPane.prototype.loadSongs = function (album, artist) {
         var _this = this;
-        var songs = this.getTunr().library.songsin(album);
+        var songs = this.getTunr().library.songsin(album, artist);
         this.songs_element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");

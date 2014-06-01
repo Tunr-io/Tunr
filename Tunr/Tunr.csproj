@@ -333,6 +333,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Startup.cs" />
     <None Include="Scripts\js\jquery-2.1.0.intellisense.js" />
+    <Content Include="Content\svg\album_cover.svg" />
     <Content Include="Content\svg\pause_black.svg" />
     <Content Include="Content\svg\pause_white.svg" />
     <Content Include="Content\svg\play_black.svg" />
