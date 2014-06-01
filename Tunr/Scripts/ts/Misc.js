@@ -8,6 +8,7 @@ function urlEscape(str) {
     str = str.replace(/:/g, "%20");
     str = str.replace(/\./g, "");
     str = str.replace(/&/g, "and");
+    str = str.replace(/\+/g, " ");
     return str;
 }
 //# sourceMappingURL=Misc.js.map
