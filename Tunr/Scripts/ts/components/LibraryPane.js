@@ -93,7 +93,7 @@ var LibraryPane = (function (_super) {
         this.albums_element.innerHTML = "";
         for (var i = 0; i < albums.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = htmlEscape(albums[i]);
+            li.innerHTML = '<img src="/api/LibraryData/' + artist + '/' + albums[i] + '/art" alt="' + albums[i] + '" />';
             (function (album, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {

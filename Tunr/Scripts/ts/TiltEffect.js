@@ -69,6 +69,7 @@
         for (var parentElement = element.offsetParent; parentElement != null; parentElement = parentElement.parentElement) {
             elementX += parentElement.offsetLeft;
             elementY += parentElement.offsetTop;
+            elementY -= parentElement.scrollTop;
         }
 
         // Center the origin in the element
