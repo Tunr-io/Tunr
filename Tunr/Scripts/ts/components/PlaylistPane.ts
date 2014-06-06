@@ -107,7 +107,7 @@ class PlaylistPane extends Component {
 		}
 
 		// Add play marker to current song.
-		var song_element = <HTMLLIElement>this.songlist_element.getElementsByTagName("li")[index];
+		var song_element = <HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index];
 		song_element.classList.add("playing");
 	}
 
@@ -117,11 +117,12 @@ class PlaylistPane extends Component {
 
 	private _renderElement(song: Song): HTMLLIElement {
 		var song_element: HTMLLIElement = document.createElement("li");
+		song_element.classList.add("playlistitem");
 		song_element.classList.add("animated");
 		song_element.classList.add("anim_playlistitem_in");
 		song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
 		song_element = <HTMLLIElement>this.songlist_element.appendChild(song_element);
-		song_element.addEventListener("click", (e) => {
+		song_element.getElementsByClassName("listing")[0].addEventListener("click", (e) => {
 			var clicked_element = (<HTMLElement>e.target);
 			while (clicked_element.tagName.toLowerCase() != "li") {
 				clicked_element = clicked_element.parentElement;
@@ -129,16 +130,74 @@ class PlaylistPane extends Component {
 					return;
 				}
 			}
-			var song_elements = this.songlist_element.getElementsByTagName("li");
+			var song_elements = this.songlist_element.getElementsByClassName("playlistitem");
 			var i;
 			for (i = 0; i < song_elements.length; i++) {
 				if (<HTMLElement>song_elements[i] == clicked_element) {
 					break;
 				}
 			}
-			this.playIndex(i);
+			//this.playIndex(i);
+			this.showControls(i);
 		});
 		return song_element;
+	}
+
+	public hideAllControls() {
+		var playlistitems = (this.songlist_element.getElementsByClassName("playlistitem"));
+		for (var i = 0; i < playlistitems.length; i++) {
+			var controls = (<HTMLElement>playlistitems[i]).getElementsByClassName("controls");
+			if (controls.length > 0) {
+				this.hideControlsAt(i);
+			}
+		}
+	}
+
+	public hideControlsAt(index: number) {
+		var controls_element = <HTMLElement>(<HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index]).getElementsByClassName("controls")[0];
+		this.hideControls(controls_element);
+	}
+
+	public hideControls(element: HTMLElement) {
+		element.parentElement.classList.remove("dim");
+		element.parentElement.removeChild(element);
+	}
+
+	public showControls(index: number) {
+		this.hideAllControls();
+
+		var song_element = <HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index];
+
+		// Make us some controls ...
+		var itemControls = document.createElement("ul");
+		itemControls.classList.add("controls");
+
+		// Play button
+		var b_play = document.createElement("li");
+		b_play.classList.add("play");
+		b_play.addEventListener("click", () => {
+			this.playIndex(index);
+			this.hideControls(b_play.parentElement);
+		});
+		itemControls.appendChild(b_play);
+		
+		// Remove button
+		var b_remove = document.createElement("li");
+		b_remove.classList.add("remove");
+		itemControls.appendChild(b_remove);
+
+		// Up button
+		var b_up = document.createElement("li");
+		b_up.classList.add("up");
+		itemControls.appendChild(b_up);
+
+		// Down button
+		var b_down = document.createElement("li");
+		b_down.classList.add("down");
+		itemControls.appendChild(b_down);
+
+		song_element.classList.add("dim");
+		song_element.appendChild(itemControls);
 	}
 
 	public addSong(song: Song) {

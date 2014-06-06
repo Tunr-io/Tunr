@@ -113,7 +113,7 @@ var PlaylistPane = (function (_super) {
         }
 
         // Add play marker to current song.
-        var song_element = this.songlist_element.getElementsByTagName("li")[index];
+        var song_element = this.songlist_element.getElementsByClassName("playlistitem")[index];
         song_element.classList.add("playing");
     };
 
@@ -124,11 +124,12 @@ var PlaylistPane = (function (_super) {
     PlaylistPane.prototype._renderElement = function (song) {
         var _this = this;
         var song_element = document.createElement("li");
+        song_element.classList.add("playlistitem");
         song_element.classList.add("animated");
         song_element.classList.add("anim_playlistitem_in");
         song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
         song_element = this.songlist_element.appendChild(song_element);
-        song_element.addEventListener("click", function (e) {
+        song_element.getElementsByClassName("listing")[0].addEventListener("click", function (e) {
             var clicked_element = e.target;
             while (clicked_element.tagName.toLowerCase() != "li") {
                 clicked_element = clicked_element.parentElement;
@@ -136,16 +137,76 @@ var PlaylistPane = (function (_super) {
                     return;
                 }
             }
-            var song_elements = _this.songlist_element.getElementsByTagName("li");
+            var song_elements = _this.songlist_element.getElementsByClassName("playlistitem");
             var i;
             for (i = 0; i < song_elements.length; i++) {
                 if (song_elements[i] == clicked_element) {
                     break;
                 }
             }
-            _this.playIndex(i);
+
+            //this.playIndex(i);
+            _this.showControls(i);
         });
         return song_element;
+    };
+
+    PlaylistPane.prototype.hideAllControls = function () {
+        var playlistitems = (this.songlist_element.getElementsByClassName("playlistitem"));
+        for (var i = 0; i < playlistitems.length; i++) {
+            var controls = playlistitems[i].getElementsByClassName("controls");
+            if (controls.length > 0) {
+                this.hideControlsAt(i);
+            }
+        }
+    };
+
+    PlaylistPane.prototype.hideControlsAt = function (index) {
+        var controls_element = this.songlist_element.getElementsByClassName("playlistitem")[index].getElementsByClassName("controls")[0];
+        this.hideControls(controls_element);
+    };
+
+    PlaylistPane.prototype.hideControls = function (element) {
+        element.parentElement.classList.remove("dim");
+        element.parentElement.removeChild(element);
+    };
+
+    PlaylistPane.prototype.showControls = function (index) {
+        var _this = this;
+        this.hideAllControls();
+
+        var song_element = this.songlist_element.getElementsByClassName("playlistitem")[index];
+
+        // Make us some controls ...
+        var itemControls = document.createElement("ul");
+        itemControls.classList.add("controls");
+
+        // Play button
+        var b_play = document.createElement("li");
+        b_play.classList.add("play");
+        b_play.addEventListener("click", function () {
+            _this.playIndex(index);
+            _this.hideControls(b_play.parentElement);
+        });
+        itemControls.appendChild(b_play);
+
+        // Remove button
+        var b_remove = document.createElement("li");
+        b_remove.classList.add("remove");
+        itemControls.appendChild(b_remove);
+
+        // Up button
+        var b_up = document.createElement("li");
+        b_up.classList.add("up");
+        itemControls.appendChild(b_up);
+
+        // Down button
+        var b_down = document.createElement("li");
+        b_down.classList.add("down");
+        itemControls.appendChild(b_down);
+
+        song_element.classList.add("dim");
+        song_element.appendChild(itemControls);
     };
 
     PlaylistPane.prototype.addSong = function (song) {

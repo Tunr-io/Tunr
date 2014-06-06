@@ -630,12 +630,12 @@ div.loginbg div.dialog div.progress.showing {
   overflow-y: auto;
   overflow-x: hidden;
 }
-.playlistpane ul.songlist li {
+.playlistpane ul.songlist li.playlistitem {
+  position: relative;
   cursor: pointer;
   font-family: 'Open Sans';
   margin: 16px 0;
   white-space: nowrap;
-  opacity: 0.6;
   line-height: 1;
   -webkit-transition: -webkit-transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
   -moz-transition: -moz-transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
@@ -647,23 +647,68 @@ div.loginbg div.dialog div.progress.showing {
   -webkit-transform-origin: left center;
   transform-origin: left center;
 }
-.playlistpane ul.songlist li span.title {
+.playlistpane ul.songlist li.playlistitem div.listing {
+  opacity: 0.6;
+  -webkit-transition: opacity 300ms ease-out;
+  -moz-transition: opacity 300ms ease-out;
+  -o-transition: opacity 300ms ease-out;
+  transition: opacity 300ms ease-out;
+  z-index: 10;
+}
+.playlistpane ul.songlist li.playlistitem div.listing span.title {
   font-weight: 900;
   font-size: 20px;
 }
-.playlistpane ul.songlist li span.artist {
+.playlistpane ul.songlist li.playlistitem div.listing span.artist {
   font-weight: 100;
   font-size: 14px;
 }
-.playlistpane ul.songlist li.playing {
+.playlistpane ul.songlist li.playlistitem div.listing:hover {
+  opacity: 1;
+}
+.playlistpane ul.songlist li.playlistitem.playing div.listing {
+  opacity: 1.0;
+}
+.playlistpane ul.songlist li.playlistitem.dim div.listing {
+  opacity: 0.2;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  list-style-type: none;
+  margin: 0 0 0 0px;
+  padding: 0;
+  z-index: 20;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0 8px;
+  border: 2px solid #fff;
+  border-radius: 30px;
+  background-position: 8px 8px;
+  background-size: 22px;
+  background-repeat: no-repeat;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.play {
+  background-image: url("../svg/play_white.svg");
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.play:active {
+  background-image: url("../svg/play_black.svg");
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li:active {
+  background-color: #fff;
+}
+.playlistpane ul.songlist li.playlistitem.playing {
   -webkit-transform: translate3d(12px, 0, 0);
   -moz-transform: translate3d(12px, 0, 0);
   -ms-transform: translate3d(12px, 0, 0);
   -o-transform: translate3d(12px, 0, 0);
   transform: translate3d(12px, 0, 0);
-  opacity: 1;
-}
-.playlistpane ul.songlist li:hover {
   opacity: 1;
 }
 @-moz-keyframes anim_playlistpane_in {
