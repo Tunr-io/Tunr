@@ -126,7 +126,7 @@ var PlaylistPane = (function (_super) {
         var song_element = document.createElement("li");
         song_element.classList.add("animated");
         song_element.classList.add("anim_playlistitem_in");
-        song_element.innerHTML = '<span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span>';
+        song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
         song_element = this.songlist_element.appendChild(song_element);
         song_element.addEventListener("click", function (e) {
             var clicked_element = e.target;

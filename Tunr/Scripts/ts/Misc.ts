@@ -14,5 +14,6 @@ function urlEscape(str: string): string {
 	str = str.replace(/\./g, "");
 	str = str.replace(/&/g, "and");
 	str = str.replace(/\+/g, " ");
+	str = str.replace(/\?/g, " ");
 	return str;
 }

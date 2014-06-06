@@ -119,7 +119,7 @@ class PlaylistPane extends Component {
 		var song_element: HTMLLIElement = document.createElement("li");
 		song_element.classList.add("animated");
 		song_element.classList.add("anim_playlistitem_in");
-		song_element.innerHTML = '<span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span>';
+		song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
 		song_element = <HTMLLIElement>this.songlist_element.appendChild(song_element);
 		song_element.addEventListener("click", (e) => {
 			var clicked_element = (<HTMLElement>e.target);

@@ -43,6 +43,14 @@
     TiltEffect.prototype.clearTilts = function () {
         for (var i = 0; i < this.tilting.length; i++) {
             this.tilting[i].style["transform"] = "";
+            this.tilting[i].style["transition"] = "transform 200ms ease-out"; //Ease back to original position
+
+            //Take off transition when it's done.
+            (function (element) {
+                setTimeout(function () {
+                    element.style["transition"] = "";
+                }, 200);
+            })(this.tilting[i]);
         }
         this.tilting.splice(0);
     };
@@ -84,7 +92,14 @@
         var percentageX = offsetX / (element.clientWidth / 2);
         var percentageY = offsetY / (element.clientHeight / 2);
 
-        element.style["transform"] = "rotate3d(" + percentageY + "," + percentageX + ",0," + TiltEffect.ANGLE + "deg)";
+        //var percentageX: number =
+        // Get the distance from the center of the object
+        var distance = Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
+        var elementDist = Math.sqrt(Math.pow(element.clientWidth / 2, 2) + Math.pow(element.clientHeight / 2, 2));
+        var distPercentage = (elementDist - distance) / elementDist;
+        var test = "rotate3d(" + percentageY + "," + percentageX + ",0," + TiltEffect.ANGLE + "deg) translate3d(0,0," + (distPercentage * -20) + "px)";
+        element.style["transform"] = test;
+        element.style["transform-origin"] = "center center";
     };
     TiltEffect.ANGLE = 15;
     TiltEffect.tilter = new TiltEffect();

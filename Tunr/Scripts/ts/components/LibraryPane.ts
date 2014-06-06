@@ -125,7 +125,7 @@
 		this.songs_element.innerHTML = "";
 		for (var i = 0; i < songs.length; i++) {
 			var li = document.createElement("li");
-			li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
+			li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title);
 			((song: Song, element) => {
 				TiltEffect.addTilt(element);
 				element.addEventListener("click", () => {
@@ -143,6 +143,10 @@
 		this.albums_element.classList.add("hidden");
 		// Show songs
 		this.songs_element.classList.remove("hidden");
+	}
+
+	public songActions(element: HTMLElement, song: Song) {
+
 	}
 
 	public selectSong(song: Song): void {

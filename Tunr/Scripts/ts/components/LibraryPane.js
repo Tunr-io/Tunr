@@ -133,7 +133,7 @@ var LibraryPane = (function (_super) {
         this.songs_element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title); //TODO: we need the track number
+            li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title);
             (function (song, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
@@ -153,6 +153,9 @@ var LibraryPane = (function (_super) {
 
         // Show songs
         this.songs_element.classList.remove("hidden");
+    };
+
+    LibraryPane.prototype.songActions = function (element, song) {
     };
 
     LibraryPane.prototype.selectSong = function (song) {
