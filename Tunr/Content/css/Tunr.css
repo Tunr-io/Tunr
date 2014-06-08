@@ -646,6 +646,7 @@ div.loginbg div.dialog div.progress.showing {
   -o-transform-origin: left center;
   -webkit-transform-origin: left center;
   transform-origin: left center;
+  perspective: 1500px;
 }
 .playlistpane ul.songlist li.playlistitem div.listing {
   opacity: 0.6;
@@ -670,6 +671,10 @@ div.loginbg div.dialog div.progress.showing {
   opacity: 1.0;
 }
 .playlistpane ul.songlist li.playlistitem.dim div.listing {
+  -webkit-transition: opacity 150ms ease-out;
+  -moz-transition: opacity 150ms ease-out;
+  -o-transition: opacity 150ms ease-out;
+  transition: opacity 150ms ease-out;
   opacity: 0.2;
 }
 .playlistpane ul.songlist li.playlistitem ul.controls {
@@ -690,7 +695,7 @@ div.loginbg div.dialog div.progress.showing {
   margin: 0 8px;
   border: 2px solid #fff;
   border-radius: 30px;
-  background-position: 8px 8px;
+  background-position: 8px 7px;
   background-size: 22px;
   background-repeat: no-repeat;
 }
@@ -699,6 +704,27 @@ div.loginbg div.dialog div.progress.showing {
 }
 .playlistpane ul.songlist li.playlistitem ul.controls li.play:active {
   background-image: url("../svg/play_black.svg");
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.remove {
+  background-image: url("../svg/remove_white.svg");
+  background-position: 7px 7px;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.remove:active {
+  background-image: url("../svg/remove_black.svg");
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.up {
+  background-image: url("../svg/up_white.svg");
+  background-position: 7px 7px;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.up:active {
+  background-image: url("../svg/up_black.svg");
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.down {
+  background-image: url("../svg/down_white.svg");
+  background-position: 7px 7px;
+}
+.playlistpane ul.songlist li.playlistitem ul.controls li.down:active {
+  background-image: url("../svg/down_black.svg");
 }
 .playlistpane ul.songlist li.playlistitem ul.controls li:active {
   background-color: #fff;

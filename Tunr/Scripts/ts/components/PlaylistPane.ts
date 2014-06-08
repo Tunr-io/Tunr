@@ -120,6 +120,7 @@ class PlaylistPane extends Component {
 		song_element.classList.add("playlistitem");
 		song_element.classList.add("animated");
 		song_element.classList.add("anim_playlistitem_in");
+		song_element.attributes["data-playlist-index"] = this.playlist.getCount()-1;
 		song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
 		song_element = <HTMLLIElement>this.songlist_element.appendChild(song_element);
 		song_element.getElementsByClassName("listing")[0].addEventListener("click", (e) => {
@@ -190,14 +191,32 @@ class PlaylistPane extends Component {
 		var b_up = document.createElement("li");
 		b_up.classList.add("up");
 		itemControls.appendChild(b_up);
+		b_up.addEventListener("click", () => {
+			var index = itemControls.parentElement.attributes["data-playlist-index"];
+			var targetIndex = index - 1;
+			if (targetIndex < 0) {
+				targetIndex = this.playlist.getCount() - 1;
+			}
+			this.moveSong(index, targetIndex);
+		});
 
 		// Down button
 		var b_down = document.createElement("li");
 		b_down.classList.add("down");
 		itemControls.appendChild(b_down);
+		b_down.addEventListener("click", () => {
+			var index = itemControls.parentElement.attributes["data-playlist-index"];
+			var targetIndex = index + 1;
+			if (targetIndex >= this.playlist.getCount()) {
+				targetIndex = 0;
+			}
+			this.moveSong(index, targetIndex);
+		});
 
 		song_element.classList.add("dim");
 		song_element.appendChild(itemControls);
+
+		TiltEffect.addTilt(itemControls);
 	}
 
 	public addSong(song: Song) {
@@ -207,6 +226,16 @@ class PlaylistPane extends Component {
 		if (this.playstate == PlayState.STOPPED) {
 			this.playIndex(this.playlist.getCount() - 1);
 		}
+	}
+
+	public moveSong(srcIndex: number, targetIndex: number) {
+		this.playlist.moveIndex(srcIndex, targetIndex);
+		var item = <HTMLElement>this.songlist_element.getElementsByClassName("playlistitem")[srcIndex];
+		item = <HTMLElement>item.parentElement.removeChild(item);
+
+		this.songlist_element.insertBefore(item, this.songlist_element.getElementsByClassName("playlistitem")[targetIndex]);
+		item.attributes["data-playlist-index"] = targetIndex;
+
 	}
 
 	public nextIndex(): number {

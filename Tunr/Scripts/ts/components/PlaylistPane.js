@@ -127,6 +127,7 @@ var PlaylistPane = (function (_super) {
         song_element.classList.add("playlistitem");
         song_element.classList.add("animated");
         song_element.classList.add("anim_playlistitem_in");
+        song_element.attributes["data-playlist-index"] = this.playlist.getCount() - 1;
         song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
         song_element = this.songlist_element.appendChild(song_element);
         song_element.getElementsByClassName("listing")[0].addEventListener("click", function (e) {
@@ -199,14 +200,32 @@ var PlaylistPane = (function (_super) {
         var b_up = document.createElement("li");
         b_up.classList.add("up");
         itemControls.appendChild(b_up);
+        b_up.addEventListener("click", function () {
+            var index = itemControls.parentElement.attributes["data-playlist-index"];
+            var targetIndex = index - 1;
+            if (targetIndex < 0) {
+                targetIndex = _this.playlist.getCount() - 1;
+            }
+            _this.moveSong(index, targetIndex);
+        });
 
         // Down button
         var b_down = document.createElement("li");
         b_down.classList.add("down");
         itemControls.appendChild(b_down);
+        b_down.addEventListener("click", function () {
+            var index = itemControls.parentElement.attributes["data-playlist-index"];
+            var targetIndex = index + 1;
+            if (targetIndex >= _this.playlist.getCount()) {
+                targetIndex = 0;
+            }
+            _this.moveSong(index, targetIndex);
+        });
 
         song_element.classList.add("dim");
         song_element.appendChild(itemControls);
+
+        TiltEffect.addTilt(itemControls);
     };
 
     PlaylistPane.prototype.addSong = function (song) {
@@ -216,6 +235,15 @@ var PlaylistPane = (function (_super) {
         if (this.playstate == 2 /* STOPPED */) {
             this.playIndex(this.playlist.getCount() - 1);
         }
+    };
+
+    PlaylistPane.prototype.moveSong = function (srcIndex, targetIndex) {
+        this.playlist.moveIndex(srcIndex, targetIndex);
+        var item = this.songlist_element.getElementsByClassName("playlistitem")[srcIndex];
+        item = item.parentElement.removeChild(item);
+
+        this.songlist_element.insertBefore(item, this.songlist_element.getElementsByClassName("playlistitem")[targetIndex]);
+        item.attributes["data-playlist-index"] = targetIndex;
     };
 
     PlaylistPane.prototype.nextIndex = function () {

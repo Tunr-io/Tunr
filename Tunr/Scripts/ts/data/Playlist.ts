@@ -21,4 +21,14 @@
 	public getCount(): number {
 		return this.songs.length;
 	}
+
+	public moveIndex(src: number, target: number): void {
+		if (target >= this.songs.length) {
+			var k = target - this.songs.length;
+			while ((k--) + 1) {
+				this.songs.push(undefined);
+			}
+		}
+		this.songs.splice(target, 0, this.songs.splice(src, 1)[0]);
+	}
 }

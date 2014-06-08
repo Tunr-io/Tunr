@@ -18,6 +18,16 @@
     Playlist.prototype.getCount = function () {
         return this.songs.length;
     };
+
+    Playlist.prototype.moveIndex = function (src, target) {
+        if (target >= this.songs.length) {
+            var k = target - this.songs.length;
+            while ((k--) + 1) {
+                this.songs.push(undefined);
+            }
+        }
+        this.songs.splice(target, 0, this.songs.splice(src, 1)[0]);
+    };
     return Playlist;
 })();
 //# sourceMappingURL=Playlist.js.map

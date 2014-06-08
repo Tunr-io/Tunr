@@ -334,6 +334,8 @@
     <Compile Include="Startup.cs" />
     <None Include="Scripts\js\jquery-2.1.0.intellisense.js" />
     <Content Include="Content\svg\album_cover.svg" />
+    <Content Include="Content\svg\down_black.svg" />
+    <Content Include="Content\svg\down_white.svg" />
     <Content Include="Content\svg\pause_black.svg" />
     <Content Include="Content\svg\pause_white.svg" />
     <Content Include="Content\svg\play_black.svg" />
@@ -342,6 +344,10 @@
     <Content Include="Content\svg\next_white.svg" />
     <Content Include="Content\svg\prev_black.svg" />
     <Content Include="Content\svg\prev_white.svg" />
+    <Content Include="Content\svg\remove_black.svg" />
+    <Content Include="Content\svg\remove_white.svg" />
+    <Content Include="Content\svg\up_black.svg" />
+    <Content Include="Content\svg\up_white.svg" />
     <Content Include="Scripts\js\jquery-2.1.0.js" />
     <Content Include="Scripts\js\jquery-2.1.0.min.js" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
