@@ -28,6 +28,10 @@
         }
         this.songs.splice(target, 0, this.songs.splice(src, 1)[0]);
     };
+
+    Playlist.prototype.removeIndex = function (index) {
+        this.songs.splice(index, 1);
+    };
     return Playlist;
 })();
 //# sourceMappingURL=Playlist.js.map

@@ -1,13 +1,21 @@
 ﻿var Library = (function () {
     function Library(tunr) {
         this.songs = new Array();
+        this.song_index = {};
         this.tunr = tunr;
     }
+    Library.prototype.get_song_by_id = function (songid) {
+        return this.song_index[songid];
+    };
+
     Library.prototype.load = function () {
         var _this = this;
         var retval = $.Deferred();
         this.tunr.api.get("Library").then(function (songs) {
             _this.songs = songs;
+            for (var i = 0; i < _this.songs.length; i++) {
+                _this.song_index[_this.songs[i].songID] = _this.songs[i];
+            }
             retval.resolve();
         }, function () {
             console.error("failed to retrieve library.");

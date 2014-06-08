@@ -31,4 +31,8 @@
 		}
 		this.songs.splice(target, 0, this.songs.splice(src, 1)[0]);
 	}
+
+	public removeIndex(index: number): void {
+		this.songs.splice(index, 1);
+	}
 }

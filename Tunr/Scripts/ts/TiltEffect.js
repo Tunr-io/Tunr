@@ -74,19 +74,6 @@
         var elementX = element.offsetLeft;
         var elementY = element.offsetTop;
 
-        console.log("TILTING " + element.tagName + " left: " + elementX + ", top: " + elementY);
-
-        //for (var parentElement: HTMLElement = <HTMLElement>element.offsetParent; parentElement != null; parentElement = parentElement.parentElement) {
-        //	//if (parentElement.tagName != "DIV" && parentElement.tagName != "UL") {
-        //	//	// A little hack to make sure it only counts containers (don't entirely know why this is needed.)
-        //	//	continue;
-        //	//}
-        //	//if (parentElement.style.position.length <= 0) continue; //Little hack to ignore certain elements...
-        //	elementX += parentElement.offsetLeft;
-        //	elementY += parentElement.offsetTop;
-        //	elementY -= parentElement.scrollTop;
-        //	console.log("\tparent " + parentElement.tagName + ": position:" + parentElement.style["position"] + " left " + parentElement.offsetLeft + ", top " + parentElement.offsetTop + ", scroll " + parentElement.scrollTop);
-        //}
         var bounding = element.getBoundingClientRect();
         elementX = bounding.left;
         elementY = bounding.top;
@@ -99,8 +86,7 @@
         var offsetX = mouseX - elementX;
         var offsetY = elementY - mouseY;
 
-        console.log("MOUSE (" + mouseX + "," + mouseY + "), ELEMENT (" + elementX + "," + elementY + ")");
-
+        //console.log("MOUSE (" + mouseX + "," + mouseY + "), ELEMENT (" + elementX + "," + elementY + ")");
         // Get the offset percentage
         var percentageX = offsetX / (element.clientWidth / 2);
         var percentageY = offsetY / (element.clientHeight / 2);

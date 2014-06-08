@@ -1,15 +1,22 @@
 ﻿class Library {
 	private tunr: Tunr;
 	private songs: Array<Song> = new Array<Song>();
-
+	private song_index = {};
 	constructor(tunr: Tunr) {
 		this.tunr = tunr;
+	}
+
+	public get_song_by_id(songid: string): Song {
+		return this.song_index[songid];
 	}
 
 	public load(): JQueryPromise<any> {
 		var retval: JQueryDeferred<any> = $.Deferred<any>();
 		this.tunr.api.get("Library").then((songs) => {
 			this.songs = <Array<Song>>songs;
+			for (var i = 0; i < this.songs.length; i++) {
+				this.song_index[this.songs[i].songID] = this.songs[i];
+			}
 			retval.resolve();
 		}, () => {
 			console.error("failed to retrieve library.");

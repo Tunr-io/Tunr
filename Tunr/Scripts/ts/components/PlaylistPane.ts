@@ -5,16 +5,19 @@
 };
 
 class PlaylistPane extends Component {
-	private playlist: Playlist;
+	//private playlist: Playlist;
 	private audio: HTMLAudioElement = new Audio();
 	private songlist_element: HTMLUListElement;
-	private playingIndex: number;
+
 	private playstate: PlayState = PlayState.STOPPED;
 	private repeat: boolean = false;
 
+	private controls_element: HTMLElement;
+	private controls_index: number;
+	private controls_timeout: number;
+
 	constructor(tunr: Tunr) {
 		super(tunr, "PlaylistPane");
-		this.playlist = new Playlist("Playlist");
 		this.songlist_element = <HTMLUListElement>this.getElement().getElementsByClassName("songlist")[0];
 		this.audio.onended = (e) => {
 			this.trackEnded();
@@ -30,6 +33,61 @@ class PlaylistPane extends Component {
 		}
 	}
 
+	/**
+	 * Retreives the song object at the specified index of the playlist.
+	 */
+	public get_song_at(index: number): Song {
+		var element = this.get_element_at(index);
+		var songID = element.attributes["data-song-id"];
+		return this.getTunr().library.get_song_by_id(songID);
+	}
+
+	/**
+	 * Gets the playlist HTML element at the specified playlist index.
+	 */
+	public get_element_at(index: number): HTMLElement {
+		return <HTMLElement>this.songlist_element.getElementsByClassName("playlistitem")[index];
+	}
+
+	/**
+	 * Returns the number of items in the playlist.
+	 */
+	public count(): number {
+		return this.songlist_element.getElementsByClassName("playlistitem").length;
+	}
+
+	/**
+	 * Gets the index of the specified playlist element.
+	 */
+	private _find_index_of_element(element: HTMLElement): number {
+		var song_elements = this.songlist_element.getElementsByClassName("playlistitem");
+		var i;
+		for (i = 0; i < song_elements.length; i++) {
+			if (<HTMLElement>song_elements[i] == element) {
+				break;
+			}
+		}
+		return i;
+	}
+
+	/**
+	 * Gets the index of the currently playing playlist item
+	 */
+	public get_playing_index(): number {
+		var playing = this.songlist_element.getElementsByClassName("playing");
+		if (playing.length <= 0) {
+			return -1;
+		}
+		var playing_element = <HTMLElement>playing[0];
+		var i;
+		for (i = 0; i < this.count(); i++) {
+			if (this.get_element_at(i) == playing_element) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	// Audio controls
 	public play(): void {
 		if (this.playstate == PlayState.PAUSED) {
@@ -37,10 +95,11 @@ class PlaylistPane extends Component {
 			this.audio.play();
 			this._setPlayState(PlayState.PLAYING);
 		} else if (this.playstate == PlayState.STOPPED) {
-			if (this.playlist.getCount() > 0) {
+			if (this.count() > 0) {
 				// If stopped, start from the beginning
 				this.playIndex(0);
 			}
+			// If we have no tracks, do nothing.
 		}
 	}
 
@@ -85,7 +144,7 @@ class PlaylistPane extends Component {
 	}
 
 	public playIndex(index: number) {
-		var song: Song = this.playlist.getSong(index);
+		var song: Song = this.get_song_at(index);
 
 		// Change the audio source
 		this.audio.src = "/api/Library/" + song.songID;
@@ -97,9 +156,6 @@ class PlaylistPane extends Component {
 		this.audio.play();
 		this._setPlayState(PlayState.PLAYING);
 
-		// Set index of current track
-		this.playingIndex = index;
-
 		// Clear play markers on all list items.
 		var song_elements = this.songlist_element.getElementsByClassName("playing");
 		for (var i = 0; i < song_elements.length; i++) {
@@ -107,7 +163,7 @@ class PlaylistPane extends Component {
 		}
 
 		// Add play marker to current song.
-		var song_element = <HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index];
+		var song_element = this.get_element_at(index);
 		song_element.classList.add("playing");
 	}
 
@@ -120,7 +176,7 @@ class PlaylistPane extends Component {
 		song_element.classList.add("playlistitem");
 		song_element.classList.add("animated");
 		song_element.classList.add("anim_playlistitem_in");
-		song_element.attributes["data-playlist-index"] = this.playlist.getCount()-1;
+		song_element.attributes["data-song-id"] = song.songID;
 		song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
 		song_element = <HTMLLIElement>this.songlist_element.appendChild(song_element);
 		song_element.getElementsByClassName("listing")[0].addEventListener("click", (e) => {
@@ -131,43 +187,23 @@ class PlaylistPane extends Component {
 					return;
 				}
 			}
-			var song_elements = this.songlist_element.getElementsByClassName("playlistitem");
-			var i;
-			for (i = 0; i < song_elements.length; i++) {
-				if (<HTMLElement>song_elements[i] == clicked_element) {
-					break;
-				}
-			}
+			var i = this._find_index_of_element(clicked_element);
 			//this.playIndex(i);
-			this.showControls(i);
+			this.show_controls_at(i);
 		});
 		return song_element;
 	}
 
-	public hideAllControls() {
-		var playlistitems = (this.songlist_element.getElementsByClassName("playlistitem"));
-		for (var i = 0; i < playlistitems.length; i++) {
-			var controls = (<HTMLElement>playlistitems[i]).getElementsByClassName("controls");
-			if (controls.length > 0) {
-				this.hideControlsAt(i);
-			}
+	public hide_controls() {
+		if (this.controls_element !== undefined && this.controls_element.parentElement !== undefined) {
+			this.controls_element.parentElement.classList.remove("dim");
+			this.controls_element.parentElement.removeChild(this.controls_element);
 		}
 	}
 
-	public hideControlsAt(index: number) {
-		var controls_element = <HTMLElement>(<HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index]).getElementsByClassName("controls")[0];
-		this.hideControls(controls_element);
-	}
-
-	public hideControls(element: HTMLElement) {
-		element.parentElement.classList.remove("dim");
-		element.parentElement.removeChild(element);
-	}
-
-	public showControls(index: number) {
-		this.hideAllControls();
-
-		var song_element = <HTMLLIElement>this.songlist_element.getElementsByClassName("playlistitem")[index];
+	public show_controls_at(index: number) {
+		this.hide_controls();
+		var song_element = this.get_element_at(index);
 
 		// Make us some controls ...
 		var itemControls = document.createElement("ul");
@@ -177,8 +213,8 @@ class PlaylistPane extends Component {
 		var b_play = document.createElement("li");
 		b_play.classList.add("play");
 		b_play.addEventListener("click", () => {
-			this.playIndex(index);
-			this.hideControls(b_play.parentElement);
+			this.playIndex(this.controls_index);
+			this.hide_controls();
 		});
 		itemControls.appendChild(b_play);
 		
@@ -186,18 +222,21 @@ class PlaylistPane extends Component {
 		var b_remove = document.createElement("li");
 		b_remove.classList.add("remove");
 		itemControls.appendChild(b_remove);
+		b_remove.addEventListener("click", () => {
+			this.remove_by_index(this.controls_index);
+		});
 
 		// Up button
 		var b_up = document.createElement("li");
 		b_up.classList.add("up");
 		itemControls.appendChild(b_up);
 		b_up.addEventListener("click", () => {
-			var index = itemControls.parentElement.attributes["data-playlist-index"];
-			var targetIndex = index - 1;
+			var targetIndex = this.controls_index - 1;
 			if (targetIndex < 0) {
-				targetIndex = this.playlist.getCount() - 1;
+				targetIndex = this.count() - 1;
 			}
-			this.moveSong(index, targetIndex);
+			this.move_song(this.controls_index, targetIndex);
+			this.controls_index = targetIndex;
 		});
 
 		// Down button
@@ -205,51 +244,81 @@ class PlaylistPane extends Component {
 		b_down.classList.add("down");
 		itemControls.appendChild(b_down);
 		b_down.addEventListener("click", () => {
-			var index = itemControls.parentElement.attributes["data-playlist-index"];
-			var targetIndex = index + 1;
-			if (targetIndex >= this.playlist.getCount()) {
+			var targetIndex = this.controls_index + 1;
+			if (targetIndex >= this.count()) {
 				targetIndex = 0;
 			}
-			this.moveSong(index, targetIndex);
+			this.move_song(this.controls_index, targetIndex);
+			this.controls_index = targetIndex;
 		});
 
 		song_element.classList.add("dim");
-		song_element.appendChild(itemControls);
+		this.controls_element = <HTMLElement>song_element.appendChild(itemControls);
+		this.controls_index = index;
 
-		TiltEffect.addTilt(itemControls);
+		TiltEffect.addTilt(this.controls_element);
 	}
 
 	public addSong(song: Song) {
-		this.playlist.addSong(song);
 		var song_element: HTMLLIElement = this._renderElement(song);
 
 		if (this.playstate == PlayState.STOPPED) {
-			this.playIndex(this.playlist.getCount() - 1);
+			this.playIndex(this.count() - 1);
 		}
 	}
 
-	public moveSong(srcIndex: number, targetIndex: number) {
-		this.playlist.moveIndex(srcIndex, targetIndex);
-		var item = <HTMLElement>this.songlist_element.getElementsByClassName("playlistitem")[srcIndex];
+	public move_song(srcIndex: number, targetIndex: number) {
+		if (srcIndex == targetIndex) {
+			// If they're equal why are we moving ...?
+			return;
+		}
+		var item = this.get_element_at(srcIndex);
+		
+		if (targetIndex > srcIndex) {
+			// Moving to a higher index
+			if (targetIndex == this.count() - 1) {
+				//if next element is the last one, we hit the end.
+				item = <HTMLElement>item.parentElement.removeChild(item);
+				this.songlist_element.appendChild(item);
+			} else {
+				// Insert before the element after the next element
+				var target = this.get_element_at(targetIndex + 1);
+				item = <HTMLElement>item.parentElement.removeChild(item);
+				this.songlist_element.insertBefore(item, target);
+			}
+		} else {
+			// Moving to a lower index
+			// Insert before the element
+			var target = this.get_element_at(targetIndex);
+			item = <HTMLElement>item.parentElement.removeChild(item);
+			this.songlist_element.insertBefore(item, target);
+		}
+	}
+
+	public remove_by_index(index: number) {
+		if (this.get_playing_index() == index) {
+			if (this.count() == 1) {
+				this.stop();
+			} else {
+				this.next();
+			}
+		}
+		var item = this.get_element_at(index);
 		item = <HTMLElement>item.parentElement.removeChild(item);
-
-		this.songlist_element.insertBefore(item, this.songlist_element.getElementsByClassName("playlistitem")[targetIndex]);
-		item.attributes["data-playlist-index"] = targetIndex;
-
 	}
 
 	public nextIndex(): number {
-		var nextIndex = this.playingIndex + 1;
-		if (nextIndex >= this.playlist.getCount()) {
+		var nextIndex = this.get_playing_index() + 1;
+		if (nextIndex >= this.count()) {
 			nextIndex = 0;
 		}
 		return nextIndex;
 	}
 
 	public prevIndex(): number {
-		var prevIndex = this.playingIndex - 1;
+		var prevIndex = this.get_playing_index() - 1;
 		if (prevIndex < 0) {
-			prevIndex = this.playlist.getCount() - 1;
+			prevIndex = this.count() - 1;
 		}
 		return prevIndex;
 	}
