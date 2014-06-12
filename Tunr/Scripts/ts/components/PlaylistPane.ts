@@ -88,6 +88,11 @@ class PlaylistPane extends Component {
 		return -1;
 	}
 
+	// Gets how many seconds have elapsed since the song started.
+	public getSongTime(): number {
+		return this.audio.currentTime;
+	}
+
 	// Audio controls
 	public play(): void {
 		if (this.playstate == PlayState.PAUSED) {
@@ -194,8 +199,15 @@ class PlaylistPane extends Component {
 		return song_element;
 	}
 
+	public set_controls_timeout() {
+		clearTimeout(this.controls_timeout);
+		this.controls_timeout = setTimeout(() => {
+			this.hide_controls();
+		}, 4000);
+	}
+
 	public hide_controls() {
-		if (this.controls_element !== undefined && this.controls_element.parentElement !== undefined) {
+		if (this.controls_element !== undefined && this.controls_element.parentElement !== undefined && this.controls_element.parentElement != null) {
 			this.controls_element.parentElement.classList.remove("dim");
 			this.controls_element.parentElement.removeChild(this.controls_element);
 		}
@@ -214,7 +226,6 @@ class PlaylistPane extends Component {
 		b_play.classList.add("play");
 		b_play.addEventListener("click", () => {
 			this.playIndex(this.controls_index);
-			this.hide_controls();
 		});
 		itemControls.appendChild(b_play);
 		
@@ -237,6 +248,7 @@ class PlaylistPane extends Component {
 			}
 			this.move_song(this.controls_index, targetIndex);
 			this.controls_index = targetIndex;
+			this.set_controls_timeout();
 		});
 
 		// Down button
@@ -250,6 +262,7 @@ class PlaylistPane extends Component {
 			}
 			this.move_song(this.controls_index, targetIndex);
 			this.controls_index = targetIndex;
+			this.set_controls_timeout();
 		});
 
 		song_element.classList.add("dim");
@@ -257,6 +270,7 @@ class PlaylistPane extends Component {
 		this.controls_index = index;
 
 		TiltEffect.addTilt(this.controls_element);
+		this.set_controls_timeout();
 	}
 
 	public addSong(song: Song) {

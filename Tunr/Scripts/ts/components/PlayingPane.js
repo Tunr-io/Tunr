@@ -70,15 +70,29 @@ var PlayingPane = (function (_super) {
     };
 
     PlayingPane.prototype.play = function () {
+        var _this = this;
+        clearInterval(this.playtime_timer);
+        this.playtime_timer = setInterval(function () {
+            _this.update_playtime();
+        }, 500);
         if (!this.controls_element.classList.contains("playing")) {
             this.controls_element.classList.add("playing");
         }
     };
 
     PlayingPane.prototype.pause = function () {
+        clearInterval(this.playtime_timer);
         if (this.controls_element.classList.contains("playing")) {
             this.controls_element.classList.remove("playing");
         }
+    };
+
+    // Updates play timer displayed on the UI.
+    PlayingPane.prototype.update_playtime = function () {
+        var seconds = this.getTunr().playlistpane.getSongTime();
+        console.log("Seconds: " + seconds);
+        console.log(Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2));
+        this.getElement().getElementsByClassName("playtimer")[0].innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
     };
     return PlayingPane;
 })(Component);

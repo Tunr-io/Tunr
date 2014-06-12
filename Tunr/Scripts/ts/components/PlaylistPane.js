@@ -90,6 +90,11 @@ var PlaylistPane = (function (_super) {
         return -1;
     };
 
+    // Gets how many seconds have elapsed since the song started.
+    PlaylistPane.prototype.getSongTime = function () {
+        return this.audio.currentTime;
+    };
+
     // Audio controls
     PlaylistPane.prototype.play = function () {
         if (this.playstate == 1 /* PAUSED */) {
@@ -199,8 +204,16 @@ var PlaylistPane = (function (_super) {
         return song_element;
     };
 
+    PlaylistPane.prototype.set_controls_timeout = function () {
+        var _this = this;
+        clearTimeout(this.controls_timeout);
+        this.controls_timeout = setTimeout(function () {
+            _this.hide_controls();
+        }, 4000);
+    };
+
     PlaylistPane.prototype.hide_controls = function () {
-        if (this.controls_element !== undefined && this.controls_element.parentElement !== undefined) {
+        if (this.controls_element !== undefined && this.controls_element.parentElement !== undefined && this.controls_element.parentElement != null) {
             this.controls_element.parentElement.classList.remove("dim");
             this.controls_element.parentElement.removeChild(this.controls_element);
         }
@@ -220,7 +233,6 @@ var PlaylistPane = (function (_super) {
         b_play.classList.add("play");
         b_play.addEventListener("click", function () {
             _this.playIndex(_this.controls_index);
-            _this.hide_controls();
         });
         itemControls.appendChild(b_play);
 
@@ -243,6 +255,7 @@ var PlaylistPane = (function (_super) {
             }
             _this.move_song(_this.controls_index, targetIndex);
             _this.controls_index = targetIndex;
+            _this.set_controls_timeout();
         });
 
         // Down button
@@ -256,6 +269,7 @@ var PlaylistPane = (function (_super) {
             }
             _this.move_song(_this.controls_index, targetIndex);
             _this.controls_index = targetIndex;
+            _this.set_controls_timeout();
         });
 
         song_element.classList.add("dim");
@@ -263,6 +277,7 @@ var PlaylistPane = (function (_super) {
         this.controls_index = index;
 
         TiltEffect.addTilt(this.controls_element);
+        this.set_controls_timeout();
     };
 
     PlaylistPane.prototype.addSong = function (song) {

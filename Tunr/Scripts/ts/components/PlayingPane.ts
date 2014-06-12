@@ -2,6 +2,7 @@
 	private song: Song;
 	private title_element: HTMLDivElement;
 	private controls_element: HTMLUListElement;
+	private playtime_timer: number;
 
 	constructor(tunr: Tunr) {
 		super(tunr, "PlayingPane");
@@ -65,14 +66,27 @@
 	}
 
 	public play(): void {
+		clearInterval(this.playtime_timer);
+		this.playtime_timer = setInterval(() => {
+			this.update_playtime();
+		}, 500);
 		if (!this.controls_element.classList.contains("playing")) {
 			this.controls_element.classList.add("playing");
 		}
 	}
 
 	public pause(): void {
+		clearInterval(this.playtime_timer);
 		if (this.controls_element.classList.contains("playing")) {
 			this.controls_element.classList.remove("playing");
 		}
+	}
+
+	// Updates play timer displayed on the UI.
+	public update_playtime(): void {
+		var seconds = this.getTunr().playlistpane.getSongTime();
+		console.log("Seconds: " + seconds);
+		console.log(Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2));
+		(<HTMLElement>this.getElement().getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
 	}
 } 

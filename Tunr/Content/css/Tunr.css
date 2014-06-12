@@ -921,6 +921,16 @@ div.loginbg div.dialog form div.submission input[type=submit].pressed {
   color: #ffffff;
   white-space: nowrap;
 }
+.playingpane div.playtimer {
+  position: absolute;
+  right: -24px;
+  bottom: -8px;
+  font-family: "Open Sans";
+  font-size: 275px;
+  font-weight: 100;
+  line-height: 0.8;
+  opacity: 0.1;
+}
 .playingpane div.art {
   position: absolute;
   display: block;
