@@ -183,6 +183,10 @@ div.loginbg {
   z-index: 15;
 }
 div.loginbg div.dialog {
+  -moz-perspective: 1500px;
+  -ms-perspective: 1500px;
+  -webkit-perspective: 1500px;
+  perspective: 1500px;
   position: fixed;
   width: 600px;
   height: 350px;
@@ -203,6 +207,12 @@ div.loginbg div.dialog h1 {
 }
 div.loginbg div.dialog form.registration {
   display: none;
+}
+div.loginbg div.dialog form {
+  -moz-perspective: inherit;
+  -ms-perspective: inherit;
+  -webkit-perspective: inherit;
+  perspective: inherit;
 }
 div.loginbg div.dialog form input[type=email],
 div.loginbg div.dialog form input[type=password],
@@ -253,6 +263,10 @@ div.loginbg div.dialog form input[type=text]::-webkit-input-placeholder {
   letter-spacing: 1px;
 }
 div.loginbg div.dialog form div.submission {
+  -moz-perspective: inherit;
+  -ms-perspective: inherit;
+  -webkit-perspective: inherit;
+  perspective: inherit;
   position: relative;
   cursor: pointer;
   width: 230px;
@@ -276,6 +290,25 @@ div.loginbg div.dialog form div.submission div.progress {
   border: 0;
   padding: 10px 0;
   margin: 0 auto;
+  -moz-animation-name: anim_login_progress_stripe;
+  -o-animation-name: anim_login_progress_stripe;
+  -webkit-animation-name: anim_login_progress_stripe;
+  animation-name: anim_login_progress_stripe;
+  -moz-animation-duration: 1000ms;
+  -o-animation-duration: 1000ms;
+  -webkit-animation-duration: 1000ms;
+  animation-duration: 1000ms;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  background-repeat: repeat-x;
+  background-position: 0 center;
+  background-image: url("../svg/progress_stripe.svg");
   -moz-transform-origin: top center;
   -ms-transform-origin: top center;
   -o-transform-origin: top center;
@@ -329,6 +362,30 @@ div.loginbg div.dialog form div.submission input[type=submit].pressed {
   -ms-transform: translate3d(0, -48px, 0);
   -o-transform: translate3d(0, -48px, 0);
   transform: translate3d(0, -48px, 0);
+}
+@-moz-keyframes anim_login_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
+}
+@-webkit-keyframes anim_login_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
+}
+@keyframes anim_login_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
 }
 @-moz-keyframes anim_login_out {
   to {

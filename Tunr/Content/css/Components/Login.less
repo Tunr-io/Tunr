@@ -10,6 +10,7 @@
 	overflow:hidden;
 	z-index:15;
 	div.dialog {
+		.perspective(1500px);
 		position:fixed;
 		width:600px;
 		height:350px;
@@ -31,6 +32,7 @@
 			display:none;
 		}
 		form {
+			.perspective(inherit);
 			input[type=email], input[type=password], input[type=text] {
 				font-family:'Open Sans';
 				font-size:22px;
@@ -70,6 +72,7 @@
 				}
 			}
 			div.submission {
+				.perspective(inherit);
 				position:relative;
 				cursor:pointer;
 				width:230px;
@@ -92,6 +95,13 @@
 					border:0;
 					padding:10px 0;
 					margin:0 auto;
+					.animation-name(anim_login_progress_stripe);
+					.animation-duration(1000ms);
+					.animation-timing-function(linear);
+					.animation-iteration-count(infinite);
+					background-repeat: repeat-x;
+					background-position: 0 center;
+					background-image:url("../../svg/progress_stripe.svg");
 					.transform_origin(top center);
 					.transform_transition(300ms cubic-bezier(0.075, 0.820, 0.165, 1.000));
 					.transform(translate3d(0, 48px, 0));
@@ -124,8 +134,31 @@
 			}
 			
 		}
-		
-		
+	}
+}
+
+@-moz-keyframes anim_login_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
+	}
+}
+@-webkit-keyframes anim_login_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
+	}
+}
+@keyframes anim_login_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
 	}
 }
 

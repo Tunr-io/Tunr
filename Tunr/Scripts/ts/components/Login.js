@@ -9,8 +9,7 @@ var Login = (function (_super) {
     function Login(tunr) {
         var _this = this;
         _super.call(this, tunr, "Login");
-
-        //TiltEffect.addTilt((<HTMLElement>this.getElement().getElementsByClassName("submit")[0])); // No can do for now...
+        TiltEffect.addTilt(this.getElement().getElementsByClassName("submission")[0]); // No can do for now...
         this.getElement().getElementsByTagName("form")[0].addEventListener("submit", function (e) {
             e.preventDefault();
             _this.login_submit();
