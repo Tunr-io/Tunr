@@ -251,6 +251,9 @@
     <Content Include="Content\css\Components\PlaylistPane.css">
       <DependentUpon>PlaylistPane.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\Registration.css">
+      <DependentUpon>Registration.less</DependentUpon>
+    </Content>
     <Content Include="Content\css\Dialog.css">
       <DependentUpon>Dialog.less</DependentUpon>
     </Content>
@@ -296,6 +299,7 @@
       <DependentUpon>PlaylistPane.css</DependentUpon>
     </Content>
     <Content Include="Content\css\Components\PlayingPane.less" />
+    <Content Include="Content\css\Components\Registration.less" />
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\LibraryController.cs" />
@@ -345,6 +349,7 @@
     <Content Include="Content\svg\next_white.svg" />
     <Content Include="Content\svg\prev_black.svg" />
     <Content Include="Content\svg\prev_white.svg" />
+    <Content Include="Content\svg\progress_stripe.svg" />
     <Content Include="Content\svg\remove_black.svg" />
     <Content Include="Content\svg\remove_white.svg" />
     <Content Include="Content\svg\up_black.svg" />
@@ -356,6 +361,7 @@
     <Content Include="Views\Tunr\Components\PlaylistPane.cshtml" />
     <Content Include="Views\Tunr\Components\PlayingPane.cshtml" />
     <Content Include="Scripts\js\jquery-2.1.0.min.map" />
+    <Content Include="Views\Tunr\Components\Registration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

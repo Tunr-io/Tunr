@@ -27,8 +27,11 @@
 			color:@bg-color;
 			margin:0;
 		}
+		form.registration {
+			display:none;
+		}
 		form {
-			input[type=email], input[type=password] {
+			input[type=email], input[type=password], input[type=text] {
 				font-family:'Open Sans';
 				font-size:22px;
 				font-weight:900;
@@ -66,47 +69,63 @@
 					letter-spacing:1px;
 				}
 			}
-			input[type=submit] {
+			div.submission {
+				position:relative;
 				cursor:pointer;
-				width:236px;
+				width:230px;
 				height:48px;
-				font-family:'Open Sans';
-				text-transform:uppercase;
-				font-weight:900;
-				font-size:18px;
-				background-color:@bg-color;
-				color:@fg-color;
-				border:0;
-				padding:10px 0;
-				margin:12px 0 0 0;
-				.transform_origin(top center);
-				.transform_transition(300ms ease-in-out);
+				margin:24px auto 0 auto;
+				overflow:hidden;
+				background-color:#000;
+				div.progress {
+					position:absolute;
+					top:0;
+					left:0;
+					right:0;
+					bottom:0;
+					font-family:'Open Sans';
+					text-transform:uppercase;
+					font-weight:900;
+					font-size:18px;
+					background-color:@bg-color;
+					color:@fg-color;
+					border:0;
+					padding:10px 0;
+					margin:0 auto;
+					.transform_origin(top center);
+					.transform_transition(300ms cubic-bezier(0.075, 0.820, 0.165, 1.000));
+					.transform(translate3d(0, 48px, 0));
+					&.showing {
+						.transform(translate3d(0, 0, 0));
+					}
+				}
+				input[type=submit] {
+					position:absolute;
+					top:0;
+					right:0;
+					bottom:0;
+					left:0;
+					font-family:'Open Sans';
+					text-transform:uppercase;
+					font-weight:900;
+					font-size:18px;
+					background-color:@bg-color;
+					color:@fg-color;
+					border:0;
+					padding:10px 0;
+					margin:0 0 0 0;
+					.transform_origin(top center);
+					.transform_transition(300ms cubic-bezier(0.075, 0.820, 0.165, 1.000));
 
-				&.pressed {
-					.transform(scale3d(1,0,1));
+					&.pressed {
+						.transform(translate3d(0, -48px, 0));
+					}
 				}
 			}
+			
 		}
-		div.progress {
-			cursor:pointer;
-			width:236px;
-			height:28px;
-			font-family:'Open Sans';
-			text-transform:uppercase;
-			font-weight:900;
-			font-size:18px;
-			background-color:@bg-color;
-			color:@fg-color;
-			border:0;
-			padding:10px 0;
-			margin:0 auto;
-			.transform_origin(top center);
-			.transform(scale3d(1,0.00001,1));
-			.transform_transition(300ms ease-in-out);
-			&.showing {
-				.transform(translate3d(0, -48px, 0));
-			}
-		}
+		
+		
 	}
 }
 
