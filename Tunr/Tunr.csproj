@@ -121,6 +121,12 @@
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="SendGrid.SmtpApi">
+      <HintPath>..\packages\SendGrid.SmtpApi.1.1.3\lib\net40\SendGrid.SmtpApi.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGridMail">
+      <HintPath>..\packages\Sendgrid.3.0.3\lib\net45\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -325,12 +331,22 @@
     <Compile Include="Migrations\201405220440324_DoubleLength.Designer.cs">
       <DependentUpon>201405220440324_DoubleLength.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201406160543504_AlphaKeys.cs" />
+    <Compile Include="Migrations\201406160543504_AlphaKeys.Designer.cs">
+      <DependentUpon>201406160543504_AlphaKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201406160645184_AdminUsers.cs" />
+    <Compile Include="Migrations\201406160645184_AdminUsers.Designer.cs">
+      <DependentUpon>201406160645184_AdminUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
     <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -436,6 +452,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201405220440324_DoubleLength.resx">
       <DependentUpon>201405220440324_DoubleLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406160543504_AlphaKeys.resx">
+      <DependentUpon>201406160543504_AlphaKeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406160645184_AdminUsers.resx">
+      <DependentUpon>201406160645184_AdminUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -9,7 +9,7 @@ namespace Tunr.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
             ContextKey = "Tunr.Models.ApplicationDbContext";
         }
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System.ComponentModel;
 
 namespace Tunr.Models
 {
@@ -10,6 +11,7 @@ namespace Tunr.Models
 	public class TunrUser : IdentityUser
 	{
 		public string DisplayName { get; set; }
+		public bool IsAdmin { get; set; }
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<TunrUser> manager)
 		{
