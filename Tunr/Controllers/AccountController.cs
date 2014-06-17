@@ -13,6 +13,7 @@ using Microsoft.Owin.Security;
 using Owin;
 using Tunr.Models;
 using SendGrid;
+using System.Web.Http.Cors;
 
 namespace Tunr.Controllers
 {
@@ -65,6 +66,7 @@ namespace Tunr.Controllers
 		[HttpPost]
 		[AllowAnonymous]
 		[Route("Register")]
+		[EnableCors(origins: "*", headers: "*", methods: "*")]
 		public async Task<IHttpActionResult> Register(RegisterBindingModel model)
 		{
 			if (ModelState.IsValid)
