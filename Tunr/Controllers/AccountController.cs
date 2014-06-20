@@ -91,12 +91,9 @@ namespace Tunr.Controllers
 							myMessage.AddTo(user.Email);
 							myMessage.Subject = "Welcome to the Tunr Pre-Alpha!";
 							myMessage.Text = "Hey " + user.DisplayName + "! Thanks for taking the time to test out Tunr for me."
-								+ "\n\nThe first thing you'll need to do is upload some music. You can do this with the Tunr sync client!"
-								+ "\nYou can find it at the following URL:"
-								+ "\nhttp://tunr.io/downloads/TunrSync.zip"
-								+ "\n\nSimply extract the archive, and run TunrSync.exe in the command prompt with the following arguments:"
-								+ "\n TunrSync.exe your@emailaddress.com yourpassword C:\\Path\\To\\Your\\Music\\Folder"
-								+ "\n\nAfter you've uploaded some tracks, head to http://play.tunr.io to give them a listen!"
+								+ "\n\nThe first thing you'll need to do is upload some music."
+								+ "\nCheck out the following page for more information!"
+								+ "\nhttp://tunr.io/alpha.html"
 								+ "\n\nHaving trouble? Reach out to me! hayden@outlook.com or any other means you know of."
 								+ "\n\nPlease make me aware of any bugs you find! That's all I ask in return :)"
 								+ "\n\nThanks again for testing!"
