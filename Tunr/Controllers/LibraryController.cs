@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Tunr.Controllers
 {
@@ -26,6 +27,23 @@ namespace Tunr.Controllers
 	[RoutePrefix("api/Library")]
 	public class LibraryController : ApiController
 	{
+		private CloudTable azure_table { get; set; }
+		public LibraryController()
+		{
+			// Retrieve the storage account from the connection string.
+			CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+				CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+			// Create the table client.
+			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+			// Create the table if it doesn't exist.
+			CloudTable table = tableClient.GetTableReference("songs");
+			table.CreateIfNotExists();
+
+			this.azure_table = table;
+		}
+
 		public ApplicationUserManager UserManager
 		{
 			get
@@ -43,24 +61,26 @@ namespace Tunr.Controllers
 				var uid = User.Identity.GetUserId();
 				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
 
-				var songs = db.Songs.Where(u => u.Owner.Id == user.Id).Select(u => u).ToList().Select(u => u.toViewModel());
-				return songs;
+				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
+				var songs = this.azure_table.ExecuteQuery(query);
+				var song_viewmodels = songs.Select(s => s.toViewModel());
+				return song_viewmodels;
 			}
 		}
 
 		// GET api/Library/Artists
-		[Route("Artists")]
-		public IEnumerable<string> GetArtists()
-		{
-			using (var db = new ApplicationDbContext())
-			{
-				var uid = User.Identity.GetUserId();
-				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+		//[Route("Artists")]
+		//public IEnumerable<string> GetArtists()
+		//{
+		//	using (var db = new ApplicationDbContext())
+		//	{
+		//		var uid = User.Identity.GetUserId();
+		//		var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
 
-				var artists = db.Songs.Where(u => u.Owner.Id == user.Id).Select(u => u.Artist).Distinct().ToList();
-				return artists;
-			}
-		}
+		//		var artists = db.Songs.Where(u => u.Owner.Id == user.Id).Select(u => u.Artist).Distinct().ToList();
+		//		return artists;
+		//	}
+		//}
 
 		// GET api/Library/{song}
 		[AllowAnonymous]
@@ -68,7 +88,7 @@ namespace Tunr.Controllers
 		public HttpResponseMessage Get(Guid songid)
 		{
 			Process ffmpeg = new Process();
-			ProcessStartInfo startinfo = new ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffmpeg.exe"), "-i - -vn -ar 44100 -ac 2 -ab 128k -f mp3 - ");
+			ProcessStartInfo startinfo = new ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffmpeg.exe"), "-i - -vn -ar 44100 -ac 2 -ab 192k -f mp3 - ");
 			startinfo.RedirectStandardError = true;
 			startinfo.RedirectStandardOutput = true;
 			startinfo.RedirectStandardInput = true;
@@ -229,7 +249,7 @@ namespace Tunr.Controllers
 
 						var song = new Song()
 						{
-							Owner = user,
+							OwnerId = new Guid(user.Id),
 							Title = tagFile.Tag.Title,
 							Artist = tagFile.Tag.Performers.First(),
 							Album = tagFile.Tag.Album,
@@ -242,9 +262,6 @@ namespace Tunr.Controllers
 							Length = tagFile.Properties.Duration.TotalSeconds
 						};
 
-						db.Songs.Add(song);
-						db.SaveChanges();
-
 						// Upload the song to blob storage ...
 						// Retrieve storage account from connection string.
 						CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -255,6 +272,7 @@ namespace Tunr.Controllers
 
 						// Retrieve reference to a previously created container.
 						CloudBlobContainer container = blobClient.GetContainerReference("songs");
+						container.CreateIfNotExists();
 
 						// Retrieve reference to a blob named "myblob".
 						CloudBlockBlob blockBlob = container.GetBlockBlobReference(song.SongId.ToString());
@@ -264,6 +282,13 @@ namespace Tunr.Controllers
 						{
 							blockBlob.UploadFromStream(fileStream);
 						}
+
+						// Insert the song into table storage...
+						// Create the TableOperation that inserts the customer entity.
+						TableOperation insertOperation = TableOperation.Insert(song);
+
+						// Execute the insert operation.
+						this.azure_table.Execute(insertOperation);
 
 						System.IO.File.Delete(file.LocalFileName);
 					}

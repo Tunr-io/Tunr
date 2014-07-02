@@ -19,7 +19,7 @@ namespace Tunr.Models
 			return new ApplicationDbContext();
 		}
 
-		public DbSet<Song> Songs { get; set; }
+		//public DbSet<Song> Songs { get; set; }
 		public DbSet<AlphaToken> AlphaTokens { get; set; }
 	}
 }
