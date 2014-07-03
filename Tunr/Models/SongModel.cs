@@ -10,31 +10,33 @@ namespace Tunr.Models
 {
 	public class Song : TableEntity
 	{
-		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		/// <summary>
+		/// I set the rowkey
+		/// </summary>
 		public Guid SongId
 		{
 			get
 			{
-				return this.SongId;
+				return Guid.Parse(this.RowKey);
 			}
 			set
 			{
-				this.SongId = value;
 				this.RowKey = value.ToString();
 			}
 		}
 		public string SongFingerprint { get; set; }
 		public string SongMD5 { get; set; }
+		/// <summary>
+		/// I set the PartitionKey
+		/// </summary>
 		public Guid OwnerId
 		{
 			get
 			{
-				return this.OwnerId;
+				return Guid.Parse(this.PartitionKey);
 			}
 			set
 			{
-				this.OwnerId = value;
 				this.PartitionKey = value.ToString();
 			}
 		}

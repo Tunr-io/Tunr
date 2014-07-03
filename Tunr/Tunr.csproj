@@ -350,6 +350,10 @@
     <Compile Include="Migrations\201406160645184_AdminUsers.Designer.cs">
       <DependentUpon>201406160645184_AdminUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201407030405460_RemoveSongs.cs" />
+    <Compile Include="Migrations\201407030405460_RemoveSongs.Designer.cs">
+      <DependentUpon>201407030405460_RemoveSongs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -469,6 +473,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201406160645184_AdminUsers.resx">
       <DependentUpon>201406160645184_AdminUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201407030405460_RemoveSongs.resx">
+      <DependentUpon>201407030405460_RemoveSongs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -249,6 +249,7 @@ namespace Tunr.Controllers
 
 						var song = new Song()
 						{
+							SongId = Guid.NewGuid(),
 							OwnerId = new Guid(user.Id),
 							Title = tagFile.Tag.Title,
 							Artist = tagFile.Tag.Performers.First(),
