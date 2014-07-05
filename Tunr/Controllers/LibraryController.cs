@@ -27,6 +27,7 @@ namespace Tunr.Controllers
 	[RoutePrefix("api/Library")]
 	public class LibraryController : ApiController
 	{
+		public static readonly int c_md5size = 128 * 1024;
 		private CloudTable azure_table { get; set; }
 		public LibraryController()
 		{
@@ -241,10 +242,28 @@ namespace Tunr.Controllers
 						string fingerprint = fp.ToString();
 						fingerprint = fingerprint.Substring(fingerprint.IndexOf("FINGERPRINT=") + 12);
 
+						//string sHash = "";
+						//using (StreamReader sr = new StreamReader(file.LocalFileName)) {
+						//	MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
+						//	sHash = BitConverter.ToString(md5h.ComputeHash(sr.BaseStream)).Replace("-","");
+						//}
 						string sHash = "";
-						using (StreamReader sr = new StreamReader(file.LocalFileName)) {
+						using (StreamReader sr = new StreamReader(file.LocalFileName))
+						{
+							var buf = new byte[LibraryController.c_md5size];
+							int bytesRead = 0;
+							while (true)
+							{
+								var read = sr.BaseStream.Read(buf, 0, LibraryController.c_md5size);
+								bytesRead += read;
+								if (bytesRead == LibraryController.c_md5size || read == 0)
+								{
+									break;
+								}
+							}
+
 							MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
-							sHash = BitConverter.ToString(md5h.ComputeHash(sr.BaseStream)).Replace("-","");
+							sHash = BitConverter.ToString(md5h.ComputeHash(buf)).Replace("-", "");
 						}
 
 						var song = new Song()
