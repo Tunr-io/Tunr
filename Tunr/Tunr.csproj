@@ -283,6 +283,9 @@
     <Content Include="Content\css\Tunr.css">
       <DependentUpon>Tunr.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Tunr.min.css">
+      <DependentUpon>Tunr.css</DependentUpon>
+    </Content>
     <Content Include="Content\fonts\OpenSans-ExtraBold-webfont.eot" />
     <Content Include="Content\fonts\OpenSans-ExtraBold-webfont.ttf" />
     <Content Include="Content\fonts\OpenSans-ExtraBold-webfont.woff" />
@@ -383,6 +386,7 @@
     <Content Include="Content\svg\prev_black.svg" />
     <Content Include="Content\svg\prev_white.svg" />
     <Content Include="Content\svg\progress_stripe.svg" />
+    <Content Include="Content\svg\progress_stripe_black.svg" />
     <Content Include="Content\svg\remove_black.svg" />
     <Content Include="Content\svg\remove_white.svg" />
     <Content Include="Content\svg\up_black.svg" />

@@ -1,4 +1,4 @@
-﻿@font-face {
+@font-face {
   font-family: 'Open Sans';
   src: url('../fonts/OpenSans-Regular-webfont.eot');
   src: url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/OpenSans-Regular-webfont.woff') format('woff'), url('../fonts/OpenSans-Regular-webfont.ttf') format('truetype'), url('../fonts/OpenSans-Regular-webfont.svg#open_sanslight') format('svg');
@@ -431,6 +431,46 @@ div.loginbg div.dialog form div.submission input[type=submit].pressed {
   bottom: 0;
   background-color: #ffffff;
   z-index: 20;
+  -webkit-transition: border 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -moz-transition: border 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: border 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: border 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.librarypane.dragging {
+  border: 6px dashed #000;
+}
+.librarypane div.uploadProgress {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  right: 0;
+  height: 18px;
+  opacity: 0;
+  background-image: url('../svg/progress_stripe_black.svg');
+  -moz-animation-name: anim_upload_progress_stripe;
+  -o-animation-name: anim_upload_progress_stripe;
+  -webkit-animation-name: anim_upload_progress_stripe;
+  animation-name: anim_upload_progress_stripe;
+  -moz-animation-duration: 1000ms;
+  -o-animation-duration: 1000ms;
+  -webkit-animation-duration: 1000ms;
+  animation-duration: 1000ms;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-transition: top 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000), opacity 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000);
+  -moz-transition: top 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000), opacity 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000);
+  -o-transition: top 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000), opacity 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000);
+  transition: top 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000), opacity 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000);
+}
+.librarypane.uploading div.uploadProgress {
+  top: 0;
+  opacity: 1;
 }
 .librarypane nav a {
   cursor: pointer;
@@ -598,6 +638,30 @@ div.loginbg div.dialog form div.submission input[type=submit].pressed {
 .librarypane ul.songs li .track {
   font-size: 26px;
   padding-right: 8px;
+}
+@-moz-keyframes anim_upload_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
+}
+@-webkit-keyframes anim_upload_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
+}
+@keyframes anim_upload_progress_stripe {
+  from {
+    background-position: 0 center;
+  }
+  to {
+    background-position: -48px center;
+  }
 }
 @-moz-keyframes anim_librarypane_in {
   from {

@@ -3,6 +3,8 @@
 	private artists_element: HTMLUListElement;
 	private albums_element: HTMLUListElement;
 	private songs_element: HTMLUListElement;
+	private uploading_count: number = 0;
+	private drag_target;
 
 	constructor(tunr: Tunr) {
 		super(tunr, "LibraryPane");
@@ -15,6 +17,70 @@
 			this.showArtists();
 		});
 		this.load();
+
+		// Prepare drag and drop uploading
+		this.getElement().addEventListener("dragenter", (e) => {
+			this.drag_target = e.target;
+			if (!this.getElement().classList.contains("dragging")) {
+				this.getElement().classList.add("dragging");
+			}
+			e.stopPropagation();
+			e.preventDefault();
+		}, false);
+		this.getElement().addEventListener("dragover", (e) => {
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		this.getElement().addEventListener("dragleave", (e) => {
+			if (e.target == this.drag_target) {
+				if (this.getElement().classList.contains("dragging")) {
+					this.getElement().classList.remove("dragging");
+				}
+			}
+			e.stopPropagation();
+			e.preventDefault();
+		}, false);
+		this.getElement().addEventListener("drop", (e) => {
+			if (this.getElement().classList.contains("dragging")) {
+				this.getElement().classList.remove("dragging");
+			}
+			this.readFiles(e.dataTransfer.files);
+			this.drag_target = null;
+			e.stopPropagation();
+			e.preventDefault();
+		}, false);
+	}
+
+	private readFiles(files) {
+		var formData = new FormData();
+		for (var i = 0; i < files.length; i++) {
+			formData.append('file', files[i]);
+		}
+
+		// now post a new XHR request
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/api/Library');
+		xhr.setRequestHeader("Authorization", "Bearer " + this.getTunr().api.getAuthentication().get_access_token());
+		xhr.onload = () => {
+			this.uploading_count--;
+			if (this.uploading_count <= 0) {
+				if (this.getElement().classList.contains("uploading")) {
+					this.getElement().classList.remove("uploading");
+				}
+			}
+		};
+
+		xhr.upload.onprogress = function (event) {
+			if (event.lengthComputable) {
+				var complete = (event.loaded / event.total * 100 | 0);
+				console.log("Uploading track: " + complete + "%");
+			}
+		}
+		this.uploading_count++;
+		if (!this.getElement().classList.contains("uploading")) {
+			this.getElement().classList.add("uploading");
+		}
+		xhr.send(formData);
 	}
 
 	public load(): void {
