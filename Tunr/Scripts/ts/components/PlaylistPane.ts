@@ -152,7 +152,7 @@ class PlaylistPane extends Component {
 		var song: Song = this.get_song_at(index);
 
 		// Change the audio source
-		this.audio.src = "/api/Library/" + song.songID;
+		this.audio.src = "/api/Library/" + song.songId;
 
 		// Change play listing
 		this.getTunr().playingpane.changeSong(song);
@@ -181,7 +181,7 @@ class PlaylistPane extends Component {
 		song_element.classList.add("playlistitem");
 		song_element.classList.add("animated");
 		song_element.classList.add("anim_playlistitem_in");
-		song_element.attributes["data-song-id"] = song.songID;
+		song_element.attributes["data-song-id"] = song.songId;
 		song_element.innerHTML = '<div class="listing"><span class="title">' + htmlEscape(song.title) + '</span><br /><span class="artist">' + htmlEscape(song.artist) + '</span></div>';
 		song_element = <HTMLLIElement>this.songlist_element.appendChild(song_element);
 		song_element.getElementsByClassName("listing")[0].addEventListener("click", (e) => {

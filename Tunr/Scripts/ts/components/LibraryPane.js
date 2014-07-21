@@ -64,6 +64,7 @@ var LibraryPane = (function (_super) {
         xhr.open('POST', '/api/Library');
         xhr.setRequestHeader("Authorization", "Bearer " + this.getTunr().api.getAuthentication().get_access_token());
         xhr.onload = function () {
+            // TODO: Report errors to user.
             _this.uploading_count--;
             if (_this.uploading_count <= 0) {
                 if (_this.getElement().classList.contains("uploading")) {

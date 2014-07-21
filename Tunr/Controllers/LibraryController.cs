@@ -20,12 +20,13 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Microsoft.WindowsAzure.Storage.Table;
+using Tunr.Hubs;
 
 namespace Tunr.Controllers
 {
 	[Authorize]
 	[RoutePrefix("api/Library")]
-	public class LibraryController : ApiController
+	public class LibraryController : ApiControllerWithHub<TunrHub>
 	{
 		public static readonly int c_md5size = 128 * 1024;
 		private CloudTable azure_table { get; set; }
@@ -282,6 +283,13 @@ namespace Tunr.Controllers
 							Length = tagFile.Properties.Duration.TotalSeconds
 						};
 
+						// Make sure this file isn't already there
+						var existing = this.azure_table.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.SongMD5 == song.SongMD5).FirstOrDefault();
+						if (existing != null)
+						{
+							return BadRequest("This song already exists.");
+						}
+
 						// Upload the song to blob storage ...
 						// Retrieve storage account from connection string.
 						CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -309,6 +317,9 @@ namespace Tunr.Controllers
 
 						// Execute the insert operation.
 						this.azure_table.Execute(insertOperation);
+
+						// Push the new song to SignalR clients
+						this.Hub.Clients.Group(user.Id).newSong(song.toViewModel());
 
 						System.IO.File.Delete(file.LocalFileName);
 					}

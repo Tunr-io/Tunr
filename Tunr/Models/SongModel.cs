@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -53,7 +54,7 @@ namespace Tunr.Models
 		{
 			return new SongViewModel()
 			{
-				SongID = this.SongId,
+				SongId = this.SongId,
 				//SongFingerPrint = this.SongFingerprint,
 				SongMD5 = this.SongMD5,
 				OwnerId = this.OwnerId,
@@ -71,17 +72,28 @@ namespace Tunr.Models
 
 	public class SongViewModel
 	{
-		public Guid SongID { get; set; }
+		[JsonProperty("songId")]
+		public Guid SongId { get; set; }
 		//public string SongFingerPrint { get; set; }
+		[JsonProperty("ownerId")]
 		public Guid OwnerId { get; set; }
+		[JsonProperty("songMD5")]
 		public string SongMD5 { get; set; }
+		[JsonProperty("title")]
 		public string Title { get; set; }
+		[JsonProperty("artist")]
 		public string Artist { get; set; }
+		[JsonProperty("album")]
 		public string Album { get; set; }
+		[JsonProperty("trackNumber")]
 		public int TrackNumber { get; set; }
+		[JsonProperty("discNumber")]
 		public int DiscNumber { get; set; }
+		[JsonProperty("year")]
 		public int Year { get; set; }
+		[JsonProperty("genre")]
 		public string Genre { get; set; }
+		[JsonProperty("length")]
 		public double Length { get; set; }
 	}
 }

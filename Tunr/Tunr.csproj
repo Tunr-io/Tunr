@@ -65,6 +65,12 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.1.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.1.0\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -322,6 +328,7 @@
     <Content Include="Content\css\Components\Registration.less" />
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ApiControllerWithHub.cs" />
     <Compile Include="Controllers\LibraryController.cs" />
     <Compile Include="Controllers\LibraryDataController.cs" />
     <Compile Include="Controllers\TunrController.cs" />
@@ -329,6 +336,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\TunrHub.cs" />
     <Compile Include="Migrations\201404282130013_InitialCreate.cs" />
     <Compile Include="Migrations\201404282130013_InitialCreate.Designer.cs">
       <DependentUpon>201404282130013_InitialCreate.cs</DependentUpon>
@@ -364,9 +372,7 @@
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\PublishProfiles\tunr__dev %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
-    <None Include="Properties\PublishProfiles\tunr__play %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -391,6 +397,8 @@
     <Content Include="Content\svg\remove_white.svg" />
     <Content Include="Content\svg\up_black.svg" />
     <Content Include="Content\svg\up_white.svg" />
+    <Content Include="Scripts\js\jquery.signalR-2.1.0.js" />
+    <Content Include="Scripts\js\jquery.signalR-2.1.0.min.js" />
     <Content Include="Scripts\js\jquery-2.1.0.js" />
     <Content Include="Scripts\js\jquery-2.1.0.min.js" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
@@ -443,7 +451,6 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
     <Content Include="Views\Tunr\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -456,10 +463,13 @@
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Debug.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
     <TypeScriptCompile Include="Scripts\ts\TiltEffect.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
+    <TypeScriptCompile Include="Scripts\ts\TunrHub.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201404282130013_InitialCreate.resx">

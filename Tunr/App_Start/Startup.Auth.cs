@@ -41,20 +41,21 @@ namespace Tunr
 			app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
 
 			// Enable the application to use a cookie to store information for the signed in user
-			app.UseCookieAuthentication(new CookieAuthenticationOptions
-			{
-				AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-				LoginPath = new PathString("/Account/Login"),
-				Provider = new CookieAuthenticationProvider
-				{
-					OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, TunrUser>(
-						validateInterval: TimeSpan.FromMinutes(20),
-						regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
-				}
-			});
-			// Use a cookie to temporarily store information about a user logging in with a third party login provider
-			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+			//app.UseCookieAuthentication(new CookieAuthenticationOptions
+			//{
+			//	AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+			//	Provider = new CookieAuthenticationProvider
+			//	{
+			//		OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, TunrUser>(
+			//			validateInterval: TimeSpan.FromMinutes(20),
+			//			regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+			//	}
+			//});
+			app.UseCookieAuthentication(new CookieAuthenticationOptions());
 
+			// Use a cookie to temporarily store information about a user logging in with a third party login provider
+			//app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+			
 			// Enable the application to use bearer tokens to authenticate users
 			app.UseOAuthBearerTokens(OAuthOptions);
 

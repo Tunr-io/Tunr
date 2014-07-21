@@ -62,6 +62,7 @@
 		xhr.open('POST', '/api/Library');
 		xhr.setRequestHeader("Authorization", "Bearer " + this.getTunr().api.getAuthentication().get_access_token());
 		xhr.onload = () => {
+			// TODO: Report errors to user.
 			this.uploading_count--;
 			if (this.uploading_count <= 0) {
 				if (this.getElement().classList.contains("uploading")) {

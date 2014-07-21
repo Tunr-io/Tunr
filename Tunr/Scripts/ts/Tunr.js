@@ -17,9 +17,14 @@ var Tunr = (function () {
         this.playlistpane.show();
         this.playingpane = new PlayingPane(this);
         this.playingpane.show();
+
+        this.hub = new TunrHub(this); // Instantiate the SignalR Hub.
+        this.hub.connect();
     };
     return Tunr;
 })();
+
+window.debug = false; // This can be overridden by Debug.ts
 
 // Start 'er up.
 new Tunr();

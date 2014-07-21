@@ -5,6 +5,7 @@
 class Tunr {
 	public static instance: Tunr;
 	public api: API;
+	public hub: TunrHub;
 	public library: Library;
 	public librarypane: LibraryPane;
 	public playlistpane: PlaylistPane;
@@ -24,8 +25,13 @@ class Tunr {
 		this.playlistpane.show();
 		this.playingpane = new PlayingPane(this);
 		this.playingpane.show();
+
+		this.hub = new TunrHub(this); // Instantiate the SignalR Hub.
+		this.hub.connect();
 	}
 }
+
+window.debug = false; // This can be overridden by Debug.ts
 
 // Start 'er up.
 new Tunr();

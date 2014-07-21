@@ -8,7 +8,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Tunr</title>
-	@Styles.Render("~/bundles/css")
+	@Styles.Render("~/Content/bundles/css")
 </head>
 <body>
 	<noscript>
@@ -25,7 +25,8 @@
 	@RenderPage("Components/PlayingPane.cshtml")
 
 	<!-- Include all javascript -->
-	@Scripts.Render("~/bundles/js")
-	@Scripts.Render("~/bundles/ts")
+	@Scripts.Render("~/Content/bundles/js")
+	@Scripts.Render("~/Content/bundles/ts")
+	<script src="~/signalr/hubs"></script>
 </body>
 </html>

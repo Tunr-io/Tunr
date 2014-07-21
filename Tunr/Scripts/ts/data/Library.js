@@ -14,7 +14,7 @@
         this.tunr.api.get("Library").then(function (songs) {
             _this.songs = songs;
             for (var i = 0; i < _this.songs.length; i++) {
-                _this.song_index[_this.songs[i].songID] = _this.songs[i];
+                _this.song_index[_this.songs[i].songId] = _this.songs[i];
             }
             retval.resolve();
         }, function () {
@@ -22,6 +22,11 @@
             retval.reject();
         });
         return retval;
+    };
+
+    Library.prototype.addSong = function (s) {
+        this.songs.push(s);
+        this.song_index[s.songId] = s;
     };
 
     Library.prototype.artists = function () {

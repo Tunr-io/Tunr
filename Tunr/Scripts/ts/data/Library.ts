@@ -15,7 +15,7 @@
 		this.tunr.api.get("Library").then((songs) => {
 			this.songs = <Array<Song>>songs;
 			for (var i = 0; i < this.songs.length; i++) {
-				this.song_index[this.songs[i].songID] = this.songs[i];
+				this.song_index[this.songs[i].songId] = this.songs[i];
 			}
 			retval.resolve();
 		}, () => {
@@ -23,6 +23,11 @@
 			retval.reject();
 		});
 		return retval;
+	}
+
+	public addSong(s: Song): void {
+		this.songs.push(s);
+		this.song_index[s.songId] = s;
 	}
 
 	public artists(): Array<string> {
@@ -71,7 +76,7 @@
 }
 
 class Song {
-	public songID: string;
+	public songId: string;
 	public ownerId: string;
 	//public songFingerPrint: string;
 	public artist: string;
