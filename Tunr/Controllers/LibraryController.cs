@@ -89,6 +89,9 @@ namespace Tunr.Controllers
 		[Route("{songid}")]
 		public HttpResponseMessage Get(Guid songid)
 		{
+			// This could take awhile.
+			HttpContext.Current.Server.ScriptTimeout = 600;
+
 			Process ffmpeg = new Process();
 			ProcessStartInfo startinfo = new ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffmpeg.exe"), "-i - -vn -ar 44100 -ac 2 -ab 192k -f mp3 - ");
 			startinfo.RedirectStandardError = true;
@@ -105,7 +108,6 @@ namespace Tunr.Controllers
 			var response = Request.CreateResponse();
 			response.StatusCode = HttpStatusCode.OK;
 
-			
 			//response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = "track.mp3" };
 
 			// Retrieve storage account from connection string.
@@ -132,19 +134,25 @@ namespace Tunr.Controllers
 				try
 				{
 					System.Diagnostics.Debug.WriteLine("Reading from blob...");
-					var blobstream = blockBlob.OpenRead();
-					byte[] buf = new byte[1024 * 32];
-					while (true)
-					{
-						int sz = blobstream.Read(buf, 0, buf.Length);
-						//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
-						if (sz <= 0) break;
-						ffmpeg.StandardInput.BaseStream.Write(buf, 0, sz);
-						ffmpeg.StandardInput.BaseStream.Flush();
-						//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
-						if (sz > buf.Length) break;
-					}
-					blobstream.Close();
+					var requestOptions = new BlobRequestOptions() { ServerTimeout = TimeSpan.FromMinutes(10), MaximumExecutionTime = TimeSpan.FromMinutes(10) };
+					var tempStream = new MemoryStream(1024 * 1024 * 10);
+					blockBlob.DownloadToStream(tempStream);
+					tempStream.Seek(0, SeekOrigin.Begin);
+					//blockBlob.DownloadToStream(ffmpeg.StandardInput.BaseStream); // This is the only line I /should/ need ...
+					tempStream.CopyTo(ffmpeg.StandardInput.BaseStream);
+					//var blobstream = blockBlob.OpenRead(null, requestOptions);
+					//byte[] buf = new byte[1024 * 32];
+					//while (true)
+					//{
+					//	int sz = blobstream.Read(buf, 0, buf.Length);
+					//	//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
+					//	if (sz <= 0) break;
+					//	ffmpeg.StandardInput.BaseStream.Write(buf, 0, sz);
+					//	ffmpeg.StandardInput.BaseStream.Flush();
+					//	//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
+					//	if (sz > buf.Length) break;
+					//}
+					//blobstream.Close();
 					ffmpeg.StandardInput.BaseStream.Close();
 				}
 				catch (Exception)

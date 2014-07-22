@@ -85,8 +85,6 @@
 	// Updates play timer displayed on the UI.
 	public update_playtime(): void {
 		var seconds = this.getTunr().playlistpane.getSongTime();
-		console.log("Seconds: " + seconds);
-		console.log(Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2));
 		(<HTMLElement>this.getElement().getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
 	}
 } 

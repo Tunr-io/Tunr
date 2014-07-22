@@ -90,8 +90,6 @@ var PlayingPane = (function (_super) {
     // Updates play timer displayed on the UI.
     PlayingPane.prototype.update_playtime = function () {
         var seconds = this.getTunr().playlistpane.getSongTime();
-        console.log("Seconds: " + seconds);
-        console.log(Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2));
         this.getElement().getElementsByClassName("playtimer")[0].innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
     };
     return PlayingPane;
