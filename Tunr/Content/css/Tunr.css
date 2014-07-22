@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: 'Open Sans';
   src: url('../fonts/OpenSans-Regular-webfont.eot');
   src: url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/OpenSans-Regular-webfont.woff') format('woff'), url('../fonts/OpenSans-Regular-webfont.ttf') format('truetype'), url('../fonts/OpenSans-Regular-webfont.svg#open_sanslight') format('svg');
@@ -337,6 +337,8 @@ div.loginbg div.dialog form div.submission input[type=submit] {
   right: 0;
   bottom: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   font-family: 'Open Sans';
   text-transform: uppercase;
   font-weight: 900;

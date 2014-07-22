@@ -268,8 +268,10 @@ class PlaylistPane extends Component {
 		song_element.classList.add("dim");
 		this.controls_element = <HTMLElement>song_element.appendChild(itemControls);
 		this.controls_index = index;
-
-		TiltEffect.addTilt(this.controls_element);
+		
+		if (!window.hasOwnProperty("chrome")) {
+			TiltEffect.addTilt(this.controls_element);
+		}
 		this.set_controls_timeout();
 	}
 
