@@ -125,42 +125,57 @@ namespace Tunr.Controllers
 
 			ffmpeg.Start();
 			ffmpeg.BeginErrorReadLine();
-			response.Content = new StreamContent(ffmpeg.StandardOutput.BaseStream);
-			response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg");
+			blockBlob.BeginDownloadToStream(ffmpeg.StandardInput.BaseStream, (result) =>
+			{
+				blockBlob.EndDownloadToStream(result);
+				// Close the stream.
+				ffmpeg.StandardInput.Close();
+			}, new Object[] { blockBlob, ffmpeg.StandardInput.BaseStream });
 
-			// Read everything from the blob in a separate thread.
+			// Intermediary stream to handle ffmpeg output before browser (chrome) is ready to consume
+			ProducerConsumerStream pcstream = new ProducerConsumerStream();
+
+			// Thread to read from FFMpeg...
 			Task.Run(() =>
 			{
-				try
+				byte[] ffmpegbuf = new byte[1024 * 32];
+				long length = 0;
+				while (true)
 				{
-					System.Diagnostics.Debug.WriteLine("Reading from blob...");
-					var requestOptions = new BlobRequestOptions() { ServerTimeout = TimeSpan.FromMinutes(10), MaximumExecutionTime = TimeSpan.FromMinutes(10) };
-					var tempStream = new MemoryStream(1024 * 1024 * 10);
-					blockBlob.DownloadToStream(tempStream);
-					tempStream.Seek(0, SeekOrigin.Begin);
-					//blockBlob.DownloadToStream(ffmpeg.StandardInput.BaseStream); // This is the only line I /should/ need ...
-					tempStream.CopyTo(ffmpeg.StandardInput.BaseStream);
-					//var blobstream = blockBlob.OpenRead(null, requestOptions);
-					//byte[] buf = new byte[1024 * 32];
-					//while (true)
-					//{
-					//	int sz = blobstream.Read(buf, 0, buf.Length);
-					//	//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
-					//	if (sz <= 0) break;
-					//	ffmpeg.StandardInput.BaseStream.Write(buf, 0, sz);
-					//	ffmpeg.StandardInput.BaseStream.Flush();
-					//	//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
-					//	if (sz > buf.Length) break;
-					//}
-					//blobstream.Close();
-					ffmpeg.StandardInput.BaseStream.Close();
+					int sz = ffmpeg.StandardOutput.BaseStream.Read(ffmpegbuf, 0, ffmpegbuf.Length);
+					//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
+					if (sz <= 0) break;
+					pcstream.Write(ffmpegbuf, 0, sz);
+					pcstream.Flush();
+					length += sz;
+					//System.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to intermediary.");
+					if (sz > ffmpegbuf.Length) break;
 				}
-				catch (Exception)
-				{
-					System.Diagnostics.Debug.WriteLine("something weird happened.");
-				}
+				System.Diagnostics.Debug.WriteLine("WRITE ENDED");
+				pcstream.streamLength = length;
 			});
 
+			// Thread to write to browser...
+			response.Content = new PushStreamContent((stream, content, context) =>
+			{
+				byte[] buf = new byte[1024 * 8];
+				long length = 0;
+				while (true)
+				{
+					int sz = pcstream.Read(buf, 0, buf.Length);
+					//System.Diagnostics.Debug.WriteLine("READ  " + sz + " bytes from intermediary.");
+					//if (sz <= 0) break;
+					stream.Write(buf, 0, sz);
+					stream.Flush();
+					length += sz;
+					//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
+					if (pcstream.streamLength != 0 && length >= pcstream.streamLength) break;
+					if (sz > buf.Length) break;
+				}
+				System.Diagnostics.Debug.WriteLine("READ ENDED.");
+				stream.Close();
+			}, new MediaTypeHeaderValue("audio/mpeg"));
+			
 			System.Diagnostics.Debug.WriteLine("Returned response.");
 			return response;
 		}
@@ -340,38 +355,80 @@ namespace Tunr.Controllers
 			}
 		}
 	}
-	public class AudioStream
+
+	class ProducerConsumerStream : Stream
 	{
-		private readonly Stream _source_stream;
-		public AudioStream(Stream src)
+		private readonly MemoryStream innerStream;
+		private long readPosition;
+		private long writePosition;
+		public long streamLength = 0;
+
+		public ProducerConsumerStream()
 		{
-			_source_stream = src;
+			innerStream = new MemoryStream();
 		}
 
-		public async void WriteToStream(Stream outputStream, HttpContent content, TransportContext context)
+		public override bool CanRead { get { return true; } }
+
+		public override bool CanSeek { get { return false; } }
+
+		public override bool CanWrite { get { return true; } }
+
+		public override void Flush()
 		{
-			try
+			lock (innerStream)
 			{
-				var buffer = new byte[1024];
-				while (true)
+				innerStream.Flush();
+			}
+		}
+
+		public override long Length
+		{
+			get
+			{
+				lock (innerStream)
 				{
-					int sz = await _source_stream.ReadAsync(buffer, 0, buffer.Length);
-					System.Diagnostics.Debug.WriteLine("READDDD " + sz + " bytes from ffmpeg.");
-					if (sz <= 0) break;
-					await outputStream.WriteAsync(buffer, 0, sz);
-					await outputStream.FlushAsync();
+					return innerStream.Length;
 				}
 			}
-			catch (HttpException ex)
+		}
+
+		public override long Position
+		{
+			get { throw new NotSupportedException(); }
+			set { throw new NotSupportedException(); }
+		}
+
+		public override int Read(byte[] buffer, int offset, int count)
+		{
+			lock (innerStream)
 			{
-				return;
+				innerStream.Position = readPosition;
+				int red = innerStream.Read(buffer, offset, count);
+				readPosition = innerStream.Position;
+
+				return red;
 			}
-			finally
+		}
+
+		public override long Seek(long offset, SeekOrigin origin)
+		{
+			throw new NotSupportedException();
+		}
+
+		public override void SetLength(long value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Write(byte[] buffer, int offset, int count)
+		{
+			lock (innerStream)
 			{
-				outputStream.Close();
+				innerStream.Position = writePosition;
+				innerStream.Write(buffer, offset, count);
+				writePosition = innerStream.Position;
 			}
 		}
 	}
-
-
 }
