@@ -125,56 +125,20 @@ namespace Tunr.Controllers
 
 			ffmpeg.Start();
 			ffmpeg.BeginErrorReadLine();
-			blockBlob.BeginDownloadToStream(ffmpeg.StandardInput.BaseStream, (result) =>
-			{
-				blockBlob.EndDownloadToStream(result);
-				// Close the stream.
-				ffmpeg.StandardInput.Close();
-			}, new Object[] { blockBlob, ffmpeg.StandardInput.BaseStream });
 
-			// Intermediary stream to handle ffmpeg output before browser (chrome) is ready to consume
-			ProducerConsumerStream pcstream = new ProducerConsumerStream();
+			// Buffer the streams (don't cross them HUR HURR)
+			var ffmpegBufferedIn = new BufferedStream(ffmpeg.StandardInput.BaseStream);
+			var ffmpegBufferedOut = new BufferedStream(ffmpeg.StandardOutput.BaseStream);
 
-			// Thread to read from FFMpeg...
-			Task.Run(() =>
-			{
-				byte[] ffmpegbuf = new byte[1024 * 32];
-				long length = 0;
-				while (true)
-				{
-					int sz = ffmpeg.StandardOutput.BaseStream.Read(ffmpegbuf, 0, ffmpegbuf.Length);
-					//System.Diagnostics.Debug.WriteLine("read " + sz + " bytes from blob.");
-					if (sz <= 0) break;
-					pcstream.Write(ffmpegbuf, 0, sz);
-					pcstream.Flush();
-					length += sz;
-					//System.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to intermediary.");
-					if (sz > ffmpegbuf.Length) break;
-				}
-				System.Diagnostics.Debug.WriteLine("WRITE ENDED");
-				pcstream.streamLength = length;
+			System.Diagnostics.Debug.WriteLine("Opening Blob Stream.");
+			blockBlob.DownloadToStreamAsync(ffmpegBufferedIn).ContinueWith((t) => {
+				ffmpegBufferedIn.Flush();
+				ffmpegBufferedIn.Close();
 			});
 
 			// Thread to write to browser...
-			response.Content = new PushStreamContent((stream, content, context) =>
-			{
-				byte[] buf = new byte[1024 * 8];
-				long length = 0;
-				while (true)
-				{
-					int sz = pcstream.Read(buf, 0, buf.Length);
-					//System.Diagnostics.Debug.WriteLine("READ  " + sz + " bytes from intermediary.");
-					//if (sz <= 0) break;
-					stream.Write(buf, 0, sz);
-					stream.Flush();
-					length += sz;
-					//.Diagnostics.Debug.WriteLine("WROTE " + sz + " bytes to ffmpeg.");
-					if (pcstream.streamLength != 0 && length >= pcstream.streamLength) break;
-					if (sz > buf.Length) break;
-				}
-				System.Diagnostics.Debug.WriteLine("READ ENDED.");
-				stream.Close();
-			}, new MediaTypeHeaderValue("audio/mpeg"));
+			response.Content = new StreamContent(ffmpegBufferedOut);
+			response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg");
 			
 			System.Diagnostics.Debug.WriteLine("Returned response.");
 			return response;
@@ -352,82 +316,6 @@ namespace Tunr.Controllers
 				{
 					return InternalServerError(e);
 				}
-			}
-		}
-	}
-
-	class ProducerConsumerStream : Stream
-	{
-		private readonly MemoryStream innerStream;
-		private long readPosition;
-		private long writePosition;
-		public long streamLength = 0;
-
-		public ProducerConsumerStream()
-		{
-			innerStream = new MemoryStream();
-		}
-
-		public override bool CanRead { get { return true; } }
-
-		public override bool CanSeek { get { return false; } }
-
-		public override bool CanWrite { get { return true; } }
-
-		public override void Flush()
-		{
-			lock (innerStream)
-			{
-				innerStream.Flush();
-			}
-		}
-
-		public override long Length
-		{
-			get
-			{
-				lock (innerStream)
-				{
-					return innerStream.Length;
-				}
-			}
-		}
-
-		public override long Position
-		{
-			get { throw new NotSupportedException(); }
-			set { throw new NotSupportedException(); }
-		}
-
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			lock (innerStream)
-			{
-				innerStream.Position = readPosition;
-				int red = innerStream.Read(buffer, offset, count);
-				readPosition = innerStream.Position;
-
-				return red;
-			}
-		}
-
-		public override long Seek(long offset, SeekOrigin origin)
-		{
-			throw new NotSupportedException();
-		}
-
-		public override void SetLength(long value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			lock (innerStream)
-			{
-				innerStream.Position = writePosition;
-				innerStream.Write(buffer, offset, count);
-				writePosition = innerStream.Position;
 			}
 		}
 	}
