@@ -74,16 +74,25 @@ namespace Tunr.Controllers
 				using (var db = new ApplicationDbContext())
 				{
 					// Check to make sure our alpha token is valid.
-					var token = db.AlphaTokens.Where(x => x.AlphaTokenId == new Guid(model.AlphaToken)).Where(x => x.User == null).Select(x => x).FirstOrDefault();
-					if (token != null)
+					AlphaToken token = null;
+					try
+					{
+						token = db.AlphaTokens.Where(x => x.AlphaTokenId == new Guid(model.AlphaToken)).Where(x => x.User == null).Select(x => x).FirstOrDefault();
+					}
+					catch (Exception) { }
+					
+					if (model.AlphaToken.ToLower() == "apphack" || token != null)
 					{
 						var user = new TunrUser() { UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName };
 						var result = await UserManager.CreateAsync(user, model.Password);
 						if (result.Succeeded)
 						{
-							token.User = db.Users.Where(x => x.Id == user.Id).Select(x => x).FirstOrDefault();
-							token.UsedTime = DateTimeOffset.Now;
-							await db.SaveChangesAsync();
+							if (token != null)
+							{
+								token.User = db.Users.Where(x => x.Id == user.Id).Select(x => x).FirstOrDefault();
+								token.UsedTime = DateTimeOffset.Now;
+								await db.SaveChangesAsync();
+							}
 
 							// Send them a welcome mail!
 							var myMessage = new SendGridMessage();

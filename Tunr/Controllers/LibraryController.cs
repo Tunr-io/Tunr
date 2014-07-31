@@ -131,7 +131,8 @@ namespace Tunr.Controllers
 			var ffmpegBufferedOut = new BufferedStream(ffmpeg.StandardOutput.BaseStream);
 
 			System.Diagnostics.Debug.WriteLine("Opening Blob Stream.");
-			blockBlob.DownloadToStreamAsync(ffmpegBufferedIn).ContinueWith((t) => {
+			blockBlob.DownloadToStreamAsync(ffmpegBufferedIn, null, new BlobRequestOptions() { ServerTimeout = TimeSpan.FromMinutes(10), MaximumExecutionTime = TimeSpan.FromMinutes(10) }, null).ContinueWith((t) =>
+			{
 				ffmpegBufferedIn.Flush();
 				ffmpegBufferedIn.Close();
 			});
