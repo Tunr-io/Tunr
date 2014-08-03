@@ -11,6 +11,7 @@ namespace Tunr
 	{
 		public static void RegisterRoutes(RouteCollection routes)
 		{
+			routes.IgnoreRoute("stream/{*streamId}");
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			routes.MapRoute(

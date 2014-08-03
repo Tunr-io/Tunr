@@ -336,6 +336,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\StreamHandler.cs" />
     <Compile Include="Hubs\TunrHub.cs" />
     <Compile Include="Migrations\201404282130013_InitialCreate.cs" />
     <Compile Include="Migrations\201404282130013_InitialCreate.Designer.cs">

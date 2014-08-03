@@ -155,7 +155,8 @@ var PlaylistPane = (function (_super) {
         var song = this.get_song_at(index);
 
         // Change the audio source
-        this.audio.src = "/api/Library/" + song.songId;
+        //this.audio.src = "/api/Library/" + song.songId;
+        this.audio.src = "/stream/" + song.songId;
 
         // Change play listing
         this.getTunr().playingpane.changeSong(song);

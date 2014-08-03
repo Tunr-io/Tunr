@@ -140,17 +140,15 @@ namespace Tunr.Controllers
 			// Thread to write to browser...
 			response.Content = new StreamContent(ffmpegBufferedOut);
 			response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg");
+			//response.Content.Headers.ContentLength = -1;
+			response.Content.Headers.Add("Content-Transfer-Encoding", "binary");
+			response.Content.Headers.Add("Content-Length", "*");
 			
 			System.Diagnostics.Debug.WriteLine("Returned response.");
 			return response;
 		}
 
 		void ffmpeg_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-		{
-			System.Diagnostics.Debug.WriteLine(e.Data);
-		}
-
-		void ffmpeg_OutputDataReceived(object sender, DataReceivedEventArgs e)
 		{
 			System.Diagnostics.Debug.WriteLine(e.Data);
 		}
