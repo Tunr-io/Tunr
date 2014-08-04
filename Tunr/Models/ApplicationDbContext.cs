@@ -21,5 +21,6 @@ namespace Tunr.Models
 
 		//public DbSet<Song> Songs { get; set; }
 		public DbSet<AlphaToken> AlphaTokens { get; set; }
+		public DbSet<PlaylistModel> Playlists { get; set; }
 	}
 }

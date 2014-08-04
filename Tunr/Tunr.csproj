@@ -366,10 +366,16 @@
     <Compile Include="Migrations\201407030405460_RemoveSongs.Designer.cs">
       <DependentUpon>201407030405460_RemoveSongs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201408040240381_Playlists.cs" />
+    <Compile Include="Migrations\201408040240381_Playlists.Designer.cs">
+      <DependentUpon>201408040240381_Playlists.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\PlaylistItemModel.cs" />
+    <Compile Include="Models\PlaylistModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -493,6 +499,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201407030405460_RemoveSongs.resx">
       <DependentUpon>201407030405460_RemoveSongs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408040240381_Playlists.resx">
+      <DependentUpon>201408040240381_Playlists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
