@@ -11,6 +11,8 @@ var PlayingPane = (function (_super) {
         _super.call(this, tunr, "PlayingPane");
         this.title_element = this.getElement().getElementsByClassName("title")[0];
         this.controls_element = this.getElement().getElementsByClassName("controls")[0];
+        this.canvas_element = this.getElement().getElementsByTagName("canvas")[0];
+        this.visualizer = new Visualizer(this, this.canvas_element);
 
         // Set up event handlers for control buttons...
         TiltEffect.addTilt(this.controls_element.getElementsByClassName("play")[0]);
@@ -30,8 +32,25 @@ var PlayingPane = (function (_super) {
             _this.getTunr().playlistpane.prev();
         });
     }
+    PlayingPane.prototype.show = function () {
+        var _this = this;
+        _super.prototype.show.call(this);
+
+        // Initialize the canvas *after* we animate in.
+        setTimeout(function () {
+            // Initialize the canvas.
+            _this.visualizer.init();
+        }, 300);
+    };
+
+    PlayingPane.prototype.getSong = function () {
+        return this.song;
+    };
+
     PlayingPane.prototype.changeSong = function (song) {
         var _this = this;
+        this.song = song;
+
         // Set up the new title
         var title = document.createElement("div");
         title.classList.add("title");

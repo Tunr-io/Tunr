@@ -12,13 +12,15 @@ namespace Tunr
 		{
 			bundles.Add(new ScriptBundle("~/Content/bundles/js").Include(
 				"~/Scripts/js/jquery-2.1.0.min.js",
-				"~/Scripts/js/jquery.signalR-2.1.0.min.js"
+				"~/Scripts/js/jquery.signalR-2.1.0.min.js",
+				"~/Scripts/js/createjs-2013.12.12.min.js"
 				));
 
 			var tsBundle = new ScriptBundle("~/Content/bundles/ts");
 			tsBundle.Include(
 				"~/Scripts/ts/Animator.js",
 				"~/Scripts/ts/TiltEffect.js",
+				"~/Scripts/ts/misc/Visualizer.js",
 				"~/Scripts/ts/Component.js",
 				"~/Scripts/ts/components/Login.js",
 				"~/Scripts/ts/components/LibraryPane.js",

@@ -404,6 +404,7 @@
     <Content Include="Content\svg\remove_white.svg" />
     <Content Include="Content\svg\up_black.svg" />
     <Content Include="Content\svg\up_white.svg" />
+    <Content Include="Scripts\js\createjs-2013.12.12.min.js" />
     <Content Include="Scripts\js\jquery.signalR-2.1.0.js" />
     <Content Include="Scripts\js\jquery.signalR-2.1.0.min.js" />
     <Content Include="Scripts\js\jquery-2.1.0.js" />
@@ -472,11 +473,18 @@
     <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
     <TypeScriptCompile Include="Scripts\ts\Debug.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
+    <TypeScriptCompile Include="Scripts\ts\misc\Visualizer.ts" />
     <TypeScriptCompile Include="Scripts\ts\TiltEffect.ts" />
     <TypeScriptCompile Include="Scripts\ts\Tunr.ts" />
     <TypeScriptCompile Include="Scripts\ts\TunrHub.ts" />
+    <TypeScriptCompile Include="Scripts\typings\createjs-lib\createjs-lib.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\createjs\createjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\easeljs\easeljs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\preloadjs\preloadjs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\soundjs\soundjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\tweenjs\tweenjs.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201404282130013_InitialCreate.resx">

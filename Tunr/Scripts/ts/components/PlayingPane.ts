@@ -2,12 +2,16 @@
 	private song: Song;
 	private title_element: HTMLDivElement;
 	private controls_element: HTMLUListElement;
+	private canvas_element: HTMLCanvasElement;
+	private visualizer: Visualizer;
 	private playtime_timer: number;
 
 	constructor(tunr: Tunr) {
 		super(tunr, "PlayingPane");
 		this.title_element = <HTMLDivElement>this.getElement().getElementsByClassName("title")[0];
 		this.controls_element = <HTMLUListElement>this.getElement().getElementsByClassName("controls")[0];
+		this.canvas_element = <HTMLCanvasElement>this.getElement().getElementsByTagName("canvas")[0];
+		this.visualizer = new Visualizer(this, this.canvas_element);
 		// Set up event handlers for control buttons...
 		TiltEffect.addTilt(<HTMLElement>this.controls_element.getElementsByClassName("play")[0]);
 		TiltEffect.addTilt(<HTMLElement>this.controls_element.getElementsByClassName("pause")[0]);
@@ -27,7 +31,21 @@
 		});
 	}
 
+	public show(): void {
+		super.show();
+		// Initialize the canvas *after* we animate in.
+		setTimeout(() => {
+			// Initialize the canvas.
+			this.visualizer.init();
+		}, 300);
+	}
+
+	public getSong(): Song {
+		return this.song;
+	}
+
 	public changeSong(song: Song): void {
+		this.song = song;
 		// Set up the new title
 		var title = document.createElement("div");
 		title.classList.add("title");

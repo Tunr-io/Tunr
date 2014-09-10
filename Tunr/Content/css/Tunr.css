@@ -1081,6 +1081,13 @@ div.loginbg div.dialog form div.submission input[type=submit].pressed {
 .playingpane ul.controls.playing li.pause {
   display: block;
 }
+.playingpane canvas {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
 @-moz-keyframes anim_playingpane_in {
   from {
     left: 0;
