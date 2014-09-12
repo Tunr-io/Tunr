@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunr", "Tunr\Tunr.csproj", "{779CF960-B3BE-45DA-A791-90A962EA6C9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunr.Tests", "Tunr.Tests\Tunr.Tests.csproj", "{1EA41A62-AFBB-4F67-8E98-81DC5A6153AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XboxMusicClient", "XboxMusicClient\XboxMusicClient.csproj", "{12C43A5C-A071-4629-8157-A63CBBCE0B1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "Contract\Contract.csproj", "{63F094AA-6C64-4947-83B1-678758CA8AA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{1EA41A62-AFBB-4F67-8E98-81DC5A6153AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA41A62-AFBB-4F67-8E98-81DC5A6153AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EA41A62-AFBB-4F67-8E98-81DC5A6153AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C43A5C-A071-4629-8157-A63CBBCE0B1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C43A5C-A071-4629-8157-A63CBBCE0B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C43A5C-A071-4629-8157-A63CBBCE0B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C43A5C-A071-4629-8157-A63CBBCE0B1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63F094AA-6C64-4947-83B1-678758CA8AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F094AA-6C64-4947-83B1-678758CA8AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F094AA-6C64-4947-83B1-678758CA8AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63F094AA-6C64-4947-83B1-678758CA8AA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

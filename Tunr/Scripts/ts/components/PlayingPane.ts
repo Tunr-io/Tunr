@@ -45,7 +45,9 @@
 	}
 
 	public changeSong(song: Song): void {
+		// Keep a reference of the song
 		this.song = song;
+
 		// Set up the new title
 		var title = document.createElement("div");
 		title.classList.add("title");
@@ -81,6 +83,8 @@
 		setTimeout(() => {
 			oldArt.parentElement.removeChild(oldArt);
 		}, 300);
+
+		this.visualizer.start(song);
 	}
 
 	public play(): void {
@@ -91,6 +95,7 @@
 		if (!this.controls_element.classList.contains("playing")) {
 			this.controls_element.classList.add("playing");
 		}
+		this.visualizer.start(this.song);
 	}
 
 	public pause(): void {
@@ -98,6 +103,7 @@
 		if (this.controls_element.classList.contains("playing")) {
 			this.controls_element.classList.remove("playing");
 		}
+		this.visualizer.stop();
 	}
 
 	// Updates play timer displayed on the UI.

@@ -49,6 +49,7 @@ var PlayingPane = (function (_super) {
 
     PlayingPane.prototype.changeSong = function (song) {
         var _this = this;
+        // Keep a reference of the song
         this.song = song;
 
         // Set up the new title
@@ -86,6 +87,8 @@ var PlayingPane = (function (_super) {
         setTimeout(function () {
             oldArt.parentElement.removeChild(oldArt);
         }, 300);
+
+        this.visualizer.start(song);
     };
 
     PlayingPane.prototype.play = function () {
@@ -97,6 +100,7 @@ var PlayingPane = (function (_super) {
         if (!this.controls_element.classList.contains("playing")) {
             this.controls_element.classList.add("playing");
         }
+        this.visualizer.start(this.song);
     };
 
     PlayingPane.prototype.pause = function () {
@@ -104,6 +108,7 @@ var PlayingPane = (function (_super) {
         if (this.controls_element.classList.contains("playing")) {
             this.controls_element.classList.remove("playing");
         }
+        this.visualizer.stop();
     };
 
     // Updates play timer displayed on the UI.

@@ -21,6 +21,8 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Microsoft.WindowsAzure.Storage.Table;
 using Tunr.Hubs;
+using Microsoft.Xbox.Music.Platform.Client;
+using Microsoft.Xbox.Music.Platform.Contract.DataModel;
 
 namespace Tunr.Controllers
 {
@@ -67,6 +69,28 @@ namespace Tunr.Controllers
 				var songs = this.azure_table.ExecuteQuery(query);
 				var song_viewmodels = songs.Select(s => s.toViewModel());
 				return song_viewmodels;
+			}
+		}
+
+		[Route("{id}/image")]
+		public async Task<HttpResponseMessage> GetImage(Guid id)
+		{
+			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
+			var song = this.azure_table.ExecuteQuery(query).FirstOrDefault();
+			if (song == null) {
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified ID.");
+			}
+			IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient("***REMOVED***", "***REMOVED***");
+			var response = await client.SearchAsync(Namespace.music, song.Artist, filter: SearchFilter.Artists, maxItems: 1, country: "US");
+			if (response.Artists.TotalItemCount > 0)
+			{
+				var redir = Request.CreateResponse(HttpStatusCode.Redirect);
+				redir.Headers.Location = new Uri(response.Artists.Items[0].ImageUrl);
+				return redir;
+			}
+			else
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot find any images.");
 			}
 		}
 

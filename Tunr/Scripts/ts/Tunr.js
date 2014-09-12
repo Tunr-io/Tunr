@@ -10,6 +10,7 @@ var Tunr = (function () {
         l.show();
     }
     Tunr.prototype.initialize = function () {
+        var _this = this;
         this.library = new Library(this);
         this.librarypane = new LibraryPane(this);
         this.librarypane.show();
@@ -20,6 +21,22 @@ var Tunr = (function () {
 
         this.hub = new TunrHub(this); // Instantiate the SignalR Hub.
         this.hub.connect();
+
+        window.onresize = function () {
+            _this.windowResize();
+        };
+    };
+
+    Tunr.prototype.windowResize = function () {
+        if (this.librarypane != null) {
+            this.librarypane.windowResize();
+        }
+        if (this.playlistpane != null) {
+            this.playlistpane.windowResize();
+        }
+        if (this.playingpane != null) {
+            this.playingpane.windowResize();
+        }
     };
     return Tunr;
 })();

@@ -41,6 +41,9 @@ var Component = (function () {
             _this.element = document.body.removeChild(_this.element);
         }, 300);
     };
+
+    Component.prototype.windowResize = function () {
+    };
     return Component;
 })();
 //# sourceMappingURL=Component.js.map

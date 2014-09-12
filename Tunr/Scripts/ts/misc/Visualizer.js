@@ -18,20 +18,35 @@ var Visualizer = (function () {
         createjs.Ticker.setFPS(60);
         var tick_bind = this.tick.bind(this);
         createjs.Ticker.addEventListener("tick", tick_bind);
+    };
+
+    /**
+    * Starts the visualizer for the given song.
+    */
+    Visualizer.prototype.start = function (song) {
+        this.song = song;
         this.showVisual();
+    };
+
+    /**
+    * Stops visualizing.
+    */
+    Visualizer.prototype.stop = function () {
+        this.song = null;
     };
 
     Visualizer.prototype.showVisual = function () {
         var _this = this;
-        setTimeout(function () {
-            _this.showVisual();
-        }, (15000 + Math.random() * 12000));
+        if (this.currentVisual != null)
+            return;
         if (this.playingpane.getSong() == null)
             return;
-        var visual = new Visual(this.playingpane.getSong());
-        this.stage.addChild(visual);
-        visual.slide(function () {
-            _this.stage.removeChild(visual);
+        this.currentVisual = new LineScrollVisual(this.playingpane.getSong());
+        this.stage.addChild(this.currentVisual);
+        this.currentVisual.show(function () {
+            _this.stage.removeChild(_this.currentVisual);
+            _this.currentVisual = null;
+            _this.showVisual();
         });
     };
 
@@ -41,64 +56,120 @@ var Visualizer = (function () {
     return Visualizer;
 })();
 
+/**
+* Superclass for all visuals
+*/
 var Visual = (function (_super) {
     __extends(Visual, _super);
     function Visual(song) {
         this.song = song;
         _super.call(this);
     }
+    Visual.prototype.show = function (callback) {
+    };
+
+    Visual.prototype.hide = function () {
+    };
+    return Visual;
+})(createjs.Container);
+
+var LineScrollVisual = (function (_super) {
+    __extends(LineScrollVisual, _super);
+    function LineScrollVisual(song) {
+        _super.call(this, song);
+    }
     /**
     * The visualization of two or more lines of text sliding past each other
     * TODO: More than two lines!
     * TODO: Randomize text
     */
-    Visual.prototype.slide = function (callback) {
+    LineScrollVisual.prototype.show = function (callback) {
+        // Pick a number of fields to show... has to be at least two.
+        var numLines = 2 + Math.floor(Math.random() * (LineScrollVisual.fields.length - 1));
+
+        // Pick an initial side (for the first line to fly in from)
+        var firstSide = Math.floor(Math.random() * 2);
+
+        // Pick font size (and weight) for each line.
+        // We need this to calculate the total vertical height of the visual.
+        var fieldSelection = LineScrollVisual.fields.slice();
+        var textLines = new Array();
+        var totalHeight = 0;
+        for (var i = 0; i < numLines; i++) {
+            var size = Math.floor(Math.random() * (LineScrollVisual.MAX_FONT_SIZE - LineScrollVisual.MIN_FONT_SIZE + 1)) + LineScrollVisual.MIN_FONT_SIZE;
+            var bold = (Math.floor(Math.random() * 2) == 0);
+            var field = fieldSelection.splice(Math.floor(Math.random() * fieldSelection.length), 1)[0];
+            var text = new VisualizerText(this.song[field] + "", size, bold);
+            textLines.push(text);
+            totalHeight += text.getBounds().height;
+        }
+
+        // Figure out positioning
         var cwidth = this.getStage().canvas.width;
         var cheight = this.getStage().canvas.height;
-        var bold = Math.round(Math.random()) == 0;
-        var textOne = new VisualizerText(this.song.artist, bold);
-        var textTwo = new VisualizerText(this.song.title, !bold);
-        textOne.x = cwidth;
-        textOne.y = (Math.random() * cheight) - textOne.getBounds().y;
-        textTwo.x = -textTwo.getBounds().width;
-        textTwo.y = textOne.y + textOne.getBounds().height - textTwo.getBounds().y;
+        var minY = -1 * Math.floor(totalHeight * (1 / 3));
+        var maxY = cheight - Math.floor(totalHeight * (2 / 3));
+        var baseY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
-        this.addChild(textOne);
-        this.addChild(textTwo);
+        // Figure out timing
+        var visualTime = Math.floor(Math.random() * (LineScrollVisual.VISUAL_MAX_TIME - LineScrollVisual.VISUAL_MIN_TIME)) + LineScrollVisual.VISUAL_MIN_TIME;
 
-        createjs.Tween.get(textOne).to({ x: -1 * textOne.getBounds().width }, 12000, createjs.Ease.getPowInOut(0.45)).call(callback);
-        createjs.Tween.get(textTwo).to({ x: cwidth }, 12000, createjs.Ease.getPowInOut(0.45));
+        // Position the text elements and let 'em roll
+        var yOffset = 0;
+        for (var i = 0; i < textLines.length; i++) {
+            var targetX;
+            textLines[i].y = baseY + yOffset - textLines[i].getBounds().y;
+            yOffset += (textLines[i].getBounds().height - textLines[i].getBounds().y);
+            if (i % 2 == firstSide) {
+                textLines[i].x = (-1 * textLines[i].getBounds().width);
+                targetX = cwidth;
+            } else {
+                textLines[i].x = cwidth;
+                targetX = (-1 * textLines[i].getBounds().width);
+            }
+            this.addChild(textLines[i]);
+            (function (textLine, tarX, i) {
+                var tween = createjs.Tween.get(textLine).to({ x: tarX }, visualTime, createjs.Ease.getPowInOut(0.45));
+                if (i == 0) {
+                    tween.call(callback);
+                }
+            })(textLines[i], targetX, i);
+        }
     };
-    return Visual;
-})(createjs.Container);
+    LineScrollVisual.fields = ["album", "artist", "title", "year"];
+    LineScrollVisual.MIN_FONT_SIZE = 80;
+    LineScrollVisual.MAX_FONT_SIZE = 250;
+    LineScrollVisual.VISUAL_MIN_TIME = 12000;
+    LineScrollVisual.VISUAL_MAX_TIME = 18000;
+    return LineScrollVisual;
+})(Visual);
 
 var VisualizerText = (function (_super) {
     __extends(VisualizerText, _super);
     /**
     * Constructor for visualizer text
     * @param {string} text The text that should be displayed
+    * @param {size} the font size
     * @param {heavy} align Whether the text should be heavy (true) or light (false).
     */
-    function VisualizerText(text, heavy) {
+    function VisualizerText(text, size, heavy) {
         var font;
-        var size;
-        size = 150 + (Math.random() * 100);
-        var topMultiplier;
-        var heightMultiplier;
+        this.size = size;
 
         if (heavy) {
             font = '900 ' + size + 'px "Open Sans"';
-            topMultiplier = 0.34;
-            heightMultiplier = 1.075;
+            this.topMultiplier = 0.34;
+            this.heightMultiplier = 1.075;
         } else {
             font = '100 ' + size + 'px "Open Sans"';
-            topMultiplier = 0.312;
-            heightMultiplier = 1.055;
+            this.topMultiplier = 0.312;
+            this.heightMultiplier = 1.055;
         }
+
         _super.call(this, text.toUpperCase(), font, "#fff");
 
         //size * 0.34
-        this.setBounds(0, Math.round(size * topMultiplier), this.getBounds().width, Math.round(size * heightMultiplier));
+        this.setBounds(0, Math.round(size * this.topMultiplier), this.getBounds().width, Math.round(size * this.heightMultiplier));
         this.alpha = 0.2;
         //this.lineHeight = 1.5;
     }

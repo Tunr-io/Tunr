@@ -45,4 +45,8 @@ class Component {
 			this.element = <HTMLElement>document.body.removeChild(this.element);
 		}, 300); 
 	}
+
+	public windowResize(): void {
+
+	}
 } 
