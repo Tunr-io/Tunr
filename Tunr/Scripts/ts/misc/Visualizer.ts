@@ -4,6 +4,7 @@
 	private stage: createjs.Stage;
 	private song: Song;
 	private currentVisual: Visual; // The visual that is currently being played.
+	private currentBG: VisualBG; // The visual background that is currently being played.
 
 	constructor(playingpane: PlayingPane, canvas: HTMLCanvasElement) {
 		this.playingpane = playingpane;
@@ -27,6 +28,12 @@
 	public start(song: Song): void {
 		this.song = song;
 		this.showVisual();
+		// Fetch images from API and show them.
+		this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
+			if (images.length > 0) {
+				this.showBG(images);
+			}
+		});
 	}
 
 	/**
@@ -34,6 +41,15 @@
 	 */
 	public stop(): void {
 		this.song = null;
+	}
+
+	private showBG(images: string[]) {
+		if (this.currentBG != null) {
+			this.stage.removeChild(this.currentBG);
+		}
+		this.currentBG = new VisualBG(this.song, images);
+		this.stage.addChild(this.currentBG);
+		this.currentBG.transition();
 	}
 
 	private showVisual() {
@@ -52,6 +68,67 @@
 		this.stage.update();
 	}
 } 
+
+/**
+ * VisualBG is the image that's displayed behind the visuals.
+ */
+class VisualBG extends createjs.Container {
+	public song: Song;
+	public images: string[];
+	public currentIndex: number;
+	public currentBitmap: createjs.Bitmap;
+
+	constructor(song: Song, images: string[]) {
+		this.song = song;
+		this.images = images;
+		this.currentIndex = 0;
+		super();
+	}
+
+	public transition(): void {
+		if (this.currentBitmap != null) {
+			this.removeChild(this.currentBitmap);
+			this.currentIndex++;
+			if (this.currentIndex >= this.images.length) {
+				this.currentIndex = 0;
+			}
+		}
+		var cwidth: number = this.getStage().canvas.width;
+		var cheight: number = this.getStage().canvas.height;
+		var caspect: number = cwidth / cheight;
+
+		this.x = cwidth / 2;
+		this.y = cheight / 2;
+		this.regX = cwidth / 2;
+		this.regY = cheight / 2;
+
+		var image = new Image();
+		image.src = this.images[this.currentIndex];
+		image.onload = () => {
+			console.log("BITMAP LOADED.");
+			this.currentBitmap = new createjs.Bitmap(image);
+			var bitmapAspect = image.width / image.height;
+			if (bitmapAspect > caspect) {
+				// Match height
+				var scale = cheight / image.height;
+			} else {
+				// Match width
+				var scale = cwidth / image.width;
+			}
+
+			// Center it for now ....
+			this.currentBitmap.scaleX = scale;
+			this.currentBitmap.scaleY = scale;
+			this.currentBitmap.regX = (image.width) / 2;
+			this.currentBitmap.regY = (image.height) / 2;
+			this.currentBitmap.x = cwidth / 2;
+			this.currentBitmap.y = cheight / 2;
+			this.currentBitmap.alpha = 0;
+			this.addChild(this.currentBitmap);
+			createjs.Tween.get(this.currentBitmap).to({ alpha: 0.15 }, 1500, createjs.Ease.quartOut);
+		};
+	}
+}
 
 /**
  * Superclass for all visuals
@@ -78,7 +155,12 @@ class LineScrollVisual extends Visual {
 	public static MIN_FONT_SIZE: number = 80;
 	public static MAX_FONT_SIZE: number = 250;
 	public static VISUAL_MIN_TIME: number = 12000;
-	public static VISUAL_MAX_TIME: number = 18000;
+	public static VISUAL_MAX_TIME: number = 25000;
+	public static TWEEN_MIN_POW: number = 0.4;
+	public static TWEEN_MAX_POW: number = 0.5;
+	public static ROTATION_MIN: number = -90;
+	public static ROTATION_MAX: number = 90;
+	public static ROTATION_INTERVAL: number = 45;
 
 	constructor(song: Song) {
 		super(song);
@@ -118,6 +200,13 @@ class LineScrollVisual extends Visual {
 		var maxY: number = cheight - Math.floor(totalHeight * (2 / 3));
 		var baseY: number = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
+		this.x = cwidth / 2;
+		this.y = cheight / 2;
+		this.regX = cwidth / 2;
+		this.regY = cheight / 2;
+		var rotationIntervals = (LineScrollVisual.ROTATION_MAX - LineScrollVisual.ROTATION_MIN) / LineScrollVisual.ROTATION_INTERVAL;
+		this.rotation = LineScrollVisual.ROTATION_MIN + (LineScrollVisual.ROTATION_INTERVAL * Math.floor(Math.random() * (rotationIntervals + 1)));
+		
 		// Figure out timing
 		var visualTime = Math.floor(Math.random() * (LineScrollVisual.VISUAL_MAX_TIME - LineScrollVisual.VISUAL_MIN_TIME)) + LineScrollVisual.VISUAL_MIN_TIME;
 
@@ -136,7 +225,8 @@ class LineScrollVisual extends Visual {
 			}
 			this.addChild(textLines[i]);
 			((textLine, tarX, i) => {
-				var tween = createjs.Tween.get(textLine).to({ x: tarX }, visualTime, createjs.Ease.getPowInOut(0.45));
+				var tweenPow = (Math.random() * (LineScrollVisual.TWEEN_MAX_POW - LineScrollVisual.TWEEN_MIN_POW)) + LineScrollVisual.TWEEN_MIN_POW;
+				var tween = createjs.Tween.get(textLine).to({ x: tarX }, visualTime, createjs.Ease.getPowInOut(tweenPow));
 				if (i == 0) {
 					tween.call(callback);
 				}

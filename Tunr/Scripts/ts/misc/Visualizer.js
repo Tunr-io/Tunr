@@ -24,8 +24,16 @@ var Visualizer = (function () {
     * Starts the visualizer for the given song.
     */
     Visualizer.prototype.start = function (song) {
+        var _this = this;
         this.song = song;
         this.showVisual();
+
+        // Fetch images from API and show them.
+        this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
+            if (images.length > 0) {
+                _this.showBG(images);
+            }
+        });
     };
 
     /**
@@ -33,6 +41,15 @@ var Visualizer = (function () {
     */
     Visualizer.prototype.stop = function () {
         this.song = null;
+    };
+
+    Visualizer.prototype.showBG = function (images) {
+        if (this.currentBG != null) {
+            this.stage.removeChild(this.currentBG);
+        }
+        this.currentBG = new VisualBG(this.song, images);
+        this.stage.addChild(this.currentBG);
+        this.currentBG.transition();
     };
 
     Visualizer.prototype.showVisual = function () {
@@ -55,6 +72,64 @@ var Visualizer = (function () {
     };
     return Visualizer;
 })();
+
+/**
+* VisualBG is the image that's displayed behind the visuals.
+*/
+var VisualBG = (function (_super) {
+    __extends(VisualBG, _super);
+    function VisualBG(song, images) {
+        this.song = song;
+        this.images = images;
+        this.currentIndex = 0;
+        _super.call(this);
+    }
+    VisualBG.prototype.transition = function () {
+        var _this = this;
+        if (this.currentBitmap != null) {
+            this.removeChild(this.currentBitmap);
+            this.currentIndex++;
+            if (this.currentIndex >= this.images.length) {
+                this.currentIndex = 0;
+            }
+        }
+        var cwidth = this.getStage().canvas.width;
+        var cheight = this.getStage().canvas.height;
+        var caspect = cwidth / cheight;
+
+        this.x = cwidth / 2;
+        this.y = cheight / 2;
+        this.regX = cwidth / 2;
+        this.regY = cheight / 2;
+
+        var image = new Image();
+        image.src = this.images[this.currentIndex];
+        image.onload = function () {
+            console.log("BITMAP LOADED.");
+            _this.currentBitmap = new createjs.Bitmap(image);
+            var bitmapAspect = image.width / image.height;
+            if (bitmapAspect > caspect) {
+                // Match height
+                var scale = cheight / image.height;
+            } else {
+                // Match width
+                var scale = cwidth / image.width;
+            }
+
+            // Center it for now ....
+            _this.currentBitmap.scaleX = scale;
+            _this.currentBitmap.scaleY = scale;
+            _this.currentBitmap.regX = (image.width) / 2;
+            _this.currentBitmap.regY = (image.height) / 2;
+            _this.currentBitmap.x = cwidth / 2;
+            _this.currentBitmap.y = cheight / 2;
+            _this.currentBitmap.alpha = 0;
+            _this.addChild(_this.currentBitmap);
+            createjs.Tween.get(_this.currentBitmap).to({ alpha: 0.15 }, 1500, createjs.Ease.quartOut);
+        };
+    };
+    return VisualBG;
+})(createjs.Container);
 
 /**
 * Superclass for all visuals
@@ -111,6 +186,13 @@ var LineScrollVisual = (function (_super) {
         var maxY = cheight - Math.floor(totalHeight * (2 / 3));
         var baseY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
+        this.x = cwidth / 2;
+        this.y = cheight / 2;
+        this.regX = cwidth / 2;
+        this.regY = cheight / 2;
+        var rotationIntervals = (LineScrollVisual.ROTATION_MAX - LineScrollVisual.ROTATION_MIN) / LineScrollVisual.ROTATION_INTERVAL;
+        this.rotation = LineScrollVisual.ROTATION_MIN + (LineScrollVisual.ROTATION_INTERVAL * Math.floor(Math.random() * (rotationIntervals + 1)));
+
         // Figure out timing
         var visualTime = Math.floor(Math.random() * (LineScrollVisual.VISUAL_MAX_TIME - LineScrollVisual.VISUAL_MIN_TIME)) + LineScrollVisual.VISUAL_MIN_TIME;
 
@@ -129,7 +211,8 @@ var LineScrollVisual = (function (_super) {
             }
             this.addChild(textLines[i]);
             (function (textLine, tarX, i) {
-                var tween = createjs.Tween.get(textLine).to({ x: tarX }, visualTime, createjs.Ease.getPowInOut(0.45));
+                var tweenPow = (Math.random() * (LineScrollVisual.TWEEN_MAX_POW - LineScrollVisual.TWEEN_MIN_POW)) + LineScrollVisual.TWEEN_MIN_POW;
+                var tween = createjs.Tween.get(textLine).to({ x: tarX }, visualTime, createjs.Ease.getPowInOut(tweenPow));
                 if (i == 0) {
                     tween.call(callback);
                 }
@@ -140,7 +223,12 @@ var LineScrollVisual = (function (_super) {
     LineScrollVisual.MIN_FONT_SIZE = 80;
     LineScrollVisual.MAX_FONT_SIZE = 250;
     LineScrollVisual.VISUAL_MIN_TIME = 12000;
-    LineScrollVisual.VISUAL_MAX_TIME = 18000;
+    LineScrollVisual.VISUAL_MAX_TIME = 25000;
+    LineScrollVisual.TWEEN_MIN_POW = 0.4;
+    LineScrollVisual.TWEEN_MAX_POW = 0.5;
+    LineScrollVisual.ROTATION_MIN = -90;
+    LineScrollVisual.ROTATION_MAX = 90;
+    LineScrollVisual.ROTATION_INTERVAL = 45;
     return LineScrollVisual;
 })(Visual);
 

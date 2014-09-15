@@ -72,7 +72,7 @@ namespace Tunr.Controllers
 			}
 		}
 
-		[Route("{id}/image")]
+		[Route("{id}/images")]
 		public async Task<HttpResponseMessage> GetImage(Guid id)
 		{
 			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
@@ -84,9 +84,10 @@ namespace Tunr.Controllers
 			var response = await client.SearchAsync(Namespace.music, song.Artist, filter: SearchFilter.Artists, maxItems: 1, country: "US");
 			if (response.Artists.TotalItemCount > 0)
 			{
-				var redir = Request.CreateResponse(HttpStatusCode.Redirect);
-				redir.Headers.Location = new Uri(response.Artists.Items[0].ImageUrl);
-				return redir;
+				var imageList = new List<string>();
+				imageList.Add(response.Artists.Items[0].ImageUrl);
+				var resp = Request.CreateResponse(HttpStatusCode.OK,imageList);
+				return resp;
 			}
 			else
 			{
