@@ -83,8 +83,6 @@
 		setTimeout(() => {
 			oldArt.parentElement.removeChild(oldArt);
 		}, 300);
-
-		this.visualizer.start(song);
 	}
 
 	public play(): void {

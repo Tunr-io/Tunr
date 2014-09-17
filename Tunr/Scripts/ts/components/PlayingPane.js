@@ -87,8 +87,6 @@ var PlayingPane = (function (_super) {
         setTimeout(function () {
             oldArt.parentElement.removeChild(oldArt);
         }, 300);
-
-        this.visualizer.start(song);
     };
 
     PlayingPane.prototype.play = function () {

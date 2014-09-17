@@ -23,6 +23,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Tunr.Hubs;
 using Microsoft.Xbox.Music.Platform.Client;
 using Microsoft.Xbox.Music.Platform.Contract.DataModel;
+using Facebook;
 
 namespace Tunr.Controllers
 {
@@ -80,11 +81,32 @@ namespace Tunr.Controllers
 			if (song == null) {
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified ID.");
 			}
+			var imageList = new List<string>();
+			try
+			{
+				var fbClient = new FacebookClient();
+				dynamic tokenResult = fbClient.Get("oauth/access_token", new
+				{
+					client_id = "***REMOVED***",
+					client_secret = "***REMOVED***",
+					grant_type = "client_credentials"
+				});
+				fbClient.AccessToken = tokenResult.access_token;
+
+				FacebookSearchResponse fbRequest = fbClient.Get<FacebookSearchResponse>("search", new { q = song.Artist, type = "page" });
+				IEnumerable<FacebookSearchResult> fbResults = fbRequest.data.Where(x => x.category.Equals("Musician/band"));
+				dynamic pageId = fbResults.FirstOrDefault().id;
+
+				FacebookImageResponse fbImageRequest = fbClient.Get<FacebookImageResponse>(pageId + "/photos/uploaded?fields=images&limit=100");
+				Random rnd = new Random();
+				var hiresFbImages = fbImageRequest.data.Where(x => x.images.Count() > 0).Where(x => x.images.First().width * x.images.First().height > 750000).OrderBy(x => rnd.Next()).Take(5);
+				imageList.AddRange(hiresFbImages.Select(x => x.images.First().source));
+			}
+			catch (Exception) { }
 			IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient("***REMOVED***", "***REMOVED***");
 			var response = await client.SearchAsync(Namespace.music, song.Artist, filter: SearchFilter.Artists, maxItems: 1, country: "US");
 			if (response.Artists.TotalItemCount > 0)
 			{
-				var imageList = new List<string>();
 				imageList.Add(response.Artists.Items[0].ImageUrl);
 				var resp = Request.CreateResponse(HttpStatusCode.OK,imageList);
 				return resp;

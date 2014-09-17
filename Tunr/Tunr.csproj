@@ -53,6 +53,9 @@
       <Private>True</Private>
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Facebook.6.8.0\lib\net45\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="LastFmLibNet">
       <HintPath>..\libraries\LastFmLibNet\LastFmLibNet.dll</HintPath>
     </Reference>
@@ -374,6 +377,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\FacebookImageModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlaylistItemModel.cs" />
     <Compile Include="Models\PlaylistModel.cs" />

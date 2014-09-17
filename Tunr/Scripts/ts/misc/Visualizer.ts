@@ -26,14 +26,18 @@
 	 * Starts the visualizer for the given song.
 	 */
 	public start(song: Song): void {
+		// Fetch images from API and show them.
+		// (don't re-fetch if it's the same artist.
+		if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+			this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
+				if (images.length > 0) {
+					this.showBG(images);
+				}
+			});
+		}
+
 		this.song = song;
 		this.showVisual();
-		// Fetch images from API and show them.
-		this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
-			if (images.length > 0) {
-				this.showBG(images);
-			}
-		});
 	}
 
 	/**

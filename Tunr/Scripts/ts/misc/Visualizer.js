@@ -25,15 +25,18 @@ var Visualizer = (function () {
     */
     Visualizer.prototype.start = function (song) {
         var _this = this;
+        // Fetch images from API and show them.
+        // (don't re-fetch if it's the same artist.
+        if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+            this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
+                if (images.length > 0) {
+                    _this.showBG(images);
+                }
+            });
+        }
+
         this.song = song;
         this.showVisual();
-
-        // Fetch images from API and show them.
-        this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
-            if (images.length > 0) {
-                _this.showBG(images);
-            }
-        });
     };
 
     /**
