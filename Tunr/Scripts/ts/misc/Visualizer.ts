@@ -29,6 +29,14 @@
 		// Fetch images from API and show them.
 		// (don't re-fetch if it's the same artist.
 		if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+			if (this.currentBG != null) {
+				((bg: VisualBG) => {
+					bg.stop();
+					createjs.Tween.get(bg).to({ alpha: 0 }, 2000, createjs.Ease.quartIn).call(() => {
+						this.stage.removeChild(bg);
+					});
+				})(this.currentBG);
+			}
 			this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
 				if (images.length > 0) {
 					this.showBG(images);
@@ -48,9 +56,6 @@
 	}
 
 	private showBG(images: string[]) {
-		if (this.currentBG != null) {
-			this.stage.removeChild(this.currentBG);
-		}
 		this.currentBG = new VisualBG(this.song, images);
 		this.stage.addChild(this.currentBG);
 		this.currentBG.transition();
@@ -77,23 +82,38 @@
  * VisualBG is the image that's displayed behind the visuals.
  */
 class VisualBG extends createjs.Container {
+	public static MAX_ZOOM_PERCENTAGE: number = 30;
+	public static IMAGE_ALPHA: number = 0.15;
+	public static PAN_MIN_TIME: number = 20000;
+	public static PAN_MAX_TIME: number = 35000;
+
 	public song: Song;
-	public images: string[];
+	public imageURLs: string[];
 	public currentIndex: number;
 	public currentBitmap: createjs.Bitmap;
 
 	constructor(song: Song, images: string[]) {
 		this.song = song;
-		this.images = images;
+		this.imageURLs = images;
 		this.currentIndex = 0;
 		super();
 	}
 
+	public fadeOutBitmap(bitmap: createjs.Bitmap) {
+		createjs.Tween.get(bitmap).to({ alpha: 0 }, 1500, createjs.Ease.quartIn).call(() => {
+			this.removeChild(bitmap);
+		});
+	}
+
 	public transition(): void {
+		if (this.imageURLs == null || this.imageURLs.length <= 0) return;
 		if (this.currentBitmap != null) {
-			this.removeChild(this.currentBitmap);
+			((bitmap) => {
+				this.fadeOutBitmap(bitmap);
+			})(this.currentBitmap);
+						
 			this.currentIndex++;
-			if (this.currentIndex >= this.images.length) {
+			if (this.currentIndex >= this.imageURLs.length) {
 				this.currentIndex = 0;
 			}
 		}
@@ -107,7 +127,7 @@ class VisualBG extends createjs.Container {
 		this.regY = cheight / 2;
 
 		var image = new Image();
-		image.src = this.images[this.currentIndex];
+		image.src = this.imageURLs[this.currentIndex];
 		image.onload = () => {
 			console.log("BITMAP LOADED.");
 			this.currentBitmap = new createjs.Bitmap(image);
@@ -128,9 +148,44 @@ class VisualBG extends createjs.Container {
 			this.currentBitmap.x = cwidth / 2;
 			this.currentBitmap.y = cheight / 2;
 			this.currentBitmap.alpha = 0;
+
+			// TODO: pan AND zoom.
+			var zoomPercentage: number = (Math.floor(Math.random() * VisualBG.MAX_ZOOM_PERCENTAGE) / 100) + 1;
+
+			// We need to zoom out to give ourselves room to pan.
+			this.currentBitmap.scaleX *= zoomPercentage;
+			this.currentBitmap.scaleY *= zoomPercentage;
+
+			// Now we have to figure out our 'leeway' for panning
+			var panLeewayX = (image.width * this.currentBitmap.scaleX) - (image.width * scale);
+			var panLeewayY = (image.height * this.currentBitmap.scaleY) - (image.height * scale);
+
+			// Select a semi-random relative X and Y start position based on leeway
+			var panDirX = (Math.round(Math.random()) * 2 - 1);
+			var panStartX = panDirX * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayX/2) + 1));
+			var panEndX = -1 * panDirX * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayX/2) + 1));
+			var panDirY = (Math.round(Math.random()) * 2 - 1);
+			var panStartY = panDirY * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayY/2) + 1));
+			var panEndY = -1 * panDirY * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayY/2) + 1));
+
+			// Set start position
+			this.currentBitmap.x += panStartX;
+			this.currentBitmap.y += panStartY;
+
+			// Add to stage
 			this.addChild(this.currentBitmap);
-			createjs.Tween.get(this.currentBitmap).to({ alpha: 0.15 }, 1500, createjs.Ease.quartOut);
+
+			// Begin tweens
+			var panTime = Math.floor(Math.random() * (VisualBG.PAN_MAX_TIME - VisualBG.PAN_MIN_TIME)) + VisualBG.PAN_MIN_TIME;
+			createjs.Tween.get(this.currentBitmap).to({ alpha: VisualBG.IMAGE_ALPHA }, 1500, createjs.Ease.quartOut);
+			createjs.Tween.get(this.currentBitmap).to({ x: (cwidth / 2) + panEndX, y: (cheight / 2) + panEndY }, panTime, createjs.Ease.quadInOut).call(() => {
+				this.transition();
+			});
 		};
+	}
+
+	public stop(): void {
+		this.imageURLs = null; // Null out our images - will stop the transition cycle.
 	}
 }
 

@@ -28,6 +28,14 @@ var Visualizer = (function () {
         // Fetch images from API and show them.
         // (don't re-fetch if it's the same artist.
         if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+            if (this.currentBG != null) {
+                (function (bg) {
+                    bg.stop();
+                    createjs.Tween.get(bg).to({ alpha: 0 }, 2000, createjs.Ease.quartIn).call(function () {
+                        _this.stage.removeChild(bg);
+                    });
+                })(this.currentBG);
+            }
             this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
                 if (images.length > 0) {
                     _this.showBG(images);
@@ -47,9 +55,6 @@ var Visualizer = (function () {
     };
 
     Visualizer.prototype.showBG = function (images) {
-        if (this.currentBG != null) {
-            this.stage.removeChild(this.currentBG);
-        }
         this.currentBG = new VisualBG(this.song, images);
         this.stage.addChild(this.currentBG);
         this.currentBG.transition();
@@ -83,16 +88,28 @@ var VisualBG = (function (_super) {
     __extends(VisualBG, _super);
     function VisualBG(song, images) {
         this.song = song;
-        this.images = images;
+        this.imageURLs = images;
         this.currentIndex = 0;
         _super.call(this);
     }
+    VisualBG.prototype.fadeOutBitmap = function (bitmap) {
+        var _this = this;
+        createjs.Tween.get(bitmap).to({ alpha: 0 }, 1500, createjs.Ease.quartIn).call(function () {
+            _this.removeChild(bitmap);
+        });
+    };
+
     VisualBG.prototype.transition = function () {
         var _this = this;
+        if (this.imageURLs == null || this.imageURLs.length <= 0)
+            return;
         if (this.currentBitmap != null) {
-            this.removeChild(this.currentBitmap);
+            (function (bitmap) {
+                _this.fadeOutBitmap(bitmap);
+            })(this.currentBitmap);
+
             this.currentIndex++;
-            if (this.currentIndex >= this.images.length) {
+            if (this.currentIndex >= this.imageURLs.length) {
                 this.currentIndex = 0;
             }
         }
@@ -106,7 +123,7 @@ var VisualBG = (function (_super) {
         this.regY = cheight / 2;
 
         var image = new Image();
-        image.src = this.images[this.currentIndex];
+        image.src = this.imageURLs[this.currentIndex];
         image.onload = function () {
             console.log("BITMAP LOADED.");
             _this.currentBitmap = new createjs.Bitmap(image);
@@ -127,10 +144,49 @@ var VisualBG = (function (_super) {
             _this.currentBitmap.x = cwidth / 2;
             _this.currentBitmap.y = cheight / 2;
             _this.currentBitmap.alpha = 0;
+
+            // TODO: pan AND zoom.
+            var zoomPercentage = (Math.floor(Math.random() * VisualBG.MAX_ZOOM_PERCENTAGE) / 100) + 1;
+
+            // We need to zoom out to give ourselves room to pan.
+            _this.currentBitmap.scaleX *= zoomPercentage;
+            _this.currentBitmap.scaleY *= zoomPercentage;
+
+            // Now we have to figure out our 'leeway' for panning
+            var panLeewayX = (image.width * _this.currentBitmap.scaleX) - (image.width * scale);
+            var panLeewayY = (image.height * _this.currentBitmap.scaleY) - (image.height * scale);
+
+            // Select a semi-random relative X and Y start position based on leeway
+            var panDirX = (Math.round(Math.random()) * 2 - 1);
+            var panStartX = panDirX * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayX / 2) + 1));
+            var panEndX = -1 * panDirX * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayX / 2) + 1));
+            var panDirY = (Math.round(Math.random()) * 2 - 1);
+            var panStartY = panDirY * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayY / 2) + 1));
+            var panEndY = -1 * panDirY * Math.floor(((Math.random() * 0.5) + 0.5) * ((panLeewayY / 2) + 1));
+
+            // Set start position
+            _this.currentBitmap.x += panStartX;
+            _this.currentBitmap.y += panStartY;
+
+            // Add to stage
             _this.addChild(_this.currentBitmap);
-            createjs.Tween.get(_this.currentBitmap).to({ alpha: 0.15 }, 1500, createjs.Ease.quartOut);
+
+            // Begin tweens
+            var panTime = Math.floor(Math.random() * (VisualBG.PAN_MAX_TIME - VisualBG.PAN_MIN_TIME)) + VisualBG.PAN_MIN_TIME;
+            createjs.Tween.get(_this.currentBitmap).to({ alpha: VisualBG.IMAGE_ALPHA }, 1500, createjs.Ease.quartOut);
+            createjs.Tween.get(_this.currentBitmap).to({ x: (cwidth / 2) + panEndX, y: (cheight / 2) + panEndY }, panTime, createjs.Ease.quadInOut).call(function () {
+                _this.transition();
+            });
         };
     };
+
+    VisualBG.prototype.stop = function () {
+        this.imageURLs = null; // Null out our images - will stop the transition cycle.
+    };
+    VisualBG.MAX_ZOOM_PERCENTAGE = 30;
+    VisualBG.IMAGE_ALPHA = 0.15;
+    VisualBG.PAN_MIN_TIME = 20000;
+    VisualBG.PAN_MAX_TIME = 35000;
     return VisualBG;
 })(createjs.Container);
 

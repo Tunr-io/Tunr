@@ -108,6 +108,8 @@ namespace Tunr.Controllers
 			if (response.Artists.TotalItemCount > 0)
 			{
 				imageList.Add(response.Artists.Items[0].ImageUrl);
+				Random rnd = new Random();
+				imageList = imageList.OrderBy(x => rnd.Next()).ToList();
 				var resp = Request.CreateResponse(HttpStatusCode.OK,imageList);
 				return resp;
 			}
