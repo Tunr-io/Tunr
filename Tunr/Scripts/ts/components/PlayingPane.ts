@@ -18,16 +18,16 @@
 		TiltEffect.addTilt(<HTMLElement>this.controls_element.getElementsByClassName("next")[0]);
 		TiltEffect.addTilt(<HTMLElement>this.controls_element.getElementsByClassName("prev")[0]);
 		this.controls_element.getElementsByClassName("play")[0].addEventListener("click", () => {
-			this.getTunr().playlistpane.play();
+			//this.getTunr().playlistpane.play();
 		});
 		this.controls_element.getElementsByClassName("pause")[0].addEventListener("click", () => {
-			this.getTunr().playlistpane.pause();
+			//this.getTunr().playlistpane.pause();
 		});
 		this.controls_element.getElementsByClassName("next")[0].addEventListener("click", () => {
-			this.getTunr().playlistpane.next();
+			//this.getTunr().playlistpane.next();
 		});
 		this.controls_element.getElementsByClassName("prev")[0].addEventListener("click", () => {
-			this.getTunr().playlistpane.prev();
+			//this.getTunr().playlistpane.prev();
 		});
 	}
 
@@ -106,7 +106,7 @@
 
 	// Updates play timer displayed on the UI.
 	public update_playtime(): void {
-		var seconds = this.getTunr().playlistpane.getSongTime();
-		(<HTMLElement>this.getElement().getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
+		//var seconds = this.getTunr().playlistpane.getSongTime();
+		//(<HTMLElement>this.getElement().getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
 	}
 } 

@@ -27,9 +27,9 @@ class PlaylistPane extends Component {
 	private _setPlayState(state: PlayState): void {
 		this.playstate = state;
 		if (this.playstate == PlayState.PLAYING) {
-			this.getTunr().playingpane.play();
+			//this.getTunr().playingpane.play();
 		} else if (this.playstate == PlayState.PAUSED || this.playstate == PlayState.STOPPED) {
-			this.getTunr().playingpane.pause();
+			//this.getTunr().playingpane.pause();
 		}
 	}
 
@@ -156,7 +156,7 @@ class PlaylistPane extends Component {
 		this.audio.src = "/stream/" + song.songId;
 
 		// Change play listing
-		this.getTunr().playingpane.changeSong(song);
+		//this.getTunr().playingpane.changeSong(song);
 
 		// Play it
 		this.audio.play();

@@ -7,7 +7,6 @@
 var PlayingPane = (function (_super) {
     __extends(PlayingPane, _super);
     function PlayingPane(tunr) {
-        var _this = this;
         _super.call(this, tunr, "PlayingPane");
         this.title_element = this.getElement().getElementsByClassName("title")[0];
         this.controls_element = this.getElement().getElementsByClassName("controls")[0];
@@ -20,16 +19,16 @@ var PlayingPane = (function (_super) {
         TiltEffect.addTilt(this.controls_element.getElementsByClassName("next")[0]);
         TiltEffect.addTilt(this.controls_element.getElementsByClassName("prev")[0]);
         this.controls_element.getElementsByClassName("play")[0].addEventListener("click", function () {
-            _this.getTunr().playlistpane.play();
+            //this.getTunr().playlistpane.play();
         });
         this.controls_element.getElementsByClassName("pause")[0].addEventListener("click", function () {
-            _this.getTunr().playlistpane.pause();
+            //this.getTunr().playlistpane.pause();
         });
         this.controls_element.getElementsByClassName("next")[0].addEventListener("click", function () {
-            _this.getTunr().playlistpane.next();
+            //this.getTunr().playlistpane.next();
         });
         this.controls_element.getElementsByClassName("prev")[0].addEventListener("click", function () {
-            _this.getTunr().playlistpane.prev();
+            //this.getTunr().playlistpane.prev();
         });
     }
     PlayingPane.prototype.show = function () {
@@ -111,8 +110,8 @@ var PlayingPane = (function (_super) {
 
     // Updates play timer displayed on the UI.
     PlayingPane.prototype.update_playtime = function () {
-        var seconds = this.getTunr().playlistpane.getSongTime();
-        this.getElement().getElementsByClassName("playtimer")[0].innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
+        //var seconds = this.getTunr().playlistpane.getSongTime();
+        //(<HTMLElement>this.getElement().getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
     };
     return PlayingPane;
 })(Component);

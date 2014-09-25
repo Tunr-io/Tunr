@@ -25,7 +25,7 @@ namespace Tunr
 				//AuthorizeEndpointPath = new PathString("/Account/Authorize"), 
 				Provider = new ApplicationOAuthProvider(PublicClientId),
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(90),
-				AllowInsecureHttp = true
+				AllowInsecureHttp = false
 			};
 		}
 

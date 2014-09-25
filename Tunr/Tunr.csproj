@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44300</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -272,6 +272,12 @@
     <Content Include="Content\css\Components\LibraryPane.css">
       <DependentUpon>LibraryPane.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\Player.css">
+      <DependentUpon>Player.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Components\Player.min.css">
+      <DependentUpon>Player.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\Components\PlayingPane.css">
       <DependentUpon>PlayingPane.less</DependentUpon>
     </Content>
@@ -330,6 +336,10 @@
     </Content>
     <Content Include="Content\css\Components\PlayingPane.less" />
     <Content Include="Content\css\Components\Registration.less" />
+    <Content Include="Content\css\Components\Player.less" />
+    <Content Include="Content\css\Components\Player.css.map">
+      <DependentUpon>Player.css</DependentUpon>
+    </Content>
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApiControllerWithHub.cs" />
@@ -384,6 +394,7 @@
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
     <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -479,13 +490,15 @@
     <TypeScriptCompile Include="Scripts\ts\API.ts" />
     <TypeScriptCompile Include="Scripts\ts\Component.ts" />
     <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
-    <TypeScriptCompile Include="Scripts\ts\components\LibraryPane.ts" />
+    <TypeScriptCompile Include="Scripts\ts\helpers\LibraryHelper.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
+    <TypeScriptCompile Include="Scripts\ts\components\Player.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
     <TypeScriptCompile Include="Scripts\ts\Debug.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Helper.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
     <TypeScriptCompile Include="Scripts\ts\misc\Visualizer.ts" />
     <TypeScriptCompile Include="Scripts\ts\TiltEffect.ts" />
@@ -526,6 +539,7 @@
       <DependentUpon>201408040240381_Playlists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -545,7 +559,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>34415</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:34415/</IISUrl>
+          <IISUrl>https://localhost:44300/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -1,9 +1,15 @@
-﻿<div id="component_Player" class="COMPONENT">
+﻿<div id="component_Player" class="COMPONENT player">
 	<ul class="frames">
-		<li class="library">
+		<li class="library HELPER showArtists" data-helper-class="LibraryHelper">
+			<div class="uploadProgress"></div>
 			<nav>
-				<a href="#">Music</a>
+				<a class="music" href="#">Music</a>
+				<a class="artist" href="#">Artist</a>
+				<a class="album" href="#">Album</a>
 			</nav>
+			<ul class="artists"></ul>
+			<ul class="albums"></ul>
+			<ul class="songs"></ul>
 		</li>
 		<li class="playlist">
 			<h1>Playlist</h1>

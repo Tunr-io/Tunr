@@ -5,6 +5,7 @@ using System.Web.Mvc;
 
 namespace Tunr.Controllers
 {
+	[RequireHttps]
 	public class TunrController : Controller
 	{
 		public ActionResult Index()

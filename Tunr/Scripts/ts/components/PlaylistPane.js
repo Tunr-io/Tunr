@@ -29,9 +29,9 @@ var PlaylistPane = (function (_super) {
     PlaylistPane.prototype._setPlayState = function (state) {
         this.playstate = state;
         if (this.playstate == 0 /* PLAYING */) {
-            this.getTunr().playingpane.play();
+            //this.getTunr().playingpane.play();
         } else if (this.playstate == 1 /* PAUSED */ || this.playstate == 2 /* STOPPED */) {
-            this.getTunr().playingpane.pause();
+            //this.getTunr().playingpane.pause();
         }
     };
 
@@ -159,8 +159,7 @@ var PlaylistPane = (function (_super) {
         this.audio.src = "/stream/" + song.songId;
 
         // Change play listing
-        this.getTunr().playingpane.changeSong(song);
-
+        //this.getTunr().playingpane.changeSong(song);
         // Play it
         this.audio.play();
         this._setPlayState(0 /* PLAYING */);

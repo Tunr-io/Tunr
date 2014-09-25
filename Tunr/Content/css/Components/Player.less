@@ -1,0 +1,433 @@
+﻿@library_pane_width: 300px;
+
+div.player {
+	position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	overflow-y: hidden;
+	
+	//-ms-overflow-style:none;
+
+	ul.frames {
+		list-style-type:none;
+		margin:0;
+		padding:0;
+		height:100%;
+
+		& > li {
+			position:relative;
+			display:block;
+			float:left;
+			height:100%;
+			margin:0;
+		}
+	}
+
+	/* Mobiles */
+	@media (max-width:900px) {
+		overflow-x: scroll;
+		-ms-scroll-snap-type:mandatory;
+		-ms-scroll-snap-points-x:snapInterval(0, calc(~"100% - 32px") );
+		ul.frames {
+			width:calc(300%);
+
+			& > li {
+				width: calc(~"33.3% - 40px");
+				padding: 0 0 0 8px;
+				&:last-child {
+						width: 33.3%;
+				}
+			}
+		}
+	}
+
+	/* Desktop/Tablet/TV */
+	@media (min-width:900px) {
+		ul.frames > li.library {
+			width: @library_pane_width;
+		}
+
+		ul.frames > li.playlist {
+			width: @library_pane_width;
+		}
+
+		ul.frames > li.playing {
+			width: calc(~"100% - @{library_pane_width} - @{library_pane_width}");
+		}
+	}
+}
+
+/* Library Pane */
+@nav_height_one: 96px;
+@nav_height_two: 64px;
+@nav_height_three: 64px;
+div.player > ul.frames > li.library {
+	background-color:#fff;
+	.perspective(1500px);
+
+	div.uploadProgress {
+		position:absolute;
+		top:-18px;
+		left:0;
+		right:0;
+		height:18px;
+		opacity:0;
+		background-image:url('../../svg/progress_stripe_black.svg');
+		.animation-name(anim_upload_progress_stripe);
+		.animation-duration(1000ms);
+		.animation-timing-function(linear);
+		.animation-iteration-count(infinite);
+		.transition(~"top 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000), opacity 150ms cubic-bezier(0.075, 0.820, 0.165, 1.000)");
+	}
+	&.uploading div.uploadProgress {
+		top:0;
+		opacity:1;
+	}
+
+	nav {
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:15;
+		overflow: hidden;
+		a {
+			display:block;
+			font-family:"Open Sans";
+			font-weight:100;
+			color:#000;
+			font-size:96px;
+			text-transform: lowercase;
+			white-space: nowrap;
+			opacity:0.3;
+			text-decoration: none;
+			line-height: 1;
+			margin:0;
+			padding:0;
+
+			&:nth-child(2) {
+				font-size:64px;
+			}
+
+			&:nth-child(3) {
+				font-size:48px;
+			}
+
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+
+	& > ul {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		list-style-type: none;
+		.animation-name(anim_librarypane_list_in);
+		.animation-duration(200ms);
+		.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+		.transition(opacity 200ms ease-in-out);
+		z-index: 9;
+		.perspective(inherit);
+		overflow-y:auto;
+		overflow-x:hidden;
+		.user_select(none);
+
+		&.artists {
+			top: 96px;
+			margin: 16px 0 0 20px;
+			padding: 0;
+			color: @bg-color;
+			font-family: "Open Sans";
+			font-size: 24px;
+			font-weight: 100;
+
+			li {
+				cursor: pointer;
+				padding: 4px 0;
+				white-space: nowrap;
+			}
+		}
+
+		&.albums {
+			top: 160px;
+			margin:16px 8px 0 8px;
+			padding:0;
+			li {
+				cursor:pointer;
+				background-color:#eee;
+				display:block;
+				float:left;
+				width:128px;
+				height:128px;
+				margin:6px;
+
+				img {
+					width:100%;
+					height:100%;
+					pointer-events:none;
+					.transition(opacity 300ms linear);
+				}
+			}
+		}
+
+		&.songs {
+			top: 200px;
+			margin: 16px 0 0 16px;
+			padding: 0;
+			color: @bg-color;
+			font-family: "Open Sans";
+			font-size: 20px;
+			font-weight: 100;
+
+			li {
+				.track {
+					font-size:26px;
+					padding-right:8px;
+				}
+				cursor: pointer;
+				.user_select(none);
+				padding: 4px 0;
+				white-space: nowrap;
+			}
+		}
+	}
+
+	/* Library states */
+	.listHiddenBack() {
+		.animation-name(anim_librarypane_list_out_back);
+		.animation-duration(400ms);
+		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
+		.animation-fill-mode(forwards);
+		z-index: 9;
+	}
+
+	.listHiddenForward() {
+		.animation-name(anim_librarypane_list_out_forward);
+		.animation-duration(400ms);
+		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
+		.animation-fill-mode(forwards);
+		z-index: 9;
+	}
+
+	.listShowingBack() {
+		.animation-name(anim_librarypane_list_in_back);
+		.animation-duration(400ms);
+		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
+		.animation-fill-mode(forwards);
+		opacity: 1;
+		z-index: 10;
+	}
+
+	.listShowingForward() {
+		.animation-name(anim_librarypane_list_in_forward);
+		.animation-duration(400ms);
+		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
+		.animation-fill-mode(forwards);
+		opacity: 1;
+		z-index: 10;
+	}
+
+	&.showArtists {
+		nav {
+			height:96px;
+			a.music {
+				opacity:1;
+			}
+			a.artist, a.album {
+				opacity:0;
+			}
+		}
+		ul {
+			&.artists {
+				.listShowingBack();
+			}
+			&.albums {
+				.listHiddenBack();
+			}
+			&.songs {
+				.listHiddenBack();
+			}
+		}
+	}
+
+	&.showAlbums {
+		nav {
+			height:160px;
+			a.music, a.artist {
+				opacity:1;
+			}
+			a.album {
+				opacity:0;
+			}
+		}
+		&.forward ul {
+			&.artists {
+				.listHiddenForward();
+			}
+			&.albums {
+				.listShowingForward();
+			}
+			&.songs {
+				.listHiddenForward();
+			}
+		}
+		&.back ul {
+			&.artists {
+				.listHiddenBack();
+			}
+			&.albums {
+				.listShowingBack();
+			}
+			&.songs {
+				.listHiddenBack();
+			}
+		}
+	}
+
+	&.showSongs {
+		nav {
+			height:210px;
+			a.music, a.artist, a.album {
+				opacity:1;
+			}
+		}
+		ul {
+			&.artists {
+				.listHiddenForward();
+			}
+			&.albums {
+				.listHiddenForward();
+			}
+			&.songs {
+				.listShowingForward();
+			}
+		}
+	}
+}
+
+/* Library Pane Animations */
+
+@-moz-keyframes anim_librarypane_list_in_forward {
+	from {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@-webkit-keyframes anim_librarypane_list_in_forward {
+	from {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@keyframes anim_librarypane_list_in_forward {
+	from {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@-moz-keyframes anim_librarypane_list_in_back {
+	from {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@-webkit-keyframes anim_librarypane_list_in_back {
+	from {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@keyframes anim_librarypane_list_in_back {
+	from {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+	to {
+
+	}
+}
+
+@-moz-keyframes anim_librarypane_list_out_forward {
+	from {
+		
+	}
+	to {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+}
+
+@-webkit-keyframes anim_librarypane_list_out_forward {
+	from {
+		
+	}
+	to {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+}
+
+@keyframes anim_librarypane_list_out_forward {
+	from {
+		
+	}
+	to {
+		.transform(scale(1.7));
+		opacity:0;
+	}
+}
+
+@-moz-keyframes anim_librarypane_list_out_back {
+	from {
+		
+	}
+	to {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+}
+
+@-webkit-keyframes anim_librarypane_list_out_back {
+	from {
+		
+	}
+	to {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+}
+
+@keyframes anim_librarypane_list_out_back {
+	from {
+		
+	}
+	to {
+		.transform(scale(0.3));
+		opacity:0;
+	}
+}

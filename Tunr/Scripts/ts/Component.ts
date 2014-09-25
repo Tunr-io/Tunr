@@ -7,9 +7,17 @@ class Component {
 	private tunr: Tunr;
 	private component_id: string;
 	private element: HTMLElement;
+	private helpers: Array<Helper>;
 	private animator: Animator;
 
 	constructor(tunr: Tunr, component_id: string) {
+		// Make sure we're associated with an application instance...
+		if (tunr != null) {
+			this.tunr = tunr;
+		} else {
+			this.tunr = Tunr.instance; // Default instance if undefined
+		}
+
 		// Get the component ID, grab the HTML
 		this.component_id = component_id;
 		this.element = <HTMLDivElement> document.getElementById("component_" + this.component_id).cloneNode(true);
@@ -17,11 +25,14 @@ class Component {
 		this.element.id = '';
 		this.animator = new Animator(this);
 
-		// Make sure we're associated with an application instance...
-		if (tunr != null) {
-			this.tunr = tunr;
-		} else {
-			this.tunr = Tunr.instance; // Default instance if undefined
+		// Initialize any helpers...
+		this.helpers = new Array<Helper>();
+		var helperElements = this.element.getElementsByClassName("HELPER");
+		for (var i = 0; i < helperElements.length; i++) {
+			var helperElement = helperElements[i];
+			var helperClass = helperElement.attributes.getNamedItem("data-helper-class").value;
+			var helperObject: Helper = new window[helperClass](this, helperElement);
+			this.helpers[helperClass] = helperObject;
 		}
 	}
 
