@@ -419,6 +419,7 @@
     <Content Include="Views\Tunr\Components\PlayingPane.cshtml" />
     <Content Include="Scripts\js\jquery-2.1.0.min.map" />
     <Content Include="Views\Tunr\Components\Registration.cshtml" />
+    <Content Include="Views\Tunr\Components\Player.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
