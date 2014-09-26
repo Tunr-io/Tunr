@@ -395,6 +395,7 @@
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
+    <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />

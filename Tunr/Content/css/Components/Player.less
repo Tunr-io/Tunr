@@ -22,6 +22,7 @@ div.player {
 			float:left;
 			height:100%;
 			margin:0;
+			overflow:hidden;
 		}
 	}
 
@@ -65,7 +66,8 @@ div.player {
 @nav_height_three: 64px;
 div.player > ul.frames > li.library {
 	background-color:#fff;
-	.perspective(1500px);
+	overflow:hidden;
+	.perspective(3000px);
 
 	div.uploadProgress {
 		position:absolute;
@@ -105,6 +107,7 @@ div.player > ul.frames > li.library {
 			line-height: 1;
 			margin:0;
 			padding:0;
+			transform-origin:left bottom;
 
 			&:nth-child(2) {
 				font-size:64px;
@@ -239,7 +242,8 @@ div.player > ul.frames > li.library {
 				opacity:1;
 			}
 			a.artist, a.album {
-				opacity:0;
+				//opacity:0;
+				.listHiddenBack();
 			}
 		}
 		ul {
@@ -258,12 +262,19 @@ div.player > ul.frames > li.library {
 	&.showAlbums {
 		nav {
 			height:160px;
-			a.music, a.artist {
-				opacity:1;
-			}
-			a.album {
-				opacity:0;
-			}
+		}
+		nav a.music {
+			opacity:0.1;
+		}
+		nav a.artist {
+			opacity:1;
+		}
+		&.forward nav a.artist {
+			.listShowingForward();
+			opacity:1;
+		}
+		&.back nav a.album {
+			.listHiddenBack();
 		}
 		&.forward ul {
 			&.artists {
@@ -292,7 +303,11 @@ div.player > ul.frames > li.library {
 	&.showSongs {
 		nav {
 			height:210px;
-			a.music, a.artist, a.album {
+			a.music, a.artist {
+				opacity: 0.1;
+			}
+			a.album {
+				.listShowingForward();
 				opacity:1;
 			}
 		}
@@ -310,10 +325,35 @@ div.player > ul.frames > li.library {
 	}
 }
 
+@-moz-keyframes anim_upload_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
+	}
+}
+@-webkit-keyframes anim_upload_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
+	}
+}
+@keyframes anim_upload_progress_stripe {
+	from {
+		background-position:0 center;
+	}
+	to {
+		background-position:-48px center;
+	}
+}
+
 /* Library Pane Animations */
 @-moz-keyframes anim_librarypane_list_in_forward {
 	from {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 	to {
@@ -323,7 +363,7 @@ div.player > ul.frames > li.library {
 
 @-webkit-keyframes anim_librarypane_list_in_forward {
 	from {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 	to {
@@ -333,7 +373,7 @@ div.player > ul.frames > li.library {
 
 @keyframes anim_librarypane_list_in_forward {
 	from {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 	to {
@@ -343,7 +383,7 @@ div.player > ul.frames > li.library {
 
 @-moz-keyframes anim_librarypane_list_in_back {
 	from {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 	to {
@@ -353,7 +393,7 @@ div.player > ul.frames > li.library {
 
 @-webkit-keyframes anim_librarypane_list_in_back {
 	from {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 	to {
@@ -363,7 +403,7 @@ div.player > ul.frames > li.library {
 
 @keyframes anim_librarypane_list_in_back {
 	from {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 	to {
@@ -376,7 +416,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 }
@@ -386,7 +426,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 }
@@ -396,7 +436,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(1.7));
+		.transform(scale(1.5));
 		opacity:0;
 	}
 }
@@ -406,7 +446,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 }
@@ -416,7 +456,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 }
@@ -426,7 +466,7 @@ div.player > ul.frames > li.library {
 		
 	}
 	to {
-		.transform(scale(0.3));
+		.transform(scale(0.5));
 		opacity:0;
 	}
 }
@@ -564,7 +604,7 @@ div.player > ul.frames > li.playing {
 	div.title {
 		position:absolute;
 		top:0;
-		left:0;
+		left:32px;
 		right:0;
 		overflow:hidden;
 
@@ -605,7 +645,7 @@ div.player > ul.frames > li.playing {
 		position:absolute;
 		display:block;
 		top:150px;
-		left:0;
+		left:32px;
 		width:@albumart-size;
 		height:@albumart-size;
 		background-color:#1f1f1f;
@@ -625,6 +665,7 @@ div.player > ul.frames > li.playing {
 		@button-margin:5px;
 		position:absolute;
 		top:@albumart-size+170px;
+		left:32px;
 		list-style-type:none;
 		margin:0;
 		padding:0;
@@ -697,3 +738,121 @@ div.player > ul.frames > li.playing {
 		z-index:-1;
 	}
 }
+
+@-moz-keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+@-webkit-keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+@keyframes anim_playingtitle_out {
+	from {
+	}
+	to {
+		.transform(translate3d(128px,0,0));
+		opacity:0;
+	}
+}
+
+.animated.anim_playingtitle_out {
+	.animation-name(anim_playingtitle_out);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.860, 0.000, 0.070, 1.000));
+}
+
+@-moz-keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+@keyframes anim_playingtitle_in {
+	from {
+		.transform(translate3d(-128px,0,0));
+		opacity:0;
+	}
+	to {
+	}
+}
+
+.animated.anim_playingtitle_in {
+	.animation-name(anim_playingtitle_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.860, 0.000, 0.070, 1.000));
+}
+
+@-moz-keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+@-webkit-keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+@keyframes anim_albumart_in {
+	from {
+		.transform(translate3d(-@albumart-size,0,0));
+	}
+	to {
+	}
+}
+
+.animated.anim_albumart_in {
+	.animation-name(anim_albumart_in);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.075, 0.820, 0.165, 1.000));
+}
+
+@-moz-keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+@-webkit-keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+@keyframes anim_albumart_out {
+	from {
+	}
+	to {
+		.transform(translate3d(@albumart-size,0,0));
+	}
+}
+
+.animated.anim_albumart_out {
+	.animation-name(anim_albumart_out);
+	.animation-duration(300ms);
+	.animation-timing-function(cubic-bezier(0.075, 0.820, 0.165, 1.000));
+}	

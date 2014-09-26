@@ -24,7 +24,7 @@
             console.dir(s);
         }
         this.tunr.library.addSong(s);
-        //this.tunr.librarypane.loadArtists();
+        this.tunr.player.getHelper("LibraryHelper").loadArtists();
     };
     return TunrHub;
 })();
