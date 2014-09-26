@@ -4,14 +4,6 @@
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var PlayState;
-(function (PlayState) {
-    PlayState[PlayState["PLAYING"] = 0] = "PLAYING";
-    PlayState[PlayState["PAUSED"] = 1] = "PAUSED";
-    PlayState[PlayState["STOPPED"] = 2] = "STOPPED";
-})(PlayState || (PlayState = {}));
-;
-
 var PlaylistPane = (function (_super) {
     __extends(PlaylistPane, _super);
     function PlaylistPane(tunr) {

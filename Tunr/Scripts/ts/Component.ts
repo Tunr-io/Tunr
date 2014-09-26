@@ -36,6 +36,14 @@ class Component {
 		}
 	}
 
+	/**
+	 * Fetches a reference to the helper class specified.
+	 * @param helperName Name of the helper class.
+	 */
+	public getHelper(helperName: string) {
+		return this.helpers[helperName];
+	}
+
 	public getTunr(): Tunr {
 		return this.tunr;
 	}

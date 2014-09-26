@@ -395,7 +395,6 @@
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
-    <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -493,12 +492,13 @@
     <TypeScriptCompile Include="Scripts\ts\helpers\LibraryHelper.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Player.ts" />
-    <TypeScriptCompile Include="Scripts\ts\components\PlayingPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\PlaylistPane.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Library.ts" />
     <TypeScriptCompile Include="Scripts\ts\data\Playlist.ts" />
     <TypeScriptCompile Include="Scripts\ts\Debug.ts" />
     <TypeScriptCompile Include="Scripts\ts\Helper.ts" />
+    <TypeScriptCompile Include="Scripts\ts\helpers\PlayingHelper.ts" />
+    <TypeScriptCompile Include="Scripts\ts\helpers\PlaylistHelper.ts" />
     <TypeScriptCompile Include="Scripts\ts\Misc.ts" />
     <TypeScriptCompile Include="Scripts\ts\misc\Visualizer.ts" />
     <TypeScriptCompile Include="Scripts\ts\TiltEffect.ts" />

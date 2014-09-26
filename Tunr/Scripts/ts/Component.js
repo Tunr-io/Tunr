@@ -29,6 +29,14 @@ var Component = (function () {
             this.helpers[helperClass] = helperObject;
         }
     }
+    /**
+    * Fetches a reference to the helper class specified.
+    * @param helperName Name of the helper class.
+    */
+    Component.prototype.getHelper = function (helperName) {
+        return this.helpers[helperName];
+    };
+
     Component.prototype.getTunr = function () {
         return this.tunr;
     };

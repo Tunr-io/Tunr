@@ -36,7 +36,7 @@ var Visualizer = (function () {
                     });
                 })(this.currentBG);
             }
-            this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
+            this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
                 if (images.length > 0) {
                     _this.showBG(images);
                 }

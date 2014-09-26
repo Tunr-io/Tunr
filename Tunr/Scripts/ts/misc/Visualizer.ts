@@ -1,12 +1,12 @@
 ﻿class Visualizer {
-	private playingpane: PlayingPane;
+	private playingpane: PlayingHelper;
 	private canvas: HTMLCanvasElement;
 	private stage: createjs.Stage;
 	private song: Song;
 	private currentVisual: Visual; // The visual that is currently being played.
 	private currentBG: VisualBG; // The visual background that is currently being played.
 
-	constructor(playingpane: PlayingPane, canvas: HTMLCanvasElement) {
+	constructor(playingpane: PlayingHelper, canvas: HTMLCanvasElement) {
 		this.playingpane = playingpane;
 		this.canvas = canvas;
 	}
@@ -37,7 +37,7 @@
 					});
 				})(this.currentBG);
 			}
-			this.playingpane.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
+			this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
 				if (images.length > 0) {
 					this.showBG(images);
 				}

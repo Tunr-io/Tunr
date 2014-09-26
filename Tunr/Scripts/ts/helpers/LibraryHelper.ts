@@ -193,6 +193,7 @@
 	}
 
 	public selectSong(song: Song): void {
-		//this.parent.getTunr().playlistpane.addSong(song);
+		var playlistHelper = <PlaylistHelper>this.parent.getHelper("PlaylistHelper");
+		playlistHelper.addSong(song);
 	}
 } 

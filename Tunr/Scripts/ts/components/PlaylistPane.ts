@@ -1,10 +1,4 @@
-﻿enum PlayState {
-	PLAYING,
-	PAUSED,
-	STOPPED
-};
-
-class PlaylistPane extends Component {
+﻿class PlaylistPane extends Component {
 	//private playlist: Playlist;
 	private audio: HTMLAudioElement = new Audio();
 	private songlist_element: HTMLUListElement;

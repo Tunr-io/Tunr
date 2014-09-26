@@ -26,6 +26,8 @@ namespace Tunr
 				"~/Scripts/ts/components/Login.js",
 				"~/Scripts/ts/components/Player.js",
 				"~/Scripts/ts/helpers/LibraryHelper.js",
+				"~/Scripts/ts/helpers/PlaylistHelper.js",
+				"~/Scripts/ts/helpers/PlayingHelper.js",
 				"~/Scripts/ts/data/Library.js",
 				"~/Scripts/ts/data/Playlist.js",
 				"~/Scripts/ts/API.js",

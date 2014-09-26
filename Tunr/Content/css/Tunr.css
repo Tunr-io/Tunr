@@ -1011,6 +1011,259 @@ div.player > ul.frames > li.library.showSongs ul.songs {
     opacity: 0;
   }
 }
+/* Playlist Pane */
+div.player > ul.frames > li.playlist h1 {
+  font-family: 'Open Sans';
+  font-weight: 100;
+  font-size: 48px;
+  text-transform: lowercase;
+  margin: 24px 0 12px 24px;
+  height: 65px;
+}
+div.player > ul.frames > li.playlist ul.songlist {
+  list-style-type: none;
+  margin: 16px 0 0 32px;
+  padding: 0;
+  height: calc(100% - 101px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem {
+  position: relative;
+  cursor: pointer;
+  font-family: 'Open Sans';
+  margin: 16px 0;
+  white-space: nowrap;
+  line-height: 1;
+  -webkit-transition: -webkit-transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
+  -moz-transition: -moz-transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
+  -o-transition: -o-transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
+  transition: transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 150ms ease-in-out;
+  -moz-transform-origin: left center;
+  -ms-transform-origin: left center;
+  -o-transform-origin: left center;
+  -webkit-transform-origin: left center;
+  transform-origin: left center;
+  perspective: 1500px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem div.listing {
+  opacity: 0.6;
+  -webkit-transition: opacity 300ms ease-out;
+  -moz-transition: opacity 300ms ease-out;
+  -o-transition: opacity 300ms ease-out;
+  transition: opacity 300ms ease-out;
+  z-index: 10;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem div.listing span.title {
+  font-weight: 900;
+  font-size: 20px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem div.listing span.artist {
+  font-weight: 100;
+  font-size: 14px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem div.listing:hover {
+  opacity: 1;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem.playing div.listing {
+  opacity: 1.0;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem.dim div.listing {
+  -webkit-transition: opacity 150ms ease-out;
+  -moz-transition: opacity 150ms ease-out;
+  -o-transition: opacity 150ms ease-out;
+  transition: opacity 150ms ease-out;
+  opacity: 0.2;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  list-style-type: none;
+  margin: 0 0 0 0px;
+  padding: 0;
+  z-index: 20;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0 8px;
+  border: 2px solid #fff;
+  border-radius: 30px;
+  background-position: 8px 7px;
+  background-size: 22px;
+  background-repeat: no-repeat;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.play {
+  background-image: url("../svg/play_white.svg");
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.play:active {
+  background-image: url("../svg/play_black.svg");
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.remove {
+  background-image: url("../svg/remove_white.svg");
+  background-position: 7px 7px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.remove:active {
+  background-image: url("../svg/remove_black.svg");
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.up {
+  background-image: url("../svg/up_white.svg");
+  background-position: 7px 7px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.up:active {
+  background-image: url("../svg/up_black.svg");
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.down {
+  background-image: url("../svg/down_white.svg");
+  background-position: 7px 7px;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li.down:active {
+  background-image: url("../svg/down_black.svg");
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem ul.controls li:active {
+  background-color: #fff;
+}
+div.player > ul.frames > li.playlist ul.songlist li.playlistitem.playing {
+  -webkit-transform: translate3d(12px, 0, 0);
+  -moz-transform: translate3d(12px, 0, 0);
+  -ms-transform: translate3d(12px, 0, 0);
+  -o-transform: translate3d(12px, 0, 0);
+  transform: translate3d(12px, 0, 0);
+  opacity: 1;
+}
+/* Playing Pane */
+div.player > ul.frames > li.playing div.title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+div.player > ul.frames > li.playing div.title h1 {
+  font-family: 'Open Sans';
+  font-weight: 900;
+  font-size: 52px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 32px 0 0 0;
+  white-space: nowrap;
+}
+div.player > ul.frames > li.playing div.title h2 {
+  font-family: 'Open Sans';
+  font-weight: 100;
+  font-size: 36px;
+  line-height: 1;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  color: #ffffff;
+  white-space: nowrap;
+}
+div.player > ul.frames > li.playing div.playtimer {
+  position: absolute;
+  right: -24px;
+  bottom: -8px;
+  font-family: "Open Sans";
+  font-size: 275px;
+  font-weight: 100;
+  line-height: 0.8;
+  opacity: 0.1;
+}
+div.player > ul.frames > li.playing div.art {
+  position: absolute;
+  display: block;
+  top: 150px;
+  left: 0;
+  width: 200px;
+  height: 200px;
+  background-color: #1f1f1f;
+  overflow: hidden;
+}
+div.player > ul.frames > li.playing div.art img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+div.player > ul.frames > li.playing ul.controls {
+  position: absolute;
+  top: 370px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 198px;
+  margin-left: 1px;
+  -moz-perspective: 1500px;
+  -ms-perspective: 1500px;
+  -webkit-perspective: 1500px;
+  perspective: 1500px;
+}
+div.player > ul.frames > li.playing ul.controls li {
+  display: block;
+  float: left;
+  width: 56px;
+  height: 56px;
+  margin: 0 5px;
+}
+div.player > ul.frames > li.playing ul.controls li button {
+  cursor: pointer;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  border: 2.5px solid #ffffff;
+  background-position: 12px 12px;
+  background-color: transparent;
+  background-size: 28px;
+  background-repeat: no-repeat;
+}
+div.player > ul.frames > li.playing ul.controls li button:active {
+  background-color: white;
+}
+div.player > ul.frames > li.playing ul.controls li.prev button {
+  background-image: url("../svg/prev_white.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.prev button:active {
+  background-image: url("../svg/prev_black.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.next button {
+  background-image: url("../svg/next_white.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.next button:active {
+  background-image: url("../svg/next_black.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.play button {
+  background-image: url("../svg/play_white.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.play button:active {
+  background-image: url("../svg/play_black.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.pause button {
+  background-image: url("../svg/pause_white.svg");
+}
+div.player > ul.frames > li.playing ul.controls li.pause button:active {
+  background-image: url("../svg/pause_black.svg");
+}
+div.player > ul.frames > li.playing ul.controls.playing li.play {
+  display: none;
+}
+div.player > ul.frames > li.playing ul.controls li.pause {
+  display: none;
+}
+div.player > ul.frames > li.playing ul.controls.playing li.pause {
+  display: block;
+}
+div.player > ul.frames > li.playing canvas {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
 /*@import "Components/LibraryPane.less";
 @import "Components/PlaylistPane.less";
 @import "Components/PlayingPane.less";*/

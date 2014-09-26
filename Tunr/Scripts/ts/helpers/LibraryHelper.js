@@ -201,7 +201,8 @@ var LibraryHelper = (function (_super) {
     };
 
     LibraryHelper.prototype.selectSong = function (song) {
-        //this.parent.getTunr().playlistpane.addSong(song);
+        var playlistHelper = this.parent.getHelper("PlaylistHelper");
+        playlistHelper.addSong(song);
     };
     return LibraryHelper;
 })(Helper);
