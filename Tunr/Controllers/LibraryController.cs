@@ -235,10 +235,13 @@ namespace Tunr.Controllers
 							Length = tagFile.Properties.Duration.TotalSeconds
 						};
 
+						tagFile.Dispose();
+
 						// Make sure this file isn't already there
 						var existing = this.azure_table.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.SongMD5 == song.SongMD5).FirstOrDefault();
 						if (existing != null)
 						{
+							System.IO.File.Delete(file.LocalFileName);
 							return BadRequest("This song already exists.");
 						}
 
