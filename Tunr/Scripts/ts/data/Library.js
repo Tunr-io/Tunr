@@ -29,6 +29,46 @@
         this.song_index[s.songId] = s;
     };
 
+    Library.prototype.filter = function (conditions) {
+        var results = new Array();
+        for (var i = 0; i < this.songs.length; i++) {
+            var add = true;
+            for (var prop in conditions) {
+                if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+                    if (conditions[prop] != this.songs[i][prop]) {
+                        add = false;
+                        break;
+                    }
+                }
+            }
+            if (add) {
+                results.push(this.songs[i]);
+            }
+        }
+        return results;
+    };
+
+    Library.prototype.filterUniqueProperty = function (conditions, property) {
+        var uniqueProps = new Array();
+        var results = new Array();
+        for (var i = 0; i < this.songs.length; i++) {
+            var add = true;
+            for (var prop in conditions) {
+                if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+                    if (conditions[prop] != this.songs[i][prop]) {
+                        add = false;
+                        break;
+                    }
+                }
+            }
+            if (add && uniqueProps.indexOf(this.songs[i][property]) < 0) {
+                uniqueProps.push(this.songs[i][property]);
+                results.push(this.songs[i]);
+            }
+        }
+        return results;
+    };
+
     Library.prototype.artists = function () {
         var artists = new Array();
         for (var i = 0; i < this.songs.length; i++) {

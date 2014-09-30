@@ -1,4 +1,8 @@
-﻿@library_pane_width: 300px;
+﻿@import "../Animations.less";
+@import "../Functions.less";
+@import "../Constants.less";
+
+@library_pane_width: 300px;
 
 div.player {
 	position:fixed;
@@ -102,19 +106,26 @@ div.player > ul.frames > li.library {
 			font-size:96px;
 			text-transform: lowercase;
 			white-space: nowrap;
-			opacity:0.3;
+			opacity:0.15;
 			text-decoration: none;
 			line-height: 1;
 			margin:0;
 			padding:0;
-			transform-origin:left bottom;
+			overflow:hidden;
+			cursor:pointer;
+			.transform_origin(left bottom);
+			.transition(opacity 200ms ease-in-out);
 
 			&:nth-child(2) {
-				font-size:64px;
+				font-size:52px;
 			}
 
 			&:nth-child(3) {
-				font-size:48px;
+				font-size:42px;
+			}
+
+			&:last-child {
+				opacity:1;
 			}
 
 			&:hover {
@@ -130,18 +141,20 @@ div.player > ul.frames > li.library {
 		bottom: 0;
 		right: 0;
 		list-style-type: none;
-		.animation-name(anim_librarypane_list_in);
-		.animation-duration(200ms);
-		.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
-		.transition(opacity 200ms ease-in-out);
-		z-index: 9;
+		.transition(~"opacity 400ms cubic-bezier(0.000, 1.000, 0.205, 1.000), transform 400ms cubic-bezier(0.000, 1.000, 0.205, 1.000)");
+		z-index: 10;
 		.perspective(inherit);
 		overflow-y:auto;
 		overflow-x:hidden;
 		.user_select(none);
+		.animation-name(anim_librarypane_list_in_forward);
+		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
+		.animation-duration(400ms);
+		.animation-iteration-count(1);
+		.transform(scale(1));
+		opacity:1;
 
-		&.artists {
-			top: 96px;
+		&.artist {
 			margin: 16px 0 0 20px;
 			padding: 0;
 			color: @bg-color;
@@ -156,8 +169,7 @@ div.player > ul.frames > li.library {
 			}
 		}
 
-		&.albums {
-			top: 160px;
+		&.album {
 			margin:16px 8px 0 8px;
 			padding:0;
 			li {
@@ -178,8 +190,7 @@ div.player > ul.frames > li.library {
 			}
 		}
 
-		&.songs {
-			top: 200px;
+		&.title {
 			margin: 16px 0 0 16px;
 			padding: 0;
 			color: @bg-color;
@@ -198,129 +209,17 @@ div.player > ul.frames > li.library {
 				white-space: nowrap;
 			}
 		}
-	}
 
-	/* Library states */
-	.listHiddenBack() {
-		.animation-name(anim_librarypane_list_out_back);
-		.animation-duration(400ms);
-		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
-		.animation-fill-mode(forwards);
-		z-index: 9;
-	}
+		&.hidden {
+			.transform(scale(1.5));
+			opacity:0;
+			z-index: 9;
+		}
 
-	.listHiddenForward() {
-		.animation-name(anim_librarypane_list_out_forward);
-		.animation-duration(400ms);
-		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
-		.animation-fill-mode(forwards);
-		z-index: 9;
-	}
-
-	.listShowingBack() {
-		.animation-name(anim_librarypane_list_in_back);
-		.animation-duration(400ms);
-		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
-		.animation-fill-mode(forwards);
-		opacity: 1;
-		z-index: 10;
-	}
-
-	.listShowingForward() {
-		.animation-name(anim_librarypane_list_in_forward);
-		.animation-duration(400ms);
-		.animation-timing-function(cubic-bezier(0.000, 1.000, 0.205, 1.000));
-		.animation-fill-mode(forwards);
-		opacity: 1;
-		z-index: 10;
-	}
-
-	&.showArtists {
-		nav {
-			height:96px;
-			a.music {
-				opacity:1;
-			}
-			a.artist, a.album {
-				//opacity:0;
-				.listHiddenBack();
-			}
-		}
-		ul {
-			&.artists {
-				.listShowingBack();
-			}
-			&.albums {
-				.listHiddenBack();
-			}
-			&.songs {
-				.listHiddenBack();
-			}
-		}
-	}
-
-	&.showAlbums {
-		nav {
-			height:160px;
-		}
-		nav a.music {
-			opacity:0.1;
-		}
-		nav a.artist {
-			opacity:1;
-		}
-		&.forward nav a.artist {
-			.listShowingForward();
-			opacity:1;
-		}
-		&.back nav a.album {
-			.listHiddenBack();
-		}
-		&.forward ul {
-			&.artists {
-				.listHiddenForward();
-			}
-			&.albums {
-				.listShowingForward();
-			}
-			&.songs {
-				.listHiddenForward();
-			}
-		}
-		&.back ul {
-			&.artists {
-				.listHiddenBack();
-			}
-			&.albums {
-				.listShowingBack();
-			}
-			&.songs {
-				.listHiddenBack();
-			}
-		}
-	}
-
-	&.showSongs {
-		nav {
-			height:210px;
-			a.music, a.artist {
-				opacity: 0.1;
-			}
-			a.album {
-				.listShowingForward();
-				opacity:1;
-			}
-		}
-		ul {
-			&.artists {
-				.listHiddenForward();
-			}
-			&.albums {
-				.listHiddenForward();
-			}
-			&.songs {
-				.listShowingForward();
-			}
+		&.destroy {
+			.transform(scale(0.5));
+			opacity:0;
+			z-index: 9;
 		}
 	}
 }
@@ -378,96 +277,6 @@ div.player > ul.frames > li.library {
 	}
 	to {
 
-	}
-}
-
-@-moz-keyframes anim_librarypane_list_in_back {
-	from {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-	to {
-
-	}
-}
-
-@-webkit-keyframes anim_librarypane_list_in_back {
-	from {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-	to {
-
-	}
-}
-
-@keyframes anim_librarypane_list_in_back {
-	from {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-	to {
-
-	}
-}
-
-@-moz-keyframes anim_librarypane_list_out_forward {
-	from {
-		
-	}
-	to {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-}
-
-@-webkit-keyframes anim_librarypane_list_out_forward {
-	from {
-		
-	}
-	to {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-}
-
-@keyframes anim_librarypane_list_out_forward {
-	from {
-		
-	}
-	to {
-		.transform(scale(1.5));
-		opacity:0;
-	}
-}
-
-@-moz-keyframes anim_librarypane_list_out_back {
-	from {
-		
-	}
-	to {
-		.transform(scale(0.5));
-		opacity:0;
-	}
-}
-
-@-webkit-keyframes anim_librarypane_list_out_back {
-	from {
-		
-	}
-	to {
-		.transform(scale(0.5));
-		opacity:0;
-	}
-}
-
-@keyframes anim_librarypane_list_out_back {
-	from {
-		
-	}
-	to {
-		.transform(scale(0.5));
-		opacity:0;
 	}
 }
 

@@ -8,24 +8,16 @@ var LibraryHelper = (function (_super) {
     __extends(LibraryHelper, _super);
     function LibraryHelper() {
         _super.apply(this, arguments);
+        this.list_helper_classes = { "artist": ArtistListHelper, "album": AlbumListHelper, "title": SongListHelper };
         this.uploading_count = 0;
     }
     LibraryHelper.prototype.init = function () {
         var _this = this;
         this.nav_element = this.element.getElementsByTagName("nav")[0];
-        this.artists_element = this.element.getElementsByClassName("artists")[0];
-        this.albums_element = this.element.getElementsByClassName("albums")[0];
-        this.songs_element = this.element.getElementsByClassName("songs")[0];
-
-        this.nav_element.getElementsByTagName("a")[0].addEventListener("click", function () {
-            _this.showArtists();
-        });
-        this.nav_element.getElementsByTagName("a")[1].addEventListener("click", function () {
-            _this.showAlbums();
-        });
-        this.nav_element.getElementsByTagName("a")[2].addEventListener("click", function () {
-            _this.showSongs();
-        });
+        this.tree_structure = ["artist", "album", "title"]; // hard-set for now. user-configurable later.
+        this.list_helpers = new Array();
+        this.root_name = "Music";
+        this.list_filter_state = new Song();
         this.load();
 
         // Prepare drag and drop uploading
@@ -95,70 +87,153 @@ var LibraryHelper = (function (_super) {
         xhr.send(formData);
     };
 
+    /**
+    * Loads user's library from the server, then triggers root list render.
+    */
     LibraryHelper.prototype.load = function () {
         var _this = this;
         this.parent.getTunr().library.load().then(function () {
-            _this.loadArtists();
+            _this.loadLevel(0);
         }, function () {
             console.error("failed to load library.");
         });
     };
 
-    LibraryHelper.prototype.loadArtists = function () {
+    LibraryHelper.prototype.getFilterState = function () {
+        return this.list_filter_state;
+    };
+
+    LibraryHelper.prototype.loadChild = function (value) {
+        // Get current property name
+        var prop = this.tree_structure[this.list_helpers.length - 1];
+
+        // Set filter state
+        this.list_filter_state[prop] = value;
+
+        // Load the next list
+        this.loadLevel(this.list_helpers.length);
+    };
+
+    LibraryHelper.prototype.loadLevel = function (levelIndex) {
         var _this = this;
-        var artists = this.parent.getTunr().library.artists();
-        this.artists_element.innerHTML = ''; // clear existing entries
+        var value = this.root_name;
+        if (levelIndex > 0) {
+            // Get current property name
+            var prop = this.tree_structure[this.list_helpers.length - 1];
+
+            // Get new value
+            value = this.list_filter_state[prop];
+        }
+
+        // Add nav header
+        var header = document.createElement("a");
+        header.innerHTML = value;
+        header.addEventListener("click", function () {
+            _this.backLevel(levelIndex);
+        });
+        this.nav_element.appendChild(header);
+
+        // Prepare list helper
+        var listElement = document.createElement("ul");
+        listElement.classList.add(this.tree_structure[levelIndex]);
+        listElement.style.top = this.nav_element.clientHeight + "px";
+        listElement = this.element.appendChild(listElement);
+        var listHelper = new this.list_helper_classes[this.tree_structure[levelIndex]](this, listElement);
+        this.list_helpers.push(listHelper);
+        listHelper.init();
+
+        for (var i = 0; i < this.list_helpers.length - 1; i++) {
+            this.list_helpers[i].hide();
+        }
+    };
+
+    LibraryHelper.prototype.backLevel = function (levelIndex) {
+        if (levelIndex == this.list_helpers.length - 1) {
+            return;
+        }
+        var headers = this.nav_element.getElementsByTagName("a");
+
+        // Show the specified list level
+        this.list_helpers[levelIndex].show();
+
+        for (var i = this.list_helpers.length - 1; i > levelIndex; i--) {
+            // Remove property of this from the filter state
+            var prop = this.tree_structure[i];
+            this.list_filter_state[prop] = "";
+
+            // Remove the navigation header
+            this.nav_element.removeChild(headers[i]);
+
+            // Destroy the list
+            var helper = this.list_helpers.pop();
+            helper.destroy();
+        }
+    };
+
+    LibraryHelper.prototype.selectSong = function (song) {
+        var playlistHelper = this.parent.getHelper("PlaylistHelper");
+        playlistHelper.addSong(song);
+    };
+    return LibraryHelper;
+})(Helper);
+
+var LibraryListHelper = (function (_super) {
+    __extends(LibraryListHelper, _super);
+    function LibraryListHelper(parent, element) {
+        this.library_helper = parent;
+        _super.call(this, parent.parent, element);
+    }
+    LibraryListHelper.prototype.hide = function () {
+        this.element.classList.add("hidden");
+    };
+
+    LibraryListHelper.prototype.show = function () {
+        this.element.classList.remove("hidden");
+    };
+
+    LibraryListHelper.prototype.destroy = function () {
+        this.element.parentNode.removeChild(this.element);
+    };
+    return LibraryListHelper;
+})(Helper);
+
+var ArtistListHelper = (function (_super) {
+    __extends(ArtistListHelper, _super);
+    function ArtistListHelper() {
+        _super.apply(this, arguments);
+    }
+    ArtistListHelper.prototype.init = function () {
+        var _this = this;
+        var artists = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "artist");
+        this.element.innerHTML = ''; // clear existing entries
         for (var i = 0; i < artists.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = htmlEscape(artists[i]);
+            li.innerHTML = htmlEscape(artists[i].artist);
             (function (artist, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function (e) {
-                    _this.loadAlbums(artist);
+                    _this.library_helper.loadChild(artist);
                 });
-            })(artists[i], li);
-            this.artists_element.appendChild(li);
+            })(artists[i].artist, li);
+            this.element.appendChild(li);
         }
     };
+    return ArtistListHelper;
+})(LibraryListHelper);
 
-    LibraryHelper.prototype.showArtists = function () {
-        this.element.classList.remove("back");
-        this.element.classList.add("forward");
-        this.element.classList.add("showArtists");
-        this.element.classList.remove("showAlbums");
-        this.element.classList.remove("showSongs");
-    };
-
-    LibraryHelper.prototype.showAlbums = function () {
-        if (this.element.classList.contains("showArtists")) {
-            this.element.classList.add("forward");
-            this.element.classList.remove("back");
-        } else {
-            this.element.classList.remove("forward");
-            this.element.classList.add("back");
-        }
-        this.element.classList.remove("showArtists");
-        this.element.classList.add("showAlbums");
-        this.element.classList.remove("showSongs");
-    };
-
-    LibraryHelper.prototype.showSongs = function () {
-        this.element.classList.remove("back");
-        this.element.classList.add("forward");
-        this.element.classList.remove("showArtists");
-        this.element.classList.remove("showAlbums");
-        this.element.classList.add("showSongs");
-    };
-
-    LibraryHelper.prototype.loadAlbums = function (artist) {
+var AlbumListHelper = (function (_super) {
+    __extends(AlbumListHelper, _super);
+    function AlbumListHelper() {
+        _super.apply(this, arguments);
+    }
+    AlbumListHelper.prototype.init = function () {
         var _this = this;
-        var albums = this.parent.getTunr().library.albumsin(artist);
-        this.nav_element.getElementsByTagName("a")[1].innerText = artist;
-        this.albums_element.innerHTML = "";
+        var albums = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "album");
+        this.element.innerHTML = "";
         for (var i = 0; i < albums.length; i++) {
             var img = document.createElement("img");
-            img.src = '/api/LibraryData/' + urlEscape(artist) + '/' + urlEscape(albums[i]) + '/art';
-            img.alt = albums[i];
+            img.src = '/api/LibraryData/' + urlEscape(albums[i].artist) + '/' + urlEscape(albums[i].album) + '/art';
+            img.alt = albums[i].album;
             img.style.opacity = '0';
             (function (imgel) {
                 imgel.addEventListener("load", function (ev) {
@@ -170,40 +245,36 @@ var LibraryHelper = (function (_super) {
             (function (album, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
-                    _this.loadSongs(album, artist);
+                    _this.library_helper.loadChild(album);
                 });
-            })(albums[i], li);
-            this.albums_element.appendChild(li);
+            })(albums[i].album, li);
+            this.element.appendChild(li);
         }
-        this.showAlbums();
     };
+    return AlbumListHelper;
+})(LibraryListHelper);
 
-    LibraryHelper.prototype.loadSongs = function (album, artist) {
+var SongListHelper = (function (_super) {
+    __extends(SongListHelper, _super);
+    function SongListHelper() {
+        _super.apply(this, arguments);
+    }
+    SongListHelper.prototype.init = function () {
         var _this = this;
-        var songs = this.parent.getTunr().library.songsin(album, artist);
-        this.nav_element.getElementsByTagName("a")[2].innerText = album;
-        this.songs_element.innerHTML = "";
+        var songs = this.parent.getTunr().library.filter(this.library_helper.getFilterState());
+        this.element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");
             li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title);
             (function (song, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {
-                    _this.selectSong(song);
+                    _this.library_helper.selectSong(song);
                 });
             })(songs[i], li);
-            this.songs_element.appendChild(li);
+            this.element.appendChild(li);
         }
-        this.showSongs();
     };
-
-    LibraryHelper.prototype.songActions = function (element, song) {
-    };
-
-    LibraryHelper.prototype.selectSong = function (song) {
-        var playlistHelper = this.parent.getHelper("PlaylistHelper");
-        playlistHelper.addSong(song);
-    };
-    return LibraryHelper;
-})(Helper);
+    return SongListHelper;
+})(LibraryListHelper);
 //# sourceMappingURL=LibraryHelper.js.map

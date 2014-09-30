@@ -269,6 +269,9 @@
     <Content Include="Content\css\Animations.css">
       <DependentUpon>Animations.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Animations.min.css">
+      <DependentUpon>Animations.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\Components\LibraryPane.css">
       <DependentUpon>LibraryPane.less</DependentUpon>
     </Content>
@@ -286,6 +289,12 @@
     </Content>
     <Content Include="Content\css\Components\Registration.css">
       <DependentUpon>Registration.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Constants.css">
+      <DependentUpon>Constants.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Constants.min.css">
+      <DependentUpon>Constants.css</DependentUpon>
     </Content>
     <Content Include="Content\css\Dialog.css">
       <DependentUpon>Dialog.less</DependentUpon>
@@ -339,6 +348,10 @@
     <Content Include="Content\css\Components\Player.less" />
     <Content Include="Content\css\Components\Player.css.map">
       <DependentUpon>Player.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Constants.less" />
+    <Content Include="Content\css\Constants.css.map">
+      <DependentUpon>Constants.css</DependentUpon>
     </Content>
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />

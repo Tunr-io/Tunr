@@ -30,6 +30,46 @@
 		this.song_index[s.songId] = s;
 	}
 
+	public filter(conditions: Song): Array<Song> {
+		var results: Array<Song> = new Array<Song>();
+		for (var i = 0; i < this.songs.length; i++) {
+			var add = true;
+			for (var prop in conditions) {
+				if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+					if (conditions[prop] != this.songs[i][prop]) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				results.push(this.songs[i]);
+			}
+		}
+		return results;
+	}
+
+	public filterUniqueProperty(conditions: Song, property: string): Array<Song> {
+		var uniqueProps: Array<string> = new Array<string>();
+		var results: Array<Song> = new Array<Song>();
+		for (var i = 0; i < this.songs.length; i++) {
+			var add = true;
+			for (var prop in conditions) {
+				if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+					if (conditions[prop] != this.songs[i][prop]) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add && uniqueProps.indexOf(this.songs[i][property]) < 0) {
+				uniqueProps.push(this.songs[i][property]);
+				results.push(this.songs[i]);
+			}
+		}
+		return results;
+	}
+
 	public artists(): Array<string> {
 		var artists: Array<string> = new Array<string>();
 		for (var i = 0; i < this.songs.length; i++) {
