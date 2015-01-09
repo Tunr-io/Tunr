@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,14 @@ using System.Web;
 
 namespace Tunr.Models
 {
+	[JsonObject(MemberSerialization.OptIn)]
 	public class Song : TableEntity
 	{
 		/// <summary>
 		/// I set the rowkey
 		/// </summary>
+		[JsonProperty]
+		[IgnoreProperty]
 		public Guid SongId
 		{
 			get
@@ -25,11 +29,11 @@ namespace Tunr.Models
 				this.RowKey = value.ToString();
 			}
 		}
-		public string SongFingerprint { get; set; }
-		public string SongMD5 { get; set; }
+		
 		/// <summary>
 		/// I set the PartitionKey
 		/// </summary>
+		[IgnoreProperty]
 		public Guid OwnerId
 		{
 			get
@@ -41,59 +45,149 @@ namespace Tunr.Models
 				this.PartitionKey = value.ToString();
 			}
 		}
-		public string Title { get; set; }
-		public string Artist { get; set; }
-		public string Album { get; set; }
-		public int TrackNumber { get; set; }
-		public int DiscNumber { get; set; }
-		public int Year { get; set; }
-		public string Genre { get; set; }
-		public double Length { get; set; }
 
-		public SongViewModel toViewModel()
+		/// <summary>
+		/// Audio data fingerprint of the audio file.
+		/// </summary>
+		public string Fingerprint { get; set; }
+
+		/// <summary>
+		/// MD5 hash of the first few KB of the file. Used to prevent duplicates.
+		/// </summary>
+		[JsonProperty]
+		public string Md5Hash { get; set; }
+
+		/// <summary>
+		/// Duration of the song in seconds.
+		/// </summary>
+		[JsonProperty]
+		public double Duration { get; set; }
+
+		/// <summary>
+		/// Tag: Track title.
+		/// </summary>
+		[JsonProperty]
+		public string TagTitle { get; set; }
+
+		/// <summary>
+		/// Tag: Track album.
+		/// </summary>
+		[JsonProperty]
+		public string TagAlbum { get; set; }
+
+		/// <summary>
+		/// Tag: List of track performers.
+		/// </summary>
+		[IgnoreProperty]
+		[JsonProperty]
+		public List<string> TagPerformers { get; set; }
+
+		/// <summary>
+		/// Tag: List of track album artists.
+		/// </summary>
+		[IgnoreProperty]
+		[JsonProperty]
+		public List<string> TagAlbumArtists { get; set; }
+
+		/// <summary>
+		/// Tag: List of track composers.
+		/// </summary>
+		[IgnoreProperty]
+		[JsonProperty]
+		public List<string> TagComposers { get; set; }
+
+		/// <summary>
+		/// Tag: List of track genres.
+		/// </summary>
+		[IgnoreProperty]
+		[JsonProperty]
+		public List<string> TagGenres { get; set; }
+
+		/// <summary>
+		/// Tag: Track year.
+		/// </summary>
+		[JsonProperty]
+		public int TagYear { get; set; }
+
+		/// <summary>
+		/// Tag: Track number.
+		/// </summary>
+		[JsonProperty]
+		public int TagTrack { get; set; }
+
+		/// <summary>
+		/// Tag: Total album track count.
+		/// </summary>
+		[JsonProperty]
+		public int TagTrackCount { get; set; }
+
+		/// <summary>
+		/// Tag: Track disc number.
+		/// </summary>
+		[JsonProperty]
+		public int TagDisc { get; set; }
+
+		/// <summary>
+		/// Tag: Total album disc count.
+		/// </summary>
+		[JsonProperty]
+		public int TagDiscCount { get; set; }
+
+		/// <summary>
+		/// Tag: Track comment.
+		/// </summary>
+		[JsonProperty]
+		public string TagComment { get; set; }
+
+		/// <summary>
+		/// Tag: Track lyrics.
+		/// </summary>
+		[JsonProperty]
+		public string TagLyrics { get; set; }
+
+		/// <summary>
+		/// Tag: Track conductor.
+		/// </summary>
+		[JsonProperty]
+		public string TagConductor { get; set; }
+
+		/// <summary>
+		/// Tag: Track BPM.
+		/// </summary>
+		[JsonProperty]
+		public int TagBeatsPerMinute { get; set; }
+
+		/// <summary>
+		/// Tag: Track grouping.
+		/// </summary>
+		[JsonProperty]
+		public string TagGrouping { get; set; }
+
+		/// <summary>
+		/// Tag: Track copyright.
+		/// </summary>
+		[JsonProperty]
+		public string TagCopyright { get; set; }
+
+		public override IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext)
 		{
-			return new SongViewModel()
-			{
-				SongId = this.SongId,
-				//SongFingerPrint = this.SongFingerprint,
-				SongMD5 = this.SongMD5,
-				OwnerId = this.OwnerId,
-				Title = this.Title,
-				Artist = this.Artist,
-				Album = this.Album,
-				TrackNumber = this.TrackNumber,
-				DiscNumber = this.DiscNumber,
-				Year = this.Year,
-				Genre = this.Genre,
-				Length = this.Length
-			};
+			var results = base.WriteEntity(operationContext);
+			// Serialize lists to JSON
+			results.Add("TagPerformers", new EntityProperty(JsonConvert.SerializeObject(this.TagPerformers)));
+			results.Add("TagAlbumArtists", new EntityProperty(JsonConvert.SerializeObject(this.TagAlbumArtists)));
+			results.Add("TagComposers", new EntityProperty(JsonConvert.SerializeObject(this.TagComposers)));
+			results.Add("TagGenres", new EntityProperty(JsonConvert.SerializeObject(this.TagGenres)));
+			return results;
 		}
-	}
 
-	public class SongViewModel
-	{
-		[JsonProperty("songId")]
-		public Guid SongId { get; set; }
-		//public string SongFingerPrint { get; set; }
-		[JsonProperty("ownerId")]
-		public Guid OwnerId { get; set; }
-		[JsonProperty("songMD5")]
-		public string SongMD5 { get; set; }
-		[JsonProperty("title")]
-		public string Title { get; set; }
-		[JsonProperty("artist")]
-		public string Artist { get; set; }
-		[JsonProperty("album")]
-		public string Album { get; set; }
-		[JsonProperty("trackNumber")]
-		public int TrackNumber { get; set; }
-		[JsonProperty("discNumber")]
-		public int DiscNumber { get; set; }
-		[JsonProperty("year")]
-		public int Year { get; set; }
-		[JsonProperty("genre")]
-		public string Genre { get; set; }
-		[JsonProperty("length")]
-		public double Length { get; set; }
+		public override void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
+		{
+			base.ReadEntity(properties, operationContext);
+			// Deserialize list values from JSON
+			this.TagPerformers = JsonConvert.DeserializeObject<List<string>>(properties["TagPerformers"].StringValue);
+			this.TagAlbumArtists = JsonConvert.DeserializeObject<List<string>>(properties["TagAlbumArtists"].StringValue);
+			this.TagComposers = JsonConvert.DeserializeObject<List<string>>(properties["TagComposers"].StringValue);
+			this.TagGenres = JsonConvert.DeserializeObject<List<string>>(properties["TagGenres"].StringValue);
+		}
 	}
 }
