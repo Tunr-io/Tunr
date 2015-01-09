@@ -32,7 +32,7 @@ namespace Tunr.Controllers
 	public class LibraryController : ApiControllerWithHub<TunrHub>
 	{
 		public static readonly int c_md5size = 128 * 1024;
-		private CloudTable SongTable { get; set; }
+		private CloudTable azure_table { get; set; }
 		public LibraryController()
 		{
 			// Retrieve the storage account from the connection string.
@@ -43,8 +43,10 @@ namespace Tunr.Controllers
 			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
 			// Create the table if it doesn't exist.
-			this.SongTable = tableClient.GetTableReference("Song");
-			this.SongTable.CreateIfNotExists();
+			CloudTable table = tableClient.GetTableReference("songs");
+			table.CreateIfNotExists();
+
+			this.azure_table = table;
 		}
 
 		public ApplicationUserManager UserManager
@@ -57,7 +59,7 @@ namespace Tunr.Controllers
 
 		// GET api/Library
 		[Route("")]
-		public IEnumerable<Song> Get()
+		public IEnumerable<SongViewModel> Get()
 		{
 			using (var db = new ApplicationDbContext())
 			{
@@ -65,8 +67,9 @@ namespace Tunr.Controllers
 				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
 
 				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-				var songs = this.SongTable.ExecuteQuery(query);
-				return songs;
+				var songs = this.azure_table.ExecuteQuery(query);
+				var song_viewmodels = songs.Select(s => s.toViewModel());
+				return song_viewmodels;
 			}
 		}
 
@@ -74,7 +77,7 @@ namespace Tunr.Controllers
 		public async Task<HttpResponseMessage> GetImage(Guid id)
 		{
 			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-			var song = this.SongTable.ExecuteQuery(query).FirstOrDefault();
+			var song = this.azure_table.ExecuteQuery(query).FirstOrDefault();
 			if (song == null) {
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified ID.");
 			}
@@ -90,7 +93,7 @@ namespace Tunr.Controllers
 				});
 				fbClient.AccessToken = tokenResult.access_token;
 
-				FacebookSearchResponse fbRequest = fbClient.Get<FacebookSearchResponse>("search", new { q = song.TagPerformers.FirstOrDefault(), type = "page" });
+				FacebookSearchResponse fbRequest = fbClient.Get<FacebookSearchResponse>("search", new { q = song.Artist, type = "page" });
 				IEnumerable<FacebookSearchResult> fbResults = fbRequest.data.Where(x => x.category.Equals("Musician/band"));
 				dynamic pageId = fbResults.FirstOrDefault().id;
 
@@ -101,7 +104,7 @@ namespace Tunr.Controllers
 			}
 			catch (Exception) { }
 			IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient("***REMOVED***", "***REMOVED***");
-			var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault(), filter: SearchFilter.Artists, maxItems: 1, country: "US");
+			var response = await client.SearchAsync(Namespace.music, song.Artist, filter: SearchFilter.Artists, maxItems: 1, country: "US");
 			if (response.Artists.TotalItemCount > 0)
 			{
 				imageList.Add(response.Artists.Items[0].ImageUrl);
@@ -220,32 +223,22 @@ namespace Tunr.Controllers
 						{
 							SongId = Guid.NewGuid(),
 							OwnerId = new Guid(user.Id),
-							Fingerprint = fingerprint,
-							Md5Hash = sHash,
-							Duration = tagFile.Properties.Duration.TotalSeconds,
-							TagTitle = tagFile.Tag.Title,
-							TagAlbum = tagFile.Tag.Album,
-							TagPerformers = new List<string>(tagFile.Tag.Performers),
-							TagAlbumArtists = new List<string>(tagFile.Tag.AlbumArtists),
-							TagComposers = new List<string>(tagFile.Tag.Composers),
-							TagGenres = new List<string>(tagFile.Tag.Genres),
-							TagYear = (int)tagFile.Tag.Year,
-							TagTrack = (int)tagFile.Tag.Track,
-							TagTrackCount = (int)tagFile.Tag.TrackCount,
-							TagDisc = (int)tagFile.Tag.Disc,
-							TagDiscCount = (int)tagFile.Tag.DiscCount,
-							TagComment = tagFile.Tag.Comment,
-							TagLyrics = tagFile.Tag.Lyrics,
-							TagConductor = tagFile.Tag.Conductor,
-							TagBeatsPerMinute = (int)tagFile.Tag.BeatsPerMinute,
-							TagGrouping = tagFile.Tag.Grouping,
-							TagCopyright = tagFile.Tag.Copyright
+							Title = tagFile.Tag.Title,
+							Artist = tagFile.Tag.Performers.First(),
+							Album = tagFile.Tag.Album,
+							Genre = tagFile.Tag.FirstGenre,
+							Year = (int)tagFile.Tag.Year,
+							TrackNumber = (int)tagFile.Tag.Track,
+							DiscNumber = (int)tagFile.Tag.Disc,
+							SongFingerprint = fingerprint,
+							SongMD5 = sHash,
+							Length = tagFile.Properties.Duration.TotalSeconds
 						};
 
 						tagFile.Dispose();
 
 						// Make sure this file isn't already there
-						var existing = this.SongTable.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.Md5Hash == song.Md5Hash).FirstOrDefault();
+						var existing = this.azure_table.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.SongMD5 == song.SongMD5).FirstOrDefault();
 						if (existing != null)
 						{
 							System.IO.File.Delete(file.LocalFileName);
@@ -261,7 +254,7 @@ namespace Tunr.Controllers
 						CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
 						// Retrieve reference to a previously created container.
-						CloudBlobContainer container = blobClient.GetContainerReference("uploads");
+						CloudBlobContainer container = blobClient.GetContainerReference("songs");
 						container.CreateIfNotExists();
 
 						// Retrieve reference to a blob named "myblob".
@@ -278,10 +271,10 @@ namespace Tunr.Controllers
 						TableOperation insertOperation = TableOperation.Insert(song);
 
 						// Execute the insert operation.
-						this.SongTable.Execute(insertOperation);
+						this.azure_table.Execute(insertOperation);
 
 						// Push the new song to SignalR clients
-						this.Hub.Clients.Group(user.Id).newSong(song);
+						this.Hub.Clients.Group(user.Id).newSong(song.toViewModel());
 
 						System.IO.File.Delete(file.LocalFileName);
 					}

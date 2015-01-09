@@ -61,7 +61,7 @@ public class StreamHandler : IHttpHandler
 		CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
 		// Retrieve reference to a previously created container.
-		CloudBlobContainer container = blobClient.GetContainerReference("uploads");
+		CloudBlobContainer container = blobClient.GetContainerReference("songs");
 
 		// Retrieve reference to a blob
 		CloudBlockBlob blockBlob = container.GetBlockBlobReference(songid.ToString());

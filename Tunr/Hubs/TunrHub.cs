@@ -19,7 +19,7 @@ namespace Tunr.Hubs
 			Groups.Add(Context.ConnectionId, userId);
 			return base.OnConnected();
 		}
-		internal void NewSong(TunrUser user, Song song)
+		internal void NewSong(TunrUser user, SongViewModel song)
 		{
 			Clients.Group(user.Id).newSong(song);
 		}

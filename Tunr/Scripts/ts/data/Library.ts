@@ -49,10 +49,6 @@
 		return results;
 	}
 
-	/**
-	 * Filter the library and return songs that match the specified conditions,
-	 * whilst each having a unique value for the given property.
-	 */
 	public filterUniqueProperty(conditions: Song, property: string): Array<Song> {
 		var uniqueProps: Array<string> = new Array<string>();
 		var results: Array<Song> = new Array<Song>();
@@ -74,70 +70,61 @@
 		return results;
 	}
 
-	//public artists(): Array<string> {
-	//	var artists: Array<string> = new Array<string>();
-	//	for (var i = 0; i < this.songs.length; i++) {
-	//		if (artists.indexOf(this.songs[i].artist) < 0) {
-	//			artists.push(this.songs[i].artist);
-	//		}
-	//	}
-	//	return artists.sort();
-	//}
+	public artists(): Array<string> {
+		var artists: Array<string> = new Array<string>();
+		for (var i = 0; i < this.songs.length; i++) {
+			if (artists.indexOf(this.songs[i].artist) < 0) {
+				artists.push(this.songs[i].artist);
+			}
+		}
+		return artists.sort();
+	}
 
-	//public albumsin(artist: string) {
-	//	var albums: Array<string> = new Array<string>();
-	//	for (var i = 0; i < this.songs.length; i++) {
-	//		if (this.songs[i].artist == artist && albums.indexOf(this.songs[i].album) < 0) {
-	//			albums.push(this.songs[i].album);
-	//		}
-	//	}
-	//	return albums.sort();
-	//}
+	public albumsin(artist: string) {
+		var albums: Array<string> = new Array<string>();
+		for (var i = 0; i < this.songs.length; i++) {
+			if (this.songs[i].artist == artist && albums.indexOf(this.songs[i].album) < 0) {
+				albums.push(this.songs[i].album);
+			}
+		}
+		return albums.sort();
+	}
 
-	//public albums(): Array<string> {
-	//	var albums: Array<string> = new Array<string>();
-	//	for (var i = 0; i < this.songs.length; i++) {
-	//		if (albums.indexOf(this.songs[i].album) < 0) {
-	//			albums.push(this.songs[i].album);
-	//		}
-	//	}
-	//	return albums;
-	//}
+	public albums(): Array<string> {
+		var albums: Array<string> = new Array<string>();
+		for (var i = 0; i < this.songs.length; i++) {
+			if (albums.indexOf(this.songs[i].album) < 0) {
+				albums.push(this.songs[i].album);
+			}
+		}
+		return albums;
+	}
 
-	//public songsin(album: string, artist?: string): Array<Song> {
-	//	var songs: Array<Song> = new Array<Song>();
-	//	for (var i = 0; i < this.songs.length; i++) {
-	//		if (this.songs[i].album == album) {
-	//			if (typeof artist === undefined || this.songs[i].artist == artist) {
-	//				songs.push(this.songs[i]);
-	//			}
-	//		}
-	//	}
-	//	return songs.sort((a, b) => {
-	//		return a.trackNumber - b.trackNumber;
-	//	});
-	//}
+	public songsin(album: string, artist?: string): Array<Song> {
+		var songs: Array<Song> = new Array<Song>();
+		for (var i = 0; i < this.songs.length; i++) {
+			if (this.songs[i].album == album) {
+				if (typeof artist === undefined || this.songs[i].artist == artist) {
+					songs.push(this.songs[i]);
+				}
+			}
+		}
+		return songs.sort((a, b) => {
+			return a.trackNumber - b.trackNumber;
+		});
+	}
 }
 
 class Song {
 	public songId: string;
-	public md5Hash: string;
-	public duration: number;
-	public tagTitle: string;
-	public tagAlbum: string;
-	public tagPerformers: Array<string>;
-	public tagAlbumArtists: Array<string>;
-	public tagComposers: Array<string>;
-	public tagGenres: Array<string>;
-	public tagYear: number;
-	public tagTrack: number;
-	public tagTrackCount: number;
-	public tagDisc: number;
-	public tagDiscCount: number;
-	public tagComment: string;
-	public tagLyrics: string;
-	public tagConductor: string;
-	public tagBeatsPerMinute: number;
-	public tagGrouping: string;
-	public tagCopyright: string;
+	public ownerId: string;
+	//public songFingerPrint: string;
+	public artist: string;
+	public album: string;
+	public title: string;
+	public genre: string;
+	public discNumber: string;
+	public trackNumber: number;
+	public year: number;
+	public length: number;
 }

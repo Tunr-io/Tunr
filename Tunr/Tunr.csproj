@@ -353,11 +353,13 @@
     <Content Include="Content\css\Constants.css.map">
       <DependentUpon>Constants.css</DependentUpon>
     </Content>
+    <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApiControllerWithHub.cs" />
     <Compile Include="Controllers\LibraryController.cs" />
     <Compile Include="Controllers\LibraryDataController.cs" />
     <Compile Include="Controllers\TunrController.cs" />
+    <None Include="Controllers\MeController.cs.bak" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
