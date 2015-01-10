@@ -8,13 +8,13 @@ var LibraryHelper = (function (_super) {
     __extends(LibraryHelper, _super);
     function LibraryHelper() {
         _super.apply(this, arguments);
-        this.list_helper_classes = { "artist": ArtistListHelper, "album": AlbumListHelper, "title": SongListHelper };
+        this.list_helper_classes = { "tagPerformers": ArtistListHelper, "tagAlbum": AlbumListHelper, "tagTitle": SongListHelper };
         this.uploading_count = 0;
     }
     LibraryHelper.prototype.init = function () {
         var _this = this;
         this.nav_element = this.element.getElementsByTagName("nav")[0];
-        this.tree_structure = ["artist", "album", "title"]; // hard-set for now. user-configurable later.
+        this.tree_structure = ["tagPerformers", "tagAlbum", "tagTitle"]; // hard-set for now. user-configurable later.
         this.list_helpers = new Array();
         this.root_name = "Music";
         this.list_filter_state = new Song();
@@ -122,7 +122,11 @@ var LibraryHelper = (function (_super) {
             var prop = this.tree_structure[this.list_helpers.length - 1];
 
             // Get new value
-            value = this.list_filter_state[prop];
+            if (Array.isArray(this.list_filter_state[prop])) {
+                value = this.list_filter_state[prop][0];
+            } else {
+                value = this.list_filter_state[prop];
+            }
         }
 
         // Add nav header
@@ -204,17 +208,20 @@ var ArtistListHelper = (function (_super) {
     }
     ArtistListHelper.prototype.init = function () {
         var _this = this;
-        var artists = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "artist");
+        var artists = this.parent.getTunr().library.fetchUniquePropertyValues(this.library_helper.getFilterState(), "tagPerformers");
+        artists.sort(function (a, b) {
+            return a.localeCompare(b);
+        });
         this.element.innerHTML = ''; // clear existing entries
         for (var i = 0; i < artists.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = htmlEscape(artists[i].artist);
+            li.innerHTML = htmlEscape(artists[i]);
             (function (artist, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function (e) {
-                    _this.library_helper.loadChild(artist);
+                    _this.library_helper.loadChild([artist]);
                 });
-            })(artists[i].artist, li);
+            })(artists[i], li);
             this.element.appendChild(li);
         }
     };
@@ -228,12 +235,12 @@ var AlbumListHelper = (function (_super) {
     }
     AlbumListHelper.prototype.init = function () {
         var _this = this;
-        var albums = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "album");
+        var albums = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "tagAlbum");
         this.element.innerHTML = "";
         for (var i = 0; i < albums.length; i++) {
             var img = document.createElement("img");
-            img.src = '/api/LibraryData/' + urlEscape(albums[i].artist) + '/' + urlEscape(albums[i].album) + '/art';
-            img.alt = albums[i].album;
+            img.src = '/api/LibraryData/' + urlEscape(albums[i].tagPerformers[0]) + '/' + urlEscape(albums[i].tagAlbum) + '/art';
+            img.alt = albums[i].tagAlbum;
             img.style.opacity = '0';
             (function (imgel) {
                 imgel.addEventListener("load", function (ev) {
@@ -247,7 +254,7 @@ var AlbumListHelper = (function (_super) {
                 element.addEventListener("click", function () {
                     _this.library_helper.loadChild(album);
                 });
-            })(albums[i].album, li);
+            })(albums[i].tagAlbum, li);
             this.element.appendChild(li);
         }
     };
@@ -262,10 +269,13 @@ var SongListHelper = (function (_super) {
     SongListHelper.prototype.init = function () {
         var _this = this;
         var songs = this.parent.getTunr().library.filter(this.library_helper.getFilterState());
+        songs.sort(function (a, b) {
+            return a.tagTrack - b.tagTrack;
+        });
         this.element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");
-            li.innerHTML = '<span class="track">' + ('0' + songs[i].trackNumber).slice(-2) + '</span>' + htmlEscape(songs[i].title);
+            li.innerHTML = '<span class="track">' + ('0' + songs[i].tagTrack).slice(-2) + '</span>' + htmlEscape(songs[i].tagTitle);
             (function (song, element) {
                 TiltEffect.addTilt(element);
                 element.addEventListener("click", function () {

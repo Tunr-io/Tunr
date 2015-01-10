@@ -2,8 +2,6 @@
 @import "../Functions.less";
 @import "../Constants.less";
 
-@library_pane_width: 300px;
-
 div.player {
 	position:fixed;
 	top:0;
@@ -154,7 +152,7 @@ div.player > ul.frames > li.library {
 		.transform(scale(1));
 		opacity:1;
 
-		&.artist {
+		&.tagPerformers {
 			margin: 16px 0 0 20px;
 			padding: 0;
 			color: @bg-color;
@@ -169,7 +167,7 @@ div.player > ul.frames > li.library {
 			}
 		}
 
-		&.album {
+		&.tagAlbum {
 			margin:16px 8px 0 8px;
 			padding:0;
 			li {
@@ -190,7 +188,7 @@ div.player > ul.frames > li.library {
 			}
 		}
 
-		&.title {
+		&.tagTitle {
 			margin: 16px 0 0 16px;
 			padding: 0;
 			color: @bg-color;

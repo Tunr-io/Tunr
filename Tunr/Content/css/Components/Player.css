@@ -303,7 +303,7 @@ div.player > ul.frames > li.library > ul {
   transform: scale(1);
   opacity: 1;
 }
-div.player > ul.frames > li.library > ul.artist {
+div.player > ul.frames > li.library > ul.tagPerformers {
   margin: 16px 0 0 20px;
   padding: 0;
   color: #0d0d0d;
@@ -311,16 +311,16 @@ div.player > ul.frames > li.library > ul.artist {
   font-size: 24px;
   font-weight: 100;
 }
-div.player > ul.frames > li.library > ul.artist li {
+div.player > ul.frames > li.library > ul.tagPerformers li {
   cursor: pointer;
   padding: 4px 0;
   white-space: nowrap;
 }
-div.player > ul.frames > li.library > ul.album {
+div.player > ul.frames > li.library > ul.tagAlbum {
   margin: 16px 8px 0 8px;
   padding: 0;
 }
-div.player > ul.frames > li.library > ul.album li {
+div.player > ul.frames > li.library > ul.tagAlbum li {
   cursor: pointer;
   background-color: #eee;
   display: block;
@@ -329,7 +329,7 @@ div.player > ul.frames > li.library > ul.album li {
   height: 128px;
   margin: 6px;
 }
-div.player > ul.frames > li.library > ul.album li img {
+div.player > ul.frames > li.library > ul.tagAlbum li img {
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -338,7 +338,7 @@ div.player > ul.frames > li.library > ul.album li img {
   -o-transition: opacity 300ms linear;
   transition: opacity 300ms linear;
 }
-div.player > ul.frames > li.library > ul.title {
+div.player > ul.frames > li.library > ul.tagTitle {
   margin: 16px 0 0 16px;
   padding: 0;
   color: #0d0d0d;
@@ -346,7 +346,7 @@ div.player > ul.frames > li.library > ul.title {
   font-size: 20px;
   font-weight: 100;
 }
-div.player > ul.frames > li.library > ul.title li {
+div.player > ul.frames > li.library > ul.tagTitle li {
   cursor: pointer;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -355,7 +355,7 @@ div.player > ul.frames > li.library > ul.title li {
   padding: 4px 0;
   white-space: nowrap;
 }
-div.player > ul.frames > li.library > ul.title li .track {
+div.player > ul.frames > li.library > ul.tagTitle li .track {
   font-size: 26px;
   padding-right: 8px;
 }

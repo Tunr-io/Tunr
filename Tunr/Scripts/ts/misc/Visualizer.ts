@@ -28,7 +28,7 @@
 	public start(song: Song): void {
 		// Fetch images from API and show them.
 		// (don't re-fetch if it's the same artist.
-		if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+		if (this.song == null || this.song.tagPerformers[0].toUpperCase() != song.tagPerformers[0].toUpperCase()) {
 			if (this.currentBG != null) {
 				((bg: VisualBG) => {
 					bg.stop();
@@ -210,7 +210,7 @@ class Visual extends createjs.Container {
 
 class LineScrollVisual extends Visual {
 	// Fields of the Song object that we can use in our visualization.
-	public static fields: string[] = ["album", "artist", "title", "year"];
+	public static fields: string[] = ["tagAlbum", "tagPerformers", "tagTitle", "tagYear"];
 	public static MIN_FONT_SIZE: number = 80;
 	public static MAX_FONT_SIZE: number = 250;
 	public static VISUAL_MIN_TIME: number = 12000;
@@ -247,7 +247,13 @@ class LineScrollVisual extends Visual {
 			var size: number = Math.floor(Math.random() * (LineScrollVisual.MAX_FONT_SIZE - LineScrollVisual.MIN_FONT_SIZE + 1)) + LineScrollVisual.MIN_FONT_SIZE;
 			var bold: boolean = (Math.floor(Math.random() * 2) == 0);
 			var field: string = fieldSelection.splice(Math.floor(Math.random() * fieldSelection.length), 1)[0];
-			var text = new VisualizerText(this.song[field] + "", size, bold);
+			var str: string = "";
+			if (Array.isArray(this.song[field])) {
+				str = this.song[field][0];
+			} else {
+				str = this.song[field];
+			}
+			var text = new VisualizerText(str + "", size, bold);
 			textLines.push(text);
 			totalHeight += text.getBounds().height;
 		}

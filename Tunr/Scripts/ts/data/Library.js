@@ -34,10 +34,24 @@
         for (var i = 0; i < this.songs.length; i++) {
             var add = true;
             for (var prop in conditions) {
+                // Find all the set properties of the condition
                 if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
-                    if (conditions[prop] != this.songs[i][prop]) {
-                        add = false;
-                        break;
+                    if (Array.isArray(conditions[prop])) {
+                        for (var j in conditions[prop]) {
+                            if (this.songs[i][prop].indexOf(conditions[prop][j]) < 0) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (!add) {
+                            break;
+                        }
+                    } else {
+                        // Otherwise just check that the one property matches.
+                        if (conditions[prop] != this.songs[i][prop]) {
+                            add = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -48,69 +62,105 @@
         return results;
     };
 
+    /**
+    * Fetches all of the unique values of the specified property in the library.
+    */
+    Library.prototype.fetchUniquePropertyValues = function (conditions, property) {
+        var uniquePropertyValues = new Array();
+        for (var i = 0; i < this.songs.length; i++) {
+            var add = true;
+            for (var prop in conditions) {
+                // Find all the set properties of the condition
+                if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+                    if (Array.isArray(conditions[prop])) {
+                        for (var j in conditions[prop]) {
+                            if (this.songs[i][prop].indexOf(conditions[prop][j]) < 0) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (!add) {
+                            break;
+                        }
+                    } else {
+                        // Otherwise just check that the one property matches.
+                        if (conditions[prop] != this.songs[i][prop]) {
+                            add = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (add) {
+                if (Array.isArray(this.songs[i][property])) {
+                    var pushed = false;
+                    for (var j in this.songs[i][property]) {
+                        if (uniquePropertyValues.indexOf(this.songs[i][property][j]) < 0) {
+                            uniquePropertyValues.push(this.songs[i][property][j]);
+                        }
+                    }
+                } else {
+                    if (uniquePropertyValues.indexOf(this.songs[i][property]) < 0) {
+                        uniquePropertyValues.push(this.songs[i][property]);
+                    }
+                }
+            }
+        }
+        return uniquePropertyValues;
+    };
+
+    /**
+    * Filter the library and return songs that match the specified conditions,
+    * whilst each having a unique value for the given property.
+    */
     Library.prototype.filterUniqueProperty = function (conditions, property) {
-        var uniqueProps = new Array();
+        var uniquePropertyValues = new Array();
         var results = new Array();
         for (var i = 0; i < this.songs.length; i++) {
             var add = true;
             for (var prop in conditions) {
+                // Find all the set properties of the condition
                 if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
-                    if (conditions[prop] != this.songs[i][prop]) {
-                        add = false;
-                        break;
+                    if (Array.isArray(conditions[prop])) {
+                        for (var j in conditions[prop]) {
+                            if (this.songs[i][prop].indexOf(conditions[prop][j]) < 0) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (!add) {
+                            break;
+                        }
+                    } else {
+                        // Otherwise just check that the one property matches.
+                        if (conditions[prop] != this.songs[i][prop]) {
+                            add = false;
+                            break;
+                        }
                     }
                 }
             }
-            if (add && uniqueProps.indexOf(this.songs[i][property]) < 0) {
-                uniqueProps.push(this.songs[i][property]);
-                results.push(this.songs[i]);
-            }
-        }
-        return results;
-    };
-
-    Library.prototype.artists = function () {
-        var artists = new Array();
-        for (var i = 0; i < this.songs.length; i++) {
-            if (artists.indexOf(this.songs[i].artist) < 0) {
-                artists.push(this.songs[i].artist);
-            }
-        }
-        return artists.sort();
-    };
-
-    Library.prototype.albumsin = function (artist) {
-        var albums = new Array();
-        for (var i = 0; i < this.songs.length; i++) {
-            if (this.songs[i].artist == artist && albums.indexOf(this.songs[i].album) < 0) {
-                albums.push(this.songs[i].album);
-            }
-        }
-        return albums.sort();
-    };
-
-    Library.prototype.albums = function () {
-        var albums = new Array();
-        for (var i = 0; i < this.songs.length; i++) {
-            if (albums.indexOf(this.songs[i].album) < 0) {
-                albums.push(this.songs[i].album);
-            }
-        }
-        return albums;
-    };
-
-    Library.prototype.songsin = function (album, artist) {
-        var songs = new Array();
-        for (var i = 0; i < this.songs.length; i++) {
-            if (this.songs[i].album == album) {
-                if (typeof artist === undefined || this.songs[i].artist == artist) {
-                    songs.push(this.songs[i]);
+            if (add) {
+                if (Array.isArray(this.songs[i][property])) {
+                    var pushed = false;
+                    for (var j in this.songs[i][property]) {
+                        if (uniquePropertyValues.indexOf(this.songs[i][property][j]) < 0) {
+                            uniquePropertyValues.push(this.songs[i][property][j]);
+                            if (!pushed) {
+                                results.push(this.songs[i]);
+                                pushed = true;
+                            }
+                        }
+                    }
+                } else {
+                    if (uniquePropertyValues.indexOf(this.songs[i][property]) < 0) {
+                        uniquePropertyValues.push(this.songs[i][property]);
+                        results.push(this.songs[i]);
+                    }
                 }
             }
         }
-        return songs.sort(function (a, b) {
-            return a.trackNumber - b.trackNumber;
-        });
+        return results;
     };
     return Library;
 })();

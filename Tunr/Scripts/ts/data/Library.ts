@@ -35,10 +35,25 @@
 		for (var i = 0; i < this.songs.length; i++) {
 			var add = true;
 			for (var prop in conditions) {
+				// Find all the set properties of the condition
 				if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
-					if (conditions[prop] != this.songs[i][prop]) {
-						add = false;
-						break;
+					if (Array.isArray(conditions[prop])) {
+						// If it's an array, we have to check that all elements are matched.
+						for (var j in conditions[prop]) {
+							if ((<Array<string>>this.songs[i][prop]).indexOf(conditions[prop][j]) < 0) {
+								add = false;
+								break;
+							}
+						}
+						if (!add) {
+							break;
+						}
+					} else {
+						// Otherwise just check that the one property matches.
+						if (conditions[prop] != this.songs[i][prop]) {
+							add = false;
+							break;
+						}
 					}
 				}
 			}
@@ -49,82 +64,179 @@
 		return results;
 	}
 
+	/**
+	 * Fetches all of the unique values of the specified property in the library.
+	 */
+	public fetchUniquePropertyValues(conditions: Song, property: string): Array<string> {
+		var uniquePropertyValues: Array<string> = new Array<string>();
+		for (var i = 0; i < this.songs.length; i++) {
+			var add = true;
+			for (var prop in conditions) {
+				// Find all the set properties of the condition
+				if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
+					if (Array.isArray(conditions[prop])) {
+						// If it's an array, we have to check that all elements are matched.
+						for (var j in conditions[prop]) {
+							if ((<Array<string>>this.songs[i][prop]).indexOf(conditions[prop][j]) < 0) {
+								add = false;
+								break;
+							}
+						}
+						if (!add) {
+							break;
+						}
+					} else {
+						// Otherwise just check that the one property matches.
+						if (conditions[prop] != this.songs[i][prop]) {
+							add = false;
+							break;
+						}
+					}
+				}
+			}
+			if (add) {
+				if (Array.isArray(this.songs[i][property])) {
+					var pushed = false;
+					for (var j in this.songs[i][property]) {
+						if (uniquePropertyValues.indexOf(this.songs[i][property][j]) < 0) {
+							uniquePropertyValues.push(this.songs[i][property][j]);
+						}
+					}
+				} else {
+					if (uniquePropertyValues.indexOf(this.songs[i][property]) < 0) {
+						uniquePropertyValues.push(this.songs[i][property]);
+					}
+				}
+			}
+		}
+		return uniquePropertyValues;
+	}
+
+	/**
+	 * Filter the library and return songs that match the specified conditions,
+	 * whilst each having a unique value for the given property.
+	 */
 	public filterUniqueProperty(conditions: Song, property: string): Array<Song> {
-		var uniqueProps: Array<string> = new Array<string>();
+		var uniquePropertyValues: Array<string> = new Array<string>(); // List of actual property values
 		var results: Array<Song> = new Array<Song>();
 		for (var i = 0; i < this.songs.length; i++) {
 			var add = true;
 			for (var prop in conditions) {
+				// Find all the set properties of the condition
 				if (typeof conditions[prop] !== 'undefined' && conditions[prop] != "") {
-					if (conditions[prop] != this.songs[i][prop]) {
-						add = false;
-						break;
+					if (Array.isArray(conditions[prop])) {
+						// If it's an array, we have to check that all elements are matched.
+						for (var j in conditions[prop]) {
+							if ((<Array<string>>this.songs[i][prop]).indexOf(conditions[prop][j]) < 0) {
+								add = false;
+								break;
+							}
+						}
+						if (!add) {
+							break;
+						}
+					} else {
+						// Otherwise just check that the one property matches.
+						if (conditions[prop] != this.songs[i][prop]) {
+							add = false;
+							break;
+						}
 					}
 				}
 			}
-			if (add && uniqueProps.indexOf(this.songs[i][property]) < 0) {
-				uniqueProps.push(this.songs[i][property]);
-				results.push(this.songs[i]);
+			if (add) {
+				if (Array.isArray(this.songs[i][property])) {
+					var pushed = false;
+					for (var j in this.songs[i][property]) {
+						if (uniquePropertyValues.indexOf(this.songs[i][property][j]) < 0) {
+							uniquePropertyValues.push(this.songs[i][property][j]);
+							if (!pushed) {
+								results.push(this.songs[i]);
+								pushed = true;
+							}
+						}
+					}
+				} else {
+					if (uniquePropertyValues.indexOf(this.songs[i][property]) < 0) {
+						uniquePropertyValues.push(this.songs[i][property]);
+						results.push(this.songs[i]);
+					}
+				}
 			}
 		}
 		return results;
 	}
 
-	public artists(): Array<string> {
-		var artists: Array<string> = new Array<string>();
-		for (var i = 0; i < this.songs.length; i++) {
-			if (artists.indexOf(this.songs[i].artist) < 0) {
-				artists.push(this.songs[i].artist);
-			}
-		}
-		return artists.sort();
-	}
+	//public artists(): Array<string> {
+	//	var artists: Array<string> = new Array<string>();
+	//	for (var i = 0; i < this.songs.length; i++) {
+	//		if (artists.indexOf(this.songs[i].artist) < 0) {
+	//			artists.push(this.songs[i].artist);
+	//		}
+	//	}
+	//	return artists.sort();
+	//}
 
-	public albumsin(artist: string) {
-		var albums: Array<string> = new Array<string>();
-		for (var i = 0; i < this.songs.length; i++) {
-			if (this.songs[i].artist == artist && albums.indexOf(this.songs[i].album) < 0) {
-				albums.push(this.songs[i].album);
-			}
-		}
-		return albums.sort();
-	}
+	//public albumsin(artist: string) {
+	//	var albums: Array<string> = new Array<string>();
+	//	for (var i = 0; i < this.songs.length; i++) {
+	//		if (this.songs[i].artist == artist && albums.indexOf(this.songs[i].album) < 0) {
+	//			albums.push(this.songs[i].album);
+	//		}
+	//	}
+	//	return albums.sort();
+	//}
 
-	public albums(): Array<string> {
-		var albums: Array<string> = new Array<string>();
-		for (var i = 0; i < this.songs.length; i++) {
-			if (albums.indexOf(this.songs[i].album) < 0) {
-				albums.push(this.songs[i].album);
-			}
-		}
-		return albums;
-	}
+	//public albums(): Array<string> {
+	//	var albums: Array<string> = new Array<string>();
+	//	for (var i = 0; i < this.songs.length; i++) {
+	//		if (albums.indexOf(this.songs[i].album) < 0) {
+	//			albums.push(this.songs[i].album);
+	//		}
+	//	}
+	//	return albums;
+	//}
 
-	public songsin(album: string, artist?: string): Array<Song> {
-		var songs: Array<Song> = new Array<Song>();
-		for (var i = 0; i < this.songs.length; i++) {
-			if (this.songs[i].album == album) {
-				if (typeof artist === undefined || this.songs[i].artist == artist) {
-					songs.push(this.songs[i]);
-				}
-			}
-		}
-		return songs.sort((a, b) => {
-			return a.trackNumber - b.trackNumber;
-		});
-	}
+	//public songsin(album: string, artist?: string): Array<Song> {
+	//	var songs: Array<Song> = new Array<Song>();
+	//	for (var i = 0; i < this.songs.length; i++) {
+	//		if (this.songs[i].album == album) {
+	//			if (typeof artist === undefined || this.songs[i].artist == artist) {
+	//				songs.push(this.songs[i]);
+	//			}
+	//		}
+	//	}
+	//	return songs.sort((a, b) => {
+	//		return a.trackNumber - b.trackNumber;
+	//	});
+	//}
 }
 
 class Song {
 	public songId: string;
-	public ownerId: string;
-	//public songFingerPrint: string;
-	public artist: string;
-	public album: string;
-	public title: string;
-	public genre: string;
-	public discNumber: string;
-	public trackNumber: number;
-	public year: number;
-	public length: number;
+	public md5Hash: string;
+	public fileName: string;
+	public fileType: string;
+	public fileSize: string;
+	public audioChannels: string;
+	public audioBitrate: string;
+	public audioSampleRate: string;
+	public duration: number;
+	public tagTitle: string;
+	public tagAlbum: string;
+	public tagPerformers: Array<string>;
+	public tagAlbumArtists: Array<string>;
+	public tagComposers: Array<string>;
+	public tagGenres: Array<string>;
+	public tagYear: number;
+	public tagTrack: number;
+	public tagTrackCount: number;
+	public tagDisc: number;
+	public tagDiscCount: number;
+	public tagComment: string;
+	public tagLyrics: string;
+	public tagConductor: string;
+	public tagBeatsPerMinute: number;
+	public tagGrouping: string;
+	public tagCopyright: string;
 }
