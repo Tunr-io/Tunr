@@ -275,6 +275,15 @@
     <Content Include="Content\css\Components\LibraryPane.css">
       <DependentUpon>LibraryPane.less</DependentUpon>
     </Content>
+    <Content Include="Content\css\Components\LibraryPane.min.css">
+      <DependentUpon>LibraryPane.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Components\Login.css">
+      <DependentUpon>Login.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Components\Login.min.css">
+      <DependentUpon>Login.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\Components\Player.css">
       <DependentUpon>Player.less</DependentUpon>
     </Content>
@@ -405,6 +414,12 @@
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\css\Components\LibraryPane.css.map">
+      <DependentUpon>LibraryPane.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\Components\Login.css.map">
+      <DependentUpon>Login.css</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\tunr__dev.pubxml" />
     <None Include="Properties\PublishProfiles\tunr__play.pubxml" />
     <None Include="Providers\ApplicationOAuthProvider.cs.old" />

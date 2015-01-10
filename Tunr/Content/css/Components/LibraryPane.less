@@ -1,4 +1,9 @@
-﻿.librarypane {
+﻿
+@import "../Constants.less";
+@import "../Functions.less";
+@import "../Animations.less";
+
+.librarypane {
 	position: fixed;
 	width: @library_pane_width;
 	left: 0;
@@ -107,7 +112,7 @@
 			z-index: 9;
 		}
 
-		&.artists {
+		&.tagPerformers {
 			margin: 16px 0 0 20px;
 			padding: 0;
 			color: @bg-color;
@@ -123,7 +128,7 @@
 			}
 		}
 
-		&.albums {
+		&.tag {
 			margin:16px 8px 0 8px;
 			padding:0;
 			li {

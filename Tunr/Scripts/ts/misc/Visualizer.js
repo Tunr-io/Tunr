@@ -27,7 +27,7 @@ var Visualizer = (function () {
         var _this = this;
         // Fetch images from API and show them.
         // (don't re-fetch if it's the same artist.
-        if (this.song == null || this.song.artist.toUpperCase() != song.artist.toUpperCase()) {
+        if (this.song == null || this.song.tagPerformers[0].toUpperCase() != song.tagPerformers[0].toUpperCase()) {
             if (this.currentBG != null) {
                 (function (bg) {
                     bg.stop();
@@ -233,7 +233,13 @@ var LineScrollVisual = (function (_super) {
             var size = Math.floor(Math.random() * (LineScrollVisual.MAX_FONT_SIZE - LineScrollVisual.MIN_FONT_SIZE + 1)) + LineScrollVisual.MIN_FONT_SIZE;
             var bold = (Math.floor(Math.random() * 2) == 0);
             var field = fieldSelection.splice(Math.floor(Math.random() * fieldSelection.length), 1)[0];
-            var text = new VisualizerText(this.song[field] + "", size, bold);
+            var str = "";
+            if (Array.isArray(this.song[field])) {
+                str = this.song[field][0];
+            } else {
+                str = this.song[field];
+            }
+            var text = new VisualizerText(str + "", size, bold);
             textLines.push(text);
             totalHeight += text.getBounds().height;
         }
@@ -278,7 +284,7 @@ var LineScrollVisual = (function (_super) {
             })(textLines[i], targetX, i);
         }
     };
-    LineScrollVisual.fields = ["album", "artist", "title", "year"];
+    LineScrollVisual.fields = ["tagAlbum", "tagPerformers", "tagTitle", "tagYear"];
     LineScrollVisual.MIN_FONT_SIZE = 80;
     LineScrollVisual.MAX_FONT_SIZE = 250;
     LineScrollVisual.VISUAL_MIN_TIME = 12000;

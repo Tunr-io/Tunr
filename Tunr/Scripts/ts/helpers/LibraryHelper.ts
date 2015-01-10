@@ -2,7 +2,7 @@
 	private nav_element: HTMLElement;
 	private list_filter_state: Song;
 	private list_helpers: Array<LibraryListHelper>;
-	private list_helper_classes: { [index: string]: { new(parent: LibraryHelper, element: HTMLElement): LibraryListHelper; } } = { "artist": ArtistListHelper, "album": AlbumListHelper, "title": SongListHelper };
+	private list_helper_classes: { [index: string]: { new(parent: LibraryHelper, element: HTMLElement): LibraryListHelper; } } = { "tagPerformers": ArtistListHelper, "tagAlbum": AlbumListHelper, "tagTitle": SongListHelper };
 	private tree_structure: Array<string>;
 	private root_name: string;
 	private uploading_count: number = 0;
@@ -10,7 +10,7 @@
 
 	public init () {
 		this.nav_element = <HTMLElement>this.element.getElementsByTagName("nav")[0];
-		this.tree_structure = ["tagPerformers", "tagAlbum", "title"]; // hard-set for now. user-configurable later.
+		this.tree_structure = ["tagPerformers", "tagAlbum", "tagTitle"]; // hard-set for now. user-configurable later.
 		this.list_helpers = new Array<LibraryListHelper>();
 		this.root_name = "Music";
 		this.list_filter_state = new Song();
@@ -97,7 +97,7 @@
 		return this.list_filter_state;
 	}
 
-	public loadChild(value: string) {
+	public loadChild(value: any) {
 		// Get current property name
 		var prop = this.tree_structure[this.list_helpers.length - 1];
 		// Set filter state
@@ -190,17 +190,18 @@ class LibraryListHelper extends Helper {
 
 class ArtistListHelper extends LibraryListHelper {
 	public init(): void {
-		var artists: Array<Song> = this.parent.getTunr().library.filterUniqueProperty(this.library_helper.getFilterState(), "tagPerformers");
+		var artists: Array<string> = this.parent.getTunr().library.fetchUniquePropertyValues(this.library_helper.getFilterState(), "tagPerformers");
+		artists.sort((a, b) => a.localeCompare(b));
 		this.element.innerHTML = ''; // clear existing entries
 		for (var i = 0; i < artists.length; i++) {
 			var li = document.createElement("li");
-			li.innerHTML = htmlEscape(artists[i].tagPerformers[0]);
+			li.innerHTML = htmlEscape(artists[i]);
 			((artist, element: HTMLElement) => {
 				TiltEffect.addTilt(element);
 				element.addEventListener("click", (e) => {
-					this.library_helper.loadChild(artist);
+					this.library_helper.loadChild([artist]);
 				});
-			})(artists[i].tagPerformers[0], li);
+			})(artists[i], li);
 			this.element.appendChild(li);
 		}
 	}
@@ -236,6 +237,7 @@ class AlbumListHelper extends LibraryListHelper {
 class SongListHelper extends LibraryListHelper {
 	public init(): void {
 		var songs: Array<Song> = this.parent.getTunr().library.filter(this.library_helper.getFilterState());
+		songs.sort((a, b) => a.tagTrack - b.tagTrack);
 		this.element.innerHTML = "";
 		for (var i = 0; i < songs.length; i++) {
 			var li = document.createElement("li");

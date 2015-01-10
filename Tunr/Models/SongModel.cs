@@ -58,6 +58,42 @@ namespace Tunr.Models
 		public string Md5Hash { get; set; }
 
 		/// <summary>
+		/// Full name of the file originally uploaded.
+		/// </summary>
+		[JsonProperty]
+		public string FileName { get; set; }
+
+		/// <summary>
+		/// Type of this file - 'mp3', 'flac', etc.
+		/// </summary>
+		[JsonProperty]
+		public string FileType { get; set; }
+
+		/// <summary>
+		/// Size of the file in bytes.
+		/// </summary>
+		[JsonProperty]
+		public long FileSize { get; set; }
+
+		/// <summary>
+		/// Number of audio channels.
+		/// </summary>
+		[JsonProperty]
+		public int AudioChannels { get; set; }
+
+		/// <summary>
+		/// Bitrate of the audio.
+		/// </summary>
+		[JsonProperty]
+		public int AudioBitrate { get; set; }
+
+		/// <summary>
+		/// Sample rate of the audio.
+		/// </summary>
+		[JsonProperty]
+		public int AudioSampleRate { get; set; }
+
+		/// <summary>
 		/// Duration of the song in seconds.
 		/// </summary>
 		[JsonProperty]

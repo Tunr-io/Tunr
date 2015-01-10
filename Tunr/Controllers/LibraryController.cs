@@ -149,8 +149,9 @@ namespace Tunr.Controllers
 						System.Diagnostics.Debug.WriteLine(file.Headers.ContentType);
 						System.Diagnostics.Debug.WriteLine("Server file path: " + file.LocalFileName);
 						TagLib.File tagFile;
-						string extension = file.Headers.ContentDisposition.FileName.Substring(file.Headers.ContentDisposition.FileName.LastIndexOf(".") + 1);
-						extension = extension.Replace("\"", "").ToLower();
+						string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+						string extension = fileName.Substring(fileName.LastIndexOf(".") + 1);
+						extension = extension.ToLower();
 						string type;
 						if (extension.Equals("mp3"))
 						{
@@ -220,6 +221,12 @@ namespace Tunr.Controllers
 						{
 							SongId = Guid.NewGuid(),
 							OwnerId = new Guid(user.Id),
+							FileName = Path.GetFileName(fileName),
+							FileType = extension,
+							FileSize = new FileInfo(file.LocalFileName).Length,
+							AudioBitrate = tagFile.Properties.AudioBitrate,
+							AudioChannels = tagFile.Properties.AudioChannels,
+							AudioSampleRate = tagFile.Properties.AudioSampleRate,
 							Fingerprint = fingerprint,
 							Md5Hash = sHash,
 							Duration = tagFile.Properties.Duration.TotalSeconds,

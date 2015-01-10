@@ -48,7 +48,7 @@
 		title.classList.add("title");
 		title.classList.add("animated");
 		title.classList.add("anim_playingtitle_in");
-		title.innerHTML = '<h1>' + htmlEscape(song.title) + '</h1><h2>' + htmlEscape(song.artist) + '</h2>';
+		title.innerHTML = '<h1>' + htmlEscape(song.tagTitle) + '</h1><h2>' + htmlEscape(song.tagPerformers[0]) + '</h2>';
 
 		// Title animations
 		var title = <HTMLDivElement>this.element.insertBefore(title, this.title_element);
@@ -67,8 +67,8 @@
 
 		// Set up the new art
 		var art = document.createElement("img");
-		art.src = '/api/LibraryData/' + urlEscape(song.artist) + '/' + urlEscape(song.album) + '/art';
-		art.alt = song.album;
+		art.src = '/api/LibraryData/' + urlEscape(song.tagPerformers[0]) + '/' + urlEscape(song.tagAlbum) + '/art';
+		art.alt = song.tagAlbum;
 		art.classList.add("animated");
 		art.classList.add("anim_albumart_in");
 
