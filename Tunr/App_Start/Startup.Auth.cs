@@ -17,7 +17,7 @@ namespace Tunr
 		// Enable the application to use OAuthAuthorization. You can then secure your Web APIs
 		static Startup()
 		{
-			PublicClientId = "roomie";
+			PublicClientId = "tunr";
 
 			OAuthOptions = new OAuthAuthorizationServerOptions
 			{
@@ -47,14 +47,14 @@ namespace Tunr
 			//	Provider = new CookieAuthenticationProvider
 			//	{
 			//		OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, TunrUser>(
-			//			validateInterval: TimeSpan.FromMinutes(20),
+			//			validateInterval: TimeSpan.FromDays(90),
 			//			regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
 			//	}
 			//});
 			app.UseCookieAuthentication(new CookieAuthenticationOptions());
 
 			// Use a cookie to temporarily store information about a user logging in with a third party login provider
-			//app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 			
 			// Enable the application to use bearer tokens to authenticate users
 			app.UseOAuthBearerTokens(OAuthOptions);

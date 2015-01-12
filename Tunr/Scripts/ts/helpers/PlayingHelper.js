@@ -62,28 +62,40 @@ var PlayingHelper = (function (_super) {
         this.title_element.classList.add("anim_playingtitle_out");
 
         // Remove the old title after the animation completes.
-        setTimeout(function () {
-            _this.element.removeChild(_this.title_element);
-            _this.title_element = title;
-        }, 300);
+        (function (el) {
+            setTimeout(function () {
+                _this.element.removeChild(el);
+            }, 300);
+        })(this.title_element);
 
-        var oldArt = (this.element.getElementsByTagName("img")[0]);
-        oldArt.classList.add("animated");
-        oldArt.classList.add("anim_albumart_out");
+        // Set the new title as the 'actual' title.
+        this.title_element = title;
+
+        var oldArt = this.element.querySelectorAll("img");
+        for (var i = 0; i < oldArt.length; i++) {
+            // animate out any old artwork
+            var oldArtItem = oldArt[i];
+            oldArtItem.classList.add("animated");
+            oldArtItem.classList.add("anim_albumart_out");
+        }
 
         // Set up the new art
         var art = document.createElement("img");
-        art.src = '/api/LibraryData/' + urlEscape(song.tagPerformers[0]) + '/' + urlEscape(song.tagAlbum) + '/art';
+        art.src = '/api/Library/' + song.songId + '/AlbumArt';
         art.alt = song.tagAlbum;
         art.classList.add("animated");
         art.classList.add("anim_albumart_in");
 
-        oldArt.parentElement.appendChild(art);
+        oldArt[0].parentElement.appendChild(art);
 
         // Remove the old art after the animation completes.
-        setTimeout(function () {
-            oldArt.parentElement.removeChild(oldArt);
-        }, 300);
+        (function (els) {
+            setTimeout(function () {
+                for (var i = 0; i < els.length; i++) {
+                    els[i].parentElement.removeChild(els[i]);
+                }
+            }, 300);
+        })(oldArt);
     };
 
     PlayingHelper.prototype.play = function () {

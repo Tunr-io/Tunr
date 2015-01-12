@@ -362,6 +362,8 @@
     <Content Include="Content\css\Constants.css.map">
       <DependentUpon>Constants.css</DependentUpon>
     </Content>
+    <Content Include="AppSettings.config" />
+    <None Include="AppSettings.default.config" />
     <None Include="Controllers\AccountController.cs.bak" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApiControllerWithHub.cs" />
@@ -409,6 +411,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\ArtistInfo.cs" />
     <Compile Include="Models\FacebookImageModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlaylistItemModel.cs" />
@@ -598,10 +601,16 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="SetupAppSettings" Condition="!Exists('AppSettings.config')">
+    <Copy SourceFiles="AppSettings.default.config" DestinationFiles="AppSettings.config" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="SetupAppSettings" />
+  </Target>
 </Project>

@@ -56,28 +56,40 @@
 		this.title_element.classList.add("anim_playingtitle_out");
 
 		// Remove the old title after the animation completes.
-		setTimeout(() => {
-			this.element.removeChild(this.title_element);
-			this.title_element = title;
-		}, 300);
+		((el) => {
+			setTimeout(() => {
+				this.element.removeChild(el);
+			}, 300);
+		})(this.title_element);
 
-		var oldArt = <HTMLImageElement>(this.element.getElementsByTagName("img")[0]);
-		oldArt.classList.add("animated");
-		oldArt.classList.add("anim_albumart_out");
+		// Set the new title as the 'actual' title.
+		this.title_element = title;
+
+		var oldArt = this.element.querySelectorAll("img");
+		for (var i = 0; i < oldArt.length; i++) {
+			// animate out any old artwork
+			var oldArtItem = (<HTMLElement>oldArt[i]);
+			oldArtItem.classList.add("animated");
+			oldArtItem.classList.add("anim_albumart_out");
+		}
 
 		// Set up the new art
 		var art = document.createElement("img");
-		art.src = '/api/LibraryData/' + urlEscape(song.tagPerformers[0]) + '/' + urlEscape(song.tagAlbum) + '/art';
+		art.src = '/api/Library/' + song.songId + '/AlbumArt';
 		art.alt = song.tagAlbum;
 		art.classList.add("animated");
 		art.classList.add("anim_albumart_in");
 
-		oldArt.parentElement.appendChild(art);
+		(<HTMLElement>oldArt[0]).parentElement.appendChild(art);
 
 		// Remove the old art after the animation completes.
-		setTimeout(() => {
-			oldArt.parentElement.removeChild(oldArt);
-		}, 300);
+		((els) => {
+			setTimeout(() => {
+				for (var i = 0; i < els.length; i++) {
+					els[i].parentElement.removeChild(els[i]);
+				}
+			}, 300);
+		})(oldArt);
 	}
 
 	public play(): void {

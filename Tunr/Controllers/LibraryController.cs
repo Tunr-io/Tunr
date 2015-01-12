@@ -24,6 +24,7 @@ using Tunr.Hubs;
 using Microsoft.Xbox.Music.Platform.Client;
 using Microsoft.Xbox.Music.Platform.Contract.DataModel;
 using Facebook;
+using System.Configuration;
 
 namespace Tunr.Controllers
 {
@@ -70,22 +71,66 @@ namespace Tunr.Controllers
 			}
 		}
 
-		[Route("{id}/images")]
-		public async Task<HttpResponseMessage> GetImage(Guid id)
+		/// <summary>
+		/// Fetches album art for the given track id.
+		/// </summary>
+		/// <param name="id">Track GUID</param>
+		/// <returns>Redirects to an album art image.</returns>
+		[Route("{id}/AlbumArt")]
+		[AllowAnonymous] // HACK: Really shouldn't allow anonymous, but something's up with the cookie auth.
+		public async Task<HttpResponseMessage> GetAlbumArt(Guid id)
+		{
+			if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["XboxClientId"]))
+			{
+				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
+				var song = this.SongTable.ExecuteQuery(query).FirstOrDefault();
+				if (song == null)
+				{
+					return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified track ID.");
+				}
+				IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
+				var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault() + " " + song.TagAlbum, filter: SearchFilter.Albums, maxItems: 1, country: "US");
+				if (response.Albums != null && response.Albums.TotalItemCount > 0)
+				{
+					var resp = Request.CreateResponse();
+					resp.StatusCode = HttpStatusCode.Redirect;
+					resp.Headers.Location = new Uri(response.Albums.Items[0].ImageUrl);
+					return resp;
+				}
+			}
+			// If our look-up fails, we just spit out the default album art.
+			var defaultResp = Request.CreateResponse();
+			defaultResp.StatusCode = HttpStatusCode.Redirect;
+			defaultResp.Headers.Location = new Uri("/Content/svg/album_cover.svg", UriKind.Relative);
+			return defaultResp;
+		}
+
+		/// <summary>
+		/// Returns a bunch of information and art on the specified track's artist.
+		/// </summary>
+		/// <param name="id">Track GUID</param>
+		/// <returns>List of images and various information.</returns>
+		[Route("{id}/ArtistInfo")]
+		[AllowAnonymous] // HACK: Really shouldn't allow anonymous, but something's up with the cookie auth.
+		public async Task<IHttpActionResult> GetImage(Guid id)
 		{
 			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
 			var song = this.SongTable.ExecuteQuery(query).FirstOrDefault();
 			if (song == null) {
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified ID.");
+				return BadRequest("Cannot locate specified track ID.");
 			}
-			var imageList = new List<string>();
+			var artistInfo = new ArtistInfo()
+			{
+				ImageUrls = new List<string>()
+			};
 			try
 			{
+				// Fetch images from Facebook
 				var fbClient = new FacebookClient();
 				dynamic tokenResult = fbClient.Get("oauth/access_token", new
 				{
-					client_id = "***REMOVED***",
-					client_secret = "***REMOVED***",
+					client_id = ConfigurationManager.AppSettings["FacebookClientId"],
+					client_secret = ConfigurationManager.AppSettings["FacebookClientSecret"],
 					grant_type = "client_credentials"
 				});
 				fbClient.AccessToken = tokenResult.access_token;
@@ -97,23 +142,21 @@ namespace Tunr.Controllers
 				FacebookImageResponse fbImageRequest = fbClient.Get<FacebookImageResponse>(pageId + "/photos/uploaded?fields=images&limit=100");
 				Random rnd = new Random();
 				var hiresFbImages = fbImageRequest.data.Where(x => x.images.Count() > 0).Where(x => x.images.First().width * x.images.First().height > 750000).OrderBy(x => rnd.Next()).Take(5);
-				imageList.AddRange(hiresFbImages.Select(x => x.images.First().source));
+				artistInfo.ImageUrls.AddRange(hiresFbImages.Select(x => x.images.First().source));
+			
+				// Fetch images from Xbox Music
+				IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
+				var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault(), filter: SearchFilter.Artists, maxItems: 1, country: "US");
+				if (response.Artists.TotalItemCount > 0)
+				{
+					artistInfo.ImageUrls.Add(response.Artists.Items[0].ImageUrl);
+				}
 			}
 			catch (Exception) { }
-			IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient("***REMOVED***", "***REMOVED***");
-			var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault(), filter: SearchFilter.Artists, maxItems: 1, country: "US");
-			if (response.Artists.TotalItemCount > 0)
-			{
-				imageList.Add(response.Artists.Items[0].ImageUrl);
-				Random rnd = new Random();
-				imageList = imageList.OrderBy(x => rnd.Next()).ToList();
-				var resp = Request.CreateResponse(HttpStatusCode.OK,imageList);
-				return resp;
-			}
-			else
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot find any images.");
-			}
+
+			Random rand = new Random();
+			artistInfo.ImageUrls = artistInfo.ImageUrls.OrderBy(x => rand.Next()).ToList();
+			return Ok<ArtistInfo>(artistInfo);
 		}
 
 		// POST api/Library

@@ -213,7 +213,7 @@ class AlbumListHelper extends LibraryListHelper {
 		this.element.innerHTML = "";
 		for (var i = 0; i < albums.length; i++) {
 			var img = document.createElement("img");
-			img.src = '/api/LibraryData/' + urlEscape(albums[i].tagPerformers[0]) + '/' + urlEscape(albums[i].tagAlbum) + '/art';
+			img.src = '/api/Library/' + albums[i].songId + '/AlbumArt';
 			img.alt = albums[i].tagAlbum;
 			img.style.opacity = '0';
 			((imgel: HTMLImageElement) => {

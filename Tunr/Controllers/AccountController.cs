@@ -14,6 +14,7 @@ using Owin;
 using Tunr.Models;
 using SendGrid;
 using System.Web.Http.Cors;
+using System.Configuration;
 
 namespace Tunr.Controllers
 {
@@ -95,22 +96,25 @@ namespace Tunr.Controllers
 							}
 
 							// Send them a welcome mail!
-							var myMessage = new SendGridMessage();
-							myMessage.From = new System.Net.Mail.MailAddress("monolith@tunr.io", "Tunr.io");
-							myMessage.AddTo(user.Email);
-							myMessage.Subject = "Welcome to the Tunr Pre-Alpha!";
-							myMessage.Text = "Hey " + user.DisplayName + "! Thanks for taking the time to test out Tunr for me."
-								+ "\n\nThe first thing you'll need to do is upload some music."
-								+ "\nCheck out the following page for more information!"
-								+ "\nhttp://tunr.io/alpha.html"
-								+ "\n\nHaving trouble? Reach out to me! hayden@outlook.com or any other means you know of."
-								+ "\n\nPlease make me aware of any bugs you find! That's all I ask in return :)"
-								+ "\n\nThanks again for testing!"
-								+ "\n\nHayden";
+							if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["SendGridUsername"]))
+							{
+								var myMessage = new SendGridMessage();
+								myMessage.From = new System.Net.Mail.MailAddress("monolith@tunr.io", "Tunr.io");
+								myMessage.AddTo(user.Email);
+								myMessage.Subject = "Welcome to the Tunr Pre-Alpha!";
+								myMessage.Text = "Hey " + user.DisplayName + "! Thanks for taking the time to test out Tunr for me."
+									+ "\n\nThe first thing you'll need to do is upload some music."
+									+ "\nCheck out the following page for more information!"
+									+ "\nhttp://tunr.io/alpha.html"
+									+ "\n\nHaving trouble? Reach out to me! hayden@outlook.com or any other means you know of."
+									+ "\n\nPlease make me aware of any bugs you find! That's all I ask in return :)"
+									+ "\n\nThanks again for testing!"
+									+ "\n\nHayden";
 
-							var credentials = new NetworkCredential("***REMOVED***", "***REMOVED***");
-							var transportWeb = new Web(credentials);
-							await transportWeb.DeliverAsync(myMessage);
+								var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
+								var transportWeb = new Web(credentials);
+								await transportWeb.DeliverAsync(myMessage);
+							}
 
 							return Created(new Uri("/api/Users/" + user.Id, UriKind.Relative), user.toViewModel());
 						}
