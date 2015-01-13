@@ -37,9 +37,9 @@
 					});
 				})(this.currentBG);
 			}
-			this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/images").then((images: string[]) => {
-				if (images.length > 0) {
-					this.showBG(images);
+			this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/ArtistInfo").then((info: ArtistInfo) => {
+				if (info.imageUrls.length > 0) {
+					this.showBG(info.imageUrls);
 				}
 			});
 		}

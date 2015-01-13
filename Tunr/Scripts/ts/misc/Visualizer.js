@@ -36,9 +36,9 @@ var Visualizer = (function () {
                     });
                 })(this.currentBG);
             }
-            this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/images").then(function (images) {
-                if (images.length > 0) {
-                    _this.showBG(images);
+            this.playingpane.parent.getTunr().api.get("Library/" + song.songId + "/ArtistInfo").then(function (info) {
+                if (info.imageUrls.length > 0) {
+                    _this.showBG(info.imageUrls);
                 }
             });
         }

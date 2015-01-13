@@ -453,9 +453,6 @@
     <Content Include="Scripts\js\jquery-2.1.0.js" />
     <Content Include="Scripts\js\jquery-2.1.0.min.js" />
     <Content Include="Views\Tunr\Components\Login.cshtml" />
-    <Content Include="Views\Tunr\Components\LibraryPane.cshtml" />
-    <Content Include="Views\Tunr\Components\PlaylistPane.cshtml" />
-    <Content Include="Views\Tunr\Components\PlayingPane.cshtml" />
     <Content Include="Scripts\js\jquery-2.1.0.min.map" />
     <Content Include="Views\Tunr\Components\Registration.cshtml" />
     <Content Include="Views\Tunr\Components\Player.cshtml" />
@@ -518,6 +515,7 @@
     <TypeScriptCompile Include="Scripts\ts\API.ts" />
     <TypeScriptCompile Include="Scripts\ts\Component.ts" />
     <TypeScriptCompile Include="Scripts\ts\Animator.ts" />
+    <TypeScriptCompile Include="Scripts\ts\data\ArtistInfo.ts" />
     <TypeScriptCompile Include="Scripts\ts\helpers\LibraryHelper.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Login.ts" />
     <TypeScriptCompile Include="Scripts\ts\components\Player.ts" />
