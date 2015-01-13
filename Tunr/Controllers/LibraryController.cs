@@ -307,12 +307,22 @@ namespace Tunr.Controllers
 						var freshChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery(query).FirstOrDefault();
 						if (freshChangeSet != null)
 						{
-							// TODO: Check if change set has hit its limit of stored changes.
-							freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
-							freshChangeSet.LastModifiedTime = DateTimeOffset.Now;
-							AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
+							// Check if change set has hit its limit of stored changes.
+							if (freshChangeSet.Changes.Count < 500)
+							{
+								freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
+								freshChangeSet.LastModifiedTime = DateTimeOffset.Now;
+								AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
+							}
+							else
+							{
+								// This set is no longer fresh - set it to null, start a new one.
+								freshChangeSet.IsFresh = false;
+								AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
+								freshChangeSet = null;
+							}
 						}
-						else
+						if (freshChangeSet == null) // If null, we have no fresh changeset, need to make a new one.
 						{
 							freshChangeSet = new ChangeSet()
 							{
