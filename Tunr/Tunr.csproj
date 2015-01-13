@@ -56,9 +56,6 @@
     <Reference Include="Facebook">
       <HintPath>..\packages\Facebook.6.8.0\lib\net45\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="LastFmLibNet">
-      <HintPath>..\libraries\LastFmLibNet\LastFmLibNet.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -409,6 +406,8 @@
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ArtistInfo.cs" />
+    <Compile Include="Models\AzureStorageContext.cs" />
+    <Compile Include="Models\ChangeSetModel.cs" />
     <Compile Include="Models\FacebookImageModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlaylistItemModel.cs" />

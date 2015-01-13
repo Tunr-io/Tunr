@@ -33,19 +33,10 @@ namespace Tunr.Controllers
 	public class LibraryController : ApiControllerWithHub<TunrHub>
 	{
 		public static readonly int c_md5size = 128 * 1024;
-		private CloudTable SongTable { get; set; }
+		private AzureStorageContext AzureStorageContext { get; set; }
 		public LibraryController()
 		{
-			// Retrieve the storage account from the connection string.
-			CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-				CloudConfigurationManager.GetSetting("StorageConnectionString"));
-
-			// Create the table client.
-			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-			// Create the table if it doesn't exist.
-			this.SongTable = tableClient.GetTableReference("Song");
-			this.SongTable.CreateIfNotExists();
+			AzureStorageContext = new AzureStorageContext();
 		}
 
 		public ApplicationUserManager UserManager
@@ -66,7 +57,7 @@ namespace Tunr.Controllers
 				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
 
 				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-				var songs = this.SongTable.ExecuteQuery(query);
+				var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
 				return songs;
 			}
 		}
@@ -83,7 +74,7 @@ namespace Tunr.Controllers
 			if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["XboxClientId"]))
 			{
 				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-				var song = this.SongTable.ExecuteQuery(query).FirstOrDefault();
+				var song = AzureStorageContext.SongTable.ExecuteQuery(query).FirstOrDefault();
 				if (song == null)
 				{
 					return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified track ID.");
@@ -115,7 +106,7 @@ namespace Tunr.Controllers
 		public async Task<IHttpActionResult> GetImage(Guid id)
 		{
 			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-			var song = this.SongTable.ExecuteQuery(query).FirstOrDefault();
+			var song = AzureStorageContext.SongTable.ExecuteQuery(query).FirstOrDefault();
 			if (song == null) {
 				return BadRequest("Cannot locate specified track ID.");
 			}
@@ -188,37 +179,31 @@ namespace Tunr.Controllers
 					// This illustrates how to get the file names.
 					foreach (MultipartFileData file in provider.FileData)
 					{
-						System.Diagnostics.Debug.WriteLine(file.Headers.ContentDisposition.FileName);
-						System.Diagnostics.Debug.WriteLine(file.Headers.ContentType);
-						System.Diagnostics.Debug.WriteLine("Server file path: " + file.LocalFileName);
 						TagLib.File tagFile;
 						string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
 						string extension = fileName.Substring(fileName.LastIndexOf(".") + 1);
 						extension = extension.ToLower();
 						string type;
-						if (extension.Equals("mp3"))
+						switch (extension)
 						{
-							type = "audio/mpeg";
-						}
-						else if (extension.Equals("flac"))
-						{
-							type = "audio/flac";
-						}
-						else if (extension.Equals("m4a") || extension.Equals("mp4"))
-						{
-							type = "audio/mp4";
-						}
-						else if (extension.Equals("aac"))
-						{
-							type = "audio/aac";
-						}
-						else if (extension.Equals("ogg"))
-						{
-							type = "audio/ogg";
-						}
-						else
-						{
-							return BadRequest("Format not supported.");
+							case "mp3":
+								type = "audio/mpeg";
+								break;
+							case "flac":
+								type = "audio/flac";
+								break;
+							case "m4a":
+							case "mp4":
+								type = "audio/mp4";
+								break;
+							case "aac":
+								type = "audio/aac";
+								break;
+							case "ogg":
+								type = "audio/ogg";
+								break;
+							default:
+								return BadRequest("Format not supported.");
 						}
 						tagFile = TagLib.File.Create(file.LocalFileName, type, TagLib.ReadStyle.Average);
 
@@ -236,11 +221,7 @@ namespace Tunr.Controllers
 						string fingerprint = fp.ToString();
 						fingerprint = fingerprint.Substring(fingerprint.IndexOf("FINGERPRINT=") + 12);
 
-						//string sHash = "";
-						//using (StreamReader sr = new StreamReader(file.LocalFileName)) {
-						//	MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
-						//	sHash = BitConverter.ToString(md5h.ComputeHash(sr.BaseStream)).Replace("-","");
-						//}
+						// Calculate MD5 hash (only the first few KB to save time)
 						string sHash = "";
 						using (StreamReader sr = new StreamReader(file.LocalFileName))
 						{
@@ -295,30 +276,18 @@ namespace Tunr.Controllers
 						tagFile.Dispose();
 
 						// Make sure this file isn't already there
-						var existing = this.SongTable.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.Md5Hash == song.Md5Hash).FirstOrDefault();
+						var existing = AzureStorageContext.SongTable.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.Md5Hash == song.Md5Hash).FirstOrDefault();
 						if (existing != null)
 						{
-							System.IO.File.Delete(file.LocalFileName);
+							File.Delete(file.LocalFileName);
 							return BadRequest("This song already exists.");
 						}
 
-						// Upload the song to blob storage ...
-						// Retrieve storage account from connection string.
-						CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-							CloudConfigurationManager.GetSetting("StorageConnectionString"));
-
-						// Create the blob client.
-						CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
-						// Retrieve reference to a previously created container.
-						CloudBlobContainer container = blobClient.GetContainerReference("uploads");
-						container.CreateIfNotExists();
-
 						// Retrieve reference to a blob named "myblob".
-						CloudBlockBlob blockBlob = container.GetBlockBlobReference(song.SongId.ToString());
+						CloudBlockBlob blockBlob = AzureStorageContext.UploadsContainer.GetBlockBlobReference(song.SongId.ToString());
 
 						// Create or overwrite the "myblob" blob with contents from a local file.
-						using (var fileStream = System.IO.File.OpenRead(file.LocalFileName))
+						using (var fileStream = File.OpenRead(file.LocalFileName))
 						{
 							blockBlob.UploadFromStream(fileStream);
 						}
@@ -328,12 +297,39 @@ namespace Tunr.Controllers
 						TableOperation insertOperation = TableOperation.Insert(song);
 
 						// Execute the insert operation.
-						this.SongTable.Execute(insertOperation);
+						AzureStorageContext.SongTable.Execute(insertOperation);
+
+						// Is there a fresh change set?
+						TableQuery<ChangeSet> query = new TableQuery<ChangeSet>().Where(TableQuery.CombineFilters(
+							TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id),
+							TableOperators.And,
+							TableQuery.GenerateFilterConditionForBool("IsFresh", QueryComparisons.Equal, true)));
+						var freshChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery(query).FirstOrDefault();
+						if (freshChangeSet != null)
+						{
+							// TODO: Check if change set has hit its limit of stored changes.
+							freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
+							freshChangeSet.LastModifiedTime = DateTimeOffset.Now;
+							AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
+						}
+						else
+						{
+							freshChangeSet = new ChangeSet()
+							{
+								ChangeSetId = Guid.NewGuid(),
+								OwnerId = Guid.Parse(user.Id),
+								Changes = new List<KeyValuePair<ChangeSet.ChangeType, Guid>>(),
+								IsFresh = true,
+								LastModifiedTime = DateTimeOffset.Now,
+							};
+							freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
+							AzureStorageContext.ChangeSetTable.Execute(TableOperation.Insert(freshChangeSet));
+						}
 
 						// Push the new song to SignalR clients
 						this.Hub.Clients.Group(user.Id).newSong(song);
 
-						System.IO.File.Delete(file.LocalFileName);
+						File.Delete(file.LocalFileName);
 					}
 					return Ok();
 				}
