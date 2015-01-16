@@ -54,7 +54,7 @@ namespace Tunr.Controllers
 			using (var db = new ApplicationDbContext())
 			{
 				var uid = User.Identity.GetUserId();
-				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+				var user = db.Users.Where(u => u.Id == uid).FirstOrDefault();
 
 				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
 				var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
@@ -148,6 +148,39 @@ namespace Tunr.Controllers
 			Random rand = new Random();
 			artistInfo.ImageUrls = artistInfo.ImageUrls.OrderBy(x => rand.Next()).ToList();
 			return Ok<ArtistInfo>(artistInfo);
+		}
+
+		/// <summary>
+		/// Fetches all 
+		/// </summary>
+		/// <returns></returns>
+		[Route("Sync")]
+		public async Task<IHttpActionResult> GetSync(Guid lastChangeId)
+		{
+			using (var db = new ApplicationDbContext())
+			{
+				var uid = User.Identity.GetUserId();
+				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+				if (user == null)
+				{
+					return InternalServerError(new Exception("User could not be found"));
+				}
+
+				// Find the changeset that they gave us
+				TableQuery<ChangeSet> baseQuery = new TableQuery<ChangeSet>().Where(TableQuery.CombineFilters(
+					TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id),
+					TableOperators.And,
+					TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, lastChangeId.ToString())));
+				var baseChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(baseQuery).FirstOrDefault();
+				if (baseChangeSet == null) {
+					return NotFound();
+				}
+
+				// Pull all of this user's changesets
+				TableQuery<ChangeSet> changeSetQuery = new TableQuery<ChangeSet>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id));
+				var changes = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderByDescending(c => c.LastModifiedTime).SkipWhile(i => i.ChangeSetId != lastChangeId);
+
+			}
 		}
 
 		// POST api/Library
