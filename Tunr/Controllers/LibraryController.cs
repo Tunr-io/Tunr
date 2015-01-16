@@ -154,8 +154,8 @@ namespace Tunr.Controllers
 		/// Fetches all 
 		/// </summary>
 		/// <returns></returns>
-		[Route("Sync")]
-		public async Task<IHttpActionResult> GetSync(Guid lastChangeId)
+		[Route("Sync/{lastChangeId}")]
+		public IHttpActionResult GetSync(Guid lastChangeId)
 		{
 			using (var db = new ApplicationDbContext())
 			{
@@ -178,8 +178,33 @@ namespace Tunr.Controllers
 
 				// Pull all of this user's changesets
 				TableQuery<ChangeSet> changeSetQuery = new TableQuery<ChangeSet>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id));
-				var changes = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderByDescending(c => c.LastModifiedTime).SkipWhile(i => i.ChangeSetId != lastChangeId);
+				var changes = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderBy(c => c.LastModifiedTime).SkipWhile(i => i.ChangeSetId != lastChangeId).Skip(1);
 
+				// For each change set, pull all of the relevant library items
+				var changeDetailsList = new List<ChangeSetDetails>();
+				foreach (var changeSet in changes)
+				{
+					// If this changeset was fresh, it is no longer.
+					if (changeSet.IsFresh == true)
+					{
+						changeSet.IsFresh = false;
+						AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(changeSet));
+					}
+					var changeSetDetails = new ChangeSetDetails()
+					{
+						ChangeSetId = changeSet.ChangeSetId,
+						LastModifiedTime = changeSet.LastModifiedTime,
+						Changes = new List<KeyValuePair<ChangeSet.ChangeType,Song>>()
+					};
+					foreach (var changeInfo in changeSet.Changes)
+					{
+						var changedSongQuery = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, changeInfo.Value.ToString()));
+						var changedSong = AzureStorageContext.SongTable.ExecuteQuery<Song>(changedSongQuery).FirstOrDefault();
+						changeSetDetails.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Song>(changeInfo.Key, changedSong));
+					}
+					changeDetailsList.Add(changeSetDetails);
+				}
+				return Ok<List<ChangeSetDetails>>(changeDetailsList);
 			}
 		}
 

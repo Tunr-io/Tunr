@@ -8,6 +8,9 @@ using System.Web;
 
 namespace Tunr.Models
 {
+	/// <summary>
+	/// This class keeps track of changes to the user's library.
+	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
 	public class ChangeSet : TableEntity
 	{
@@ -90,5 +93,18 @@ namespace Tunr.Models
 			this.Changes = JsonConvert.DeserializeObject<List<KeyValuePair<ChangeType,Guid>>>(properties["Changes"].StringValue);
 			this.LastModifiedTime = JsonConvert.DeserializeObject<DateTimeOffset>(properties["LastModifiedTime"].StringValue);
 		}
+	}
+
+	/// <summary>
+	/// This object is returned to clients who request a list of changes
+	/// from a certain changeset forward.
+	/// </summary>
+	public class ChangeSetDetails
+	{
+		public Guid ChangeSetId { get; set; }
+
+		public List<KeyValuePair<ChangeSet.ChangeType, Song>> Changes { get; set; }
+
+		public DateTimeOffset LastModifiedTime { get; set; }
 	}
 }
