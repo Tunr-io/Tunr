@@ -12,7 +12,7 @@ namespace Tunr.Models
 	{
 		public string DisplayName { get; set; }
 		public bool IsAdmin { get; set; }
-
+		public long LibrarySize { get; set; }
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<TunrUser> manager)
 		{
 			// Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -33,5 +33,11 @@ namespace Tunr.Models
 	public class TunrUserViewModel
 	{
 		public string DisplayName { get; set; }
+	}
+
+	public class EmailConfirmBindingModel
+	{
+		public string userId { get; set; }
+		public string code { get; set; }
 	}
 }

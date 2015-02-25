@@ -56,9 +56,6 @@
     <Reference Include="Facebook">
       <HintPath>..\packages\Facebook.6.8.0\lib\net45\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="LastFmLibNet">
-      <HintPath>..\libraries\LastFmLibNet\LastFmLibNet.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -405,6 +402,10 @@
     <Compile Include="Migrations\201408040240381_Playlists.Designer.cs">
       <DependentUpon>201408040240381_Playlists.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201502252204134_AddLibrarySize.cs" />
+    <Compile Include="Migrations\201502252204134_AddLibrarySize.Designer.cs">
+      <DependentUpon>201502252204134_AddLibrarySize.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlphaToken.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -566,6 +567,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201408040240381_Playlists.resx">
       <DependentUpon>201408040240381_Playlists.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502252204134_AddLibrarySize.resx">
+      <DependentUpon>201502252204134_AddLibrarySize.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -73,63 +73,61 @@ namespace Tunr.Controllers
 			if (ModelState.IsValid)
 			{
 				using (var db = new ApplicationDbContext())
-				{
-					// Check to make sure our alpha token is valid.
-					AlphaToken token = null;
-					try
+				{	
+					var user = new TunrUser() { UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName, LibrarySize = 0 };
+					var result = await UserManager.CreateAsync(user, model.Password);
+					if (result.Succeeded)
 					{
-						token = db.AlphaTokens.Where(x => x.AlphaTokenId == new Guid(model.AlphaToken)).Where(x => x.User == null).Select(x => x).FirstOrDefault();
-					}
-					catch (Exception) { }
-					
-					if (model.AlphaToken.ToLower() == "apphack" || token != null)
-					{
-						var user = new TunrUser() { UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName };
-						var result = await UserManager.CreateAsync(user, model.Password);
-						if (result.Succeeded)
+						var confirmationCode = UserManager.GenerateEmailConfirmationToken(user.Id);
+						string uri = Url.Route("DefaultApi", new { controller = "Account/ConfirmEmail/", userId = user.Id.ToString(), code = confirmationCode });
+						string absoluteUrl = new Uri(Request.RequestUri, uri).AbsoluteUri;
+
+						// Send them a welcome mail!
+						if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["SendGridUsername"]))
 						{
-							if (token != null)
-							{
-								token.User = db.Users.Where(x => x.Id == user.Id).Select(x => x).FirstOrDefault();
-								token.UsedTime = DateTimeOffset.Now;
-								await db.SaveChangesAsync();
-							}
+							var myMessage = new SendGridMessage();
+							myMessage.From = new System.Net.Mail.MailAddress("support@tunr.io", "Tunr Support");
+							myMessage.AddTo(user.Email);
+							myMessage.Subject = "Tunr Activation";
+							myMessage.Text = "Hey " + user.DisplayName + "! Welcome to Tunr."
+								+ "\n\nBefore you start listening, we need you to activate your account."
+								+ "\nJust click the URL below to activate and log in."
+								+ "\n\n" + absoluteUrl
+								+ "\n\nAfter you activate and log in, you can begin uploading your music and listening!"
+								+ "\n\nIf you have any trouble, want to share your thoughts, or just want to talk, shoot us an email at support@tunr.io . We'd love to hear from you."
+								+ "\n\nThanks again for testing!"
+								+ "\n\nThe Tunr team";
 
-							// Send them a welcome mail!
-							if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["SendGridUsername"]))
-							{
-								var myMessage = new SendGridMessage();
-								myMessage.From = new System.Net.Mail.MailAddress("monolith@tunr.io", "Tunr.io");
-								myMessage.AddTo(user.Email);
-								myMessage.Subject = "Welcome to the Tunr Pre-Alpha!";
-								myMessage.Text = "Hey " + user.DisplayName + "! Thanks for taking the time to test out Tunr for me."
-									+ "\n\nThe first thing you'll need to do is upload some music."
-									+ "\nCheck out the following page for more information!"
-									+ "\nhttp://tunr.io/alpha.html"
-									+ "\n\nHaving trouble? Reach out to me! hayden@outlook.com or any other means you know of."
-									+ "\n\nPlease make me aware of any bugs you find! That's all I ask in return :)"
-									+ "\n\nThanks again for testing!"
-									+ "\n\nHayden";
-
-								var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
-								var transportWeb = new Web(credentials);
-								await transportWeb.DeliverAsync(myMessage);
-							}
-
-							return Created(new Uri("/api/Users/" + user.Id, UriKind.Relative), user.toViewModel());
+							var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
+							var transportWeb = new Web(credentials);
+							await transportWeb.DeliverAsync(myMessage);
 						}
-						else
-						{
-							return BadRequest(result.Errors.First());
-						}
+
+						return Created(new Uri("/api/Users/" + user.Id, UriKind.Relative), user.toViewModel());
 					}
 					else
 					{
-						return BadRequest("Invalid Alpha Token provided.");
+						return BadRequest(result.Errors.First());
 					}
 				}
 			}
 			return BadRequest(ModelState);
+		}
+
+		[HttpGet]
+		[Route("ConfirmEmail")]
+		public async Task<IHttpActionResult> ConfirmEmail([FromUri] EmailConfirmBindingModel emailConfirmModel)
+		{
+			if (emailConfirmModel.userId == null || emailConfirmModel.code == null)
+			{
+				return BadRequest("The user or code provided is invalid.");
+			}
+			var result = await UserManager.ConfirmEmailAsync(emailConfirmModel.userId, emailConfirmModel.code);
+			if (result.Succeeded)
+			{
+				return Redirect(new Uri(Request.RequestUri, "/"));
+			}
+			return InternalServerError(new ApplicationException("Could not validate e-mail."));
 		}
     }
 }

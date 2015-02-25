@@ -330,6 +330,10 @@ namespace Tunr.Controllers
 						// Execute the insert operation.
 						this.SongTable.Execute(insertOperation);
 
+						// Update user's library size
+						user.LibrarySize = user.LibrarySize + song.FileSize;
+						db.SaveChanges();
+
 						// Push the new song to SignalR clients
 						this.Hub.Clients.Group(user.Id).newSong(song);
 
