@@ -40,6 +40,12 @@ namespace Tunr.Providers
 				return;
 			}
 
+			if (!user.EmailConfirmed)
+			{
+				context.SetError("invalid_grant", "The e-mail address of this account has not been confirmed.");
+				return;
+			}
+
 			ClaimsIdentity oAuthIdentity = await userManager.CreateIdentityAsync(user,
 				context.Options.AuthenticationType);
 			ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,

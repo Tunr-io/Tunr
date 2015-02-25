@@ -394,6 +394,10 @@ namespace Tunr.Controllers
 							AzureStorageContext.ChangeSetTable.Execute(TableOperation.Insert(freshChangeSet));
 						}
 
+						// Update user's library size
+						user.LibrarySize = user.LibrarySize + song.FileSize;
+						db.SaveChanges();
+
 						// Push the new song to SignalR clients
 						this.Hub.Clients.Group(user.Id).newSong(song);
 
