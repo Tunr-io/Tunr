@@ -95,8 +95,8 @@ namespace Tunr.Controllers
 								+ "\n\n" + absoluteUrl
 								+ "\n\nAfter you activate and log in, you can begin uploading your music and listening!"
 								+ "\n\nIf you have any trouble, want to share your thoughts, or just want to talk, shoot us an email at support@tunr.io . We'd love to hear from you."
-								+ "\n\nThanks again for testing!"
-								+ "\n\nThe Tunr team";
+								+ "\n\n We <3 Music!"
+								+ "\n\n The Tunr team";
 
 							var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
 							var transportWeb = new Web(credentials);
