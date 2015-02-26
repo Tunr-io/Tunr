@@ -1,4 +1,4 @@
-var TunrHub = (function () {
+﻿var TunrHub = (function () {
     function TunrHub(tunr) {
         var _this = this;
         this.hub = $.connection.tunrHub;
@@ -17,6 +17,7 @@ var TunrHub = (function () {
             _this.ready = true;
         });
     };
+
     TunrHub.prototype.newSong = function (s) {
         if (window.debug) {
             console.log("NEW SONG ADDED TO LIBRARY:");

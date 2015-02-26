@@ -621,6 +621,13 @@ div.player > ul.frames > li.library > ul.tagPerformers li {
   padding: 4px 0;
   white-space: nowrap;
 }
+div.player > ul.frames > li.library > ul.tagPerformers li.uploadTip {
+  font-size: 32px;
+  font-weight: 100;
+  color: #222;
+  white-space: normal;
+  padding-right: 16px;
+}
 div.player > ul.frames > li.library > ul.tagAlbum {
   margin: 16px 8px 0 8px;
   padding: 0;

@@ -207,6 +207,12 @@ class ArtistListHelper extends LibraryListHelper {
 			})(artists[i], li);
 			this.element.appendChild(li);
 		}
+		if (artists.length == 0) {
+			var tip = document.createElement("li");
+			tip.classList.add("uploadTip");
+			tip.innerHTML = "Welcome!<br /><br />Drag music files here to upload to Tunr.";
+			this.element.appendChild(tip);
+		}
 	}
 }
 
