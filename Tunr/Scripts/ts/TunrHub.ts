@@ -29,6 +29,6 @@ class TunrHub {
 			console.dir(s);
 		}
 		this.tunr.library.addSong(s);
-		this.tunr.player.getHelper("LibraryHelper").loadArtists();
+		this.tunr.player.getHelper("LibraryHelper").list_helpers[0].init(new Song());
 	}
 }

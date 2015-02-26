@@ -189,8 +189,11 @@ class LibraryListHelper extends Helper {
 }
 
 class ArtistListHelper extends LibraryListHelper {
-	public init(): void {
-		var artists: Array<string> = this.parent.getTunr().library.fetchUniquePropertyValues(this.library_helper.getFilterState(), "tagPerformers");
+	public init(filterState?: Song): void {
+		if (typeof filterState === 'undefined') {
+			filterState = this.library_helper.getFilterState();
+		}
+		var artists: Array<string> = this.parent.getTunr().library.fetchUniquePropertyValues(filterState, "tagPerformers");
 		artists.sort((a, b) => a.localeCompare(b));
 		this.element.innerHTML = ''; // clear existing entries
 		for (var i = 0; i < artists.length; i++) {
