@@ -10,6 +10,7 @@ namespace Tunr.Controllers
 	{
 		public ActionResult Index()
 		{
+			ViewBag.HeaderHtml = Server.HtmlDecode(System.Configuration.ConfigurationManager.AppSettings["HeaderHtml"]); 
 			return View();
 		}
 	}
