@@ -67,7 +67,9 @@ public class StreamHandler : IHttpHandler
 		CloudBlockBlob blockBlob = container.GetBlockBlobReference(songid.ToString());
 
 		ffmpeg.Start();
+#if DEBUG
 		ffmpeg.BeginErrorReadLine();
+#endif
 
 		// Buffer the streams (don't cross them HUR HURR)
 		var ffmpegBufferedIn = new BufferedStream(ffmpeg.StandardInput.BaseStream);
@@ -97,15 +99,23 @@ public class StreamHandler : IHttpHandler
 				read = ffmpegBufferedOut.Read(buf, 0, buf.Length);
 				response.OutputStream.Write(buf, 0, read);
 				response.OutputStream.Flush();
+				if (!response.IsClientConnected)
+				{
+					System.Diagnostics.Debug.WriteLine("Client is no longer connected.");
+					ffmpeg.Kill();
+					break;
+				}
 			}
 			catch (Exception)
 			{
 				System.Diagnostics.Debug.WriteLine("Stream terminated early.");
+				ffmpeg.Kill();
 				break;
 			}
 		} while (read > 0);
 
 		response.Close();
+		ffmpeg.Close();
 	}
 
 	#endregion
