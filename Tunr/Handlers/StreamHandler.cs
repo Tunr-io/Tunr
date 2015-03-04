@@ -81,7 +81,6 @@ public class StreamHandler : IHttpHandler
 			ffmpegBufferedIn.Flush();
 			ffmpegBufferedIn.Close();
 		});
-
 		
 		response.AddHeader("Connection", "close");
 		response.AddHeader("Content-Type", "audio/mpeg");
