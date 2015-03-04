@@ -67,9 +67,7 @@ public class StreamHandler : IHttpHandler
 		CloudBlockBlob blockBlob = container.GetBlockBlobReference(songid.ToString());
 
 		ffmpeg.Start();
-#if DEBUG
 		ffmpeg.BeginErrorReadLine();
-#endif
 
 		// Buffer the streams (don't cross them HUR HURR)
 		var ffmpegBufferedIn = new BufferedStream(ffmpeg.StandardInput.BaseStream);
