@@ -4,6 +4,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Tunr.App_Start;
 using Tunr.Migrations;
 using Tunr.Models;
 
@@ -19,6 +20,7 @@ namespace Tunr
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			BundleConfig.RegisterBundles(BundleTable.Bundles);
 			System.Data.Entity.Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Configuration>());
+			IoCConfig.Register();
 		}
 	}
 }

@@ -15,6 +15,8 @@ using Tunr.Models;
 using SendGrid;
 using System.Web.Http.Cors;
 using System.Configuration;
+using TinyIoC;
+using Tunr.Services;
 
 namespace Tunr.Controllers
 {
@@ -83,25 +85,20 @@ namespace Tunr.Controllers
 						string absoluteUrl = new Uri(Request.RequestUri, uri).AbsoluteUri;
 
 						// Send them a welcome mail!
-						if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["SendGridUsername"]))
-						{
-							var myMessage = new SendGridMessage();
-							myMessage.From = new System.Net.Mail.MailAddress("support@tunr.io", "Tunr Support");
-							myMessage.AddTo(user.Email);
-							myMessage.Subject = "Tunr Activation";
-							myMessage.Text = "Hey " + user.DisplayName + "! Welcome to Tunr."
-								+ "\n\nBefore you start listening, we need you to activate your account."
-								+ "\nJust click the URL below to activate and log in."
-								+ "\n\n" + absoluteUrl
-								+ "\n\nAfter you activate and log in, you can begin uploading your music and listening!"
-								+ "\n\nIf you have any trouble, want to share your thoughts, or just want to talk, shoot us an email at support@tunr.io . We'd love to hear from you."
-								+ "\n\n We <3 Music!"
-								+ "\n\n The Tunr team";
+						string bodyText = "Hey " + user.DisplayName + "! Welcome to Tunr."
+							+ "\n\nBefore you start listening, we need you to activate your account."
+							+ "\nJust click the URL below to activate and log in."
+							+ "\n\n" + absoluteUrl
+							+ "\n\nAfter you activate and log in, you can begin uploading your music and listening!"
+							+ "\n\nIf you have any trouble, want to share your thoughts, or just want to talk, shoot us an email at support@tunr.io . We'd love to hear from you."
+							+ "\n\n We <3 Music!"
+							+ "\n\n The Tunr team";
 
-							var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
-							var transportWeb = new Web(credentials);
-							await transportWeb.DeliverAsync(myMessage);
+						try
+						{
+							TinyIoCContainer.Current.Resolve<IEmailService>().SendEmail("support@tunr.io", "Tunr Support", new List<string>() { user.Email }, "Welcome to Tunr", bodyText);
 						}
+						catch (Exception) { }
 
 						return Created(new Uri("/api/Users/" + user.Id, UriKind.Relative), user.toViewModel());
 					}
