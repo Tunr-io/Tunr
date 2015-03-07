@@ -19,7 +19,8 @@ namespace Tunr.Services
 			myMessage.Subject = subject;
 			myMessage.Text = body;
 
-			var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"], ConfigurationManager.AppSettings["SendGridPassword"]);
+			var credentials = new NetworkCredential(ConfigurationManager.AppSettings["SendGridUsername"],
+				ConfigurationManager.AppSettings["SendGridPassword"]);
 			var transportWeb = new Web(credentials);
 			transportWeb.Deliver(myMessage);
 		}

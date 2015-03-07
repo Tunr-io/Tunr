@@ -97,6 +97,7 @@ namespace Tunr.Controllers
 						try
 						{
 							TinyIoCContainer.Current.Resolve<IEmailService>().SendEmail("support@tunr.io", "Tunr Support", new List<string>() { user.Email }, "Welcome to Tunr", bodyText);
+							TinyIoCContainer.Current.Resolve<INewsletterService>().AddUser(user);
 						}
 						catch (Exception) { }
 

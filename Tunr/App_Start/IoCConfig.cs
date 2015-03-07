@@ -15,6 +15,7 @@ namespace Tunr.App_Start
 			var container = TinyIoCContainer.Current;
 
 			container.Register<IEmailService, SendGridEmailService>();
+			container.Register<INewsletterService, MailChimpNewsletterService>();
 		}
 	}
 }
