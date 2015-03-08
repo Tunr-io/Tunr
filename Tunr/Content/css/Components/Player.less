@@ -56,7 +56,7 @@ div.player {
 			width: @library_pane_width;
 		}
 
-		ul.frames > li.playing {
+		ul.frames > li.playing, ul.frames > li.welcome {
 			width: calc(~"100% - @{library_pane_width} - @{library_pane_width}");
 		}
 	}
@@ -416,6 +416,9 @@ div.player > ul.frames > li.playlist {
 /* Playing Pane */
 @albumart-size:200px;
 div.player > ul.frames > li.playing {
+	&.hidden {
+		display: none;
+	}
 	div.title {
 		position:absolute;
 		top:0;
@@ -551,6 +554,51 @@ div.player > ul.frames > li.playing {
 		top:0;
 		left:0;
 		z-index:-1;
+	}
+}
+
+/* Welcome pane */
+
+div.player > ul.frames > li.welcome {
+	&.hidden {
+		display:none;
+	}
+	h1 {
+		padding-top: 16px;
+		font-weight: 900;
+		line-height: 0.8;
+		margin: 0;
+		font-size: 120px;
+		color: #fff;
+		text-transform: uppercase;
+		opacity: 0.2;
+		.animation-name(anim_shovein_right);
+		.animation-duration(3000ms);
+		.animation-timing-function(cubic-bezier(0.165, 0.840, 0.440, 1.000));
+		.animation-iteration-count(1);
+	}
+
+	h2 {
+		font-weight: 100;
+		font-size: 48px;
+		margin: 24px 0 0 16px;
+		text-transform: lowercase;
+	}
+
+	p {
+		font-size: 22px;
+		margin: 8px 0 8px 16px;
+		opacity: 0.75;
+
+		a {
+			color: #fff;
+			text-decoration: none;
+			opacity: 0.6;
+
+			&:hover {
+				opacity: 1.0;
+			}
+		}
 	}
 }
 

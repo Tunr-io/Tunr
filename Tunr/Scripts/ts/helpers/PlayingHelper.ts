@@ -40,6 +40,11 @@
 	}
 
 	public changeSong(song: Song): void {
+		if (this.element.classList.contains("hidden")) {
+			this.element.classList.remove("hidden");
+			this.parent.getHelper("WelcomeHelper").hide();
+			this.visualizer.resize();
+		}
 		// Keep a reference of the song
 		this.song = song;
 
@@ -114,6 +119,10 @@
 	// Updates play timer displayed on the UI.
 	public update_playtime(): void {
 		var seconds = this.parent.getHelper("PlaylistHelper").getSongTime();
-		(<HTMLElement>this.element.getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
+		//(<HTMLElement>this.element.getElementsByClassName("playtimer")[0]).innerHTML = Math.floor(seconds / 60) + ":" + ("0" + Math.floor(seconds % 60)).slice(-2);
+	}
+
+	public resize(): void {
+		this.visualizer.resize();
 	}
 } 

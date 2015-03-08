@@ -66,6 +66,6 @@ class Component {
 	}
 
 	public windowResize(): void {
-
+		
 	}
 } 

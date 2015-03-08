@@ -12,14 +12,18 @@
 	}
 
 	public init(): void {
-		var parent: HTMLElement = this.canvas.parentElement;
-		this.canvas.width = parent.clientWidth;
-		this.canvas.height = parent.clientHeight;
+		this.resize();
 		this.stage = new createjs.Stage(this.canvas);
 		this.stage.autoClear = true;
 		createjs.Ticker.setFPS(60);
 		var tick_bind = this.tick.bind(this);
 		createjs.Ticker.addEventListener("tick", tick_bind);
+	}
+
+	public resize() {
+		var parent: HTMLElement = this.canvas.parentElement;
+		this.canvas.width = parent.clientWidth * window.devicePixelRatio;
+		this.canvas.height = parent.clientHeight * window.devicePixelRatio;
 	}
 
 	/**

@@ -120,6 +120,54 @@
   -webkit-animation-iteration-count: 1;
   animation-iteration-count: 1;
 }
+@-moz-keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+@keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+.animated.anim_shovein_right {
+  -moz-animation-name: anim_shovein_right;
+  -o-animation-name: anim_shovein_right;
+  -webkit-animation-name: anim_shovein_right;
+  animation-name: anim_shovein_right;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
 .librarypane {
   position: fixed;
   width: 300px;

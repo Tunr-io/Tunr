@@ -150,6 +150,54 @@ body {
   -webkit-animation-iteration-count: 1;
   animation-iteration-count: 1;
 }
+@-moz-keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+@keyframes anim_shovein_right {
+  from {
+    -webkit-transform: translate3d(60px, 0, 0);
+    -moz-transform: translate3d(60px, 0, 0);
+    -ms-transform: translate3d(60px, 0, 0);
+    -o-transform: translate3d(60px, 0, 0);
+    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+  }
+}
+.animated.anim_shovein_right {
+  -moz-animation-name: anim_shovein_right;
+  -o-animation-name: anim_shovein_right;
+  -webkit-animation-name: anim_shovein_right;
+  animation-name: anim_shovein_right;
+  -moz-animation-duration: 300ms;
+  -o-animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
 /*
  * Dialog Styles, used for pop-up dialogs of any sort.
  */
@@ -473,7 +521,8 @@ div.player ul.frames > li {
   div.player ul.frames > li.playlist {
     width: 300px;
   }
-  div.player ul.frames > li.playing {
+  div.player ul.frames > li.playing,
+  div.player ul.frames > li.welcome {
     width: calc(100% - 300px - 300px);
   }
 }
@@ -869,6 +918,9 @@ div.player > ul.frames > li.playlist ul.songlist li.playlistitem.playing {
   opacity: 1;
 }
 /* Playing Pane */
+div.player > ul.frames > li.playing.hidden {
+  display: none;
+}
 div.player > ul.frames > li.playing div.title {
   position: absolute;
   top: 0;
@@ -997,6 +1049,55 @@ div.player > ul.frames > li.playing canvas {
   top: 0;
   left: 0;
   z-index: -1;
+}
+/* Welcome pane */
+div.player > ul.frames > li.welcome.hidden {
+  display: none;
+}
+div.player > ul.frames > li.welcome h1 {
+  padding-top: 16px;
+  font-weight: 900;
+  line-height: 0.8;
+  margin: 0;
+  font-size: 120px;
+  color: #fff;
+  text-transform: uppercase;
+  opacity: 0.2;
+  -moz-animation-name: anim_shovein_right;
+  -o-animation-name: anim_shovein_right;
+  -webkit-animation-name: anim_shovein_right;
+  animation-name: anim_shovein_right;
+  -moz-animation-duration: 3000ms;
+  -o-animation-duration: 3000ms;
+  -webkit-animation-duration: 3000ms;
+  animation-duration: 3000ms;
+  -moz-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -webkit-animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-animation-iteration-count: 1;
+  -o-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
+div.player > ul.frames > li.welcome h2 {
+  font-weight: 100;
+  font-size: 48px;
+  margin: 24px 0 0 16px;
+  text-transform: lowercase;
+}
+div.player > ul.frames > li.welcome p {
+  font-size: 22px;
+  margin: 8px 0 8px 16px;
+  opacity: 0.75;
+}
+div.player > ul.frames > li.welcome p a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.6;
+}
+div.player > ul.frames > li.welcome p a:hover {
+  opacity: 1.0;
 }
 @-moz-keyframes anim_playingtitle_out {
   to {

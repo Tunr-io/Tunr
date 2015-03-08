@@ -210,7 +210,7 @@ class ArtistListHelper extends LibraryListHelper {
 		if (artists.length == 0) {
 			var tip = document.createElement("li");
 			tip.classList.add("uploadTip");
-			tip.innerHTML = "Welcome!<br /><br />Drag music files here to upload to Tunr.";
+			tip.innerHTML = "Drag music files here to upload";
 			this.element.appendChild(tip);
 		}
 	}
