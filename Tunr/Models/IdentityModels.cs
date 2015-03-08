@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tunr.Models
 {

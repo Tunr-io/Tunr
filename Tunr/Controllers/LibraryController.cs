@@ -25,6 +25,7 @@ using Microsoft.Xbox.Music.Platform.Client;
 using Microsoft.Xbox.Music.Platform.Contract.DataModel;
 using Facebook;
 using System.Configuration;
+using System.Data.Entity.Infrastructure;
 
 namespace Tunr.Controllers
 {
@@ -394,9 +395,22 @@ namespace Tunr.Controllers
 							AzureStorageContext.ChangeSetTable.Execute(TableOperation.Insert(freshChangeSet));
 						}
 
-						// Update user's library size
-						user.LibrarySize = user.LibrarySize + song.FileSize;
-						db.SaveChanges();
+						// Update user's library size in a concurrency-safe way
+						bool saveFailed;
+						do
+						{
+							saveFailed = false;
+							user.LibrarySize += song.FileSize;
+							try
+							{
+								db.SaveChanges();
+							}
+							catch (DbUpdateConcurrencyException e)
+							{
+								saveFailed = true;
+								e.Entries.Single().Reload();
+							}
+						} while (saveFailed);
 
 						// Push the new song to SignalR clients
 						this.Hub.Clients.Group(user.Id).newSong(song);

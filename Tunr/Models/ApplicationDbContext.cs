@@ -14,6 +14,15 @@ namespace Tunr.Models
 		{
 		}
 
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+
+			modelBuilder.Entity<TunrUser>()
+				.Property(s => s.LibrarySize)
+				.IsConcurrencyToken();
+		} 
+
 		public static ApplicationDbContext Create()
 		{
 			return new ApplicationDbContext();

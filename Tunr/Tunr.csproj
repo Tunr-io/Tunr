@@ -273,6 +273,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.cs" />
+    <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.Designer.cs">
+      <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\INewsletterService.cs" />
     <Compile Include="Services\MailChimpNewsletterService.cs" />
     <Compile Include="Services\SendGridEmailService.cs" />
@@ -596,6 +600,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201502252204134_AddLibrarySize.resx">
       <DependentUpon>201502252204134_AddLibrarySize.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.resx">
+      <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
