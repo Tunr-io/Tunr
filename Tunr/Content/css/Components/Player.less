@@ -17,6 +17,12 @@ div.player {
 		margin:0;
 		padding:0;
 		height:100%;
+		.transition(border 200ms ease-in-out);
+		border: 0 #fff dashed;
+
+		&.dragging {
+			border: 8px #fff dashed;
+		}
 
 		& > li {
 			position:relative;

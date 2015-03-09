@@ -1,4 +1,4 @@
-﻿var __extends = this.__extends || function (d, b) {
+var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -19,32 +19,31 @@ var LibraryHelper = (function (_super) {
         this.root_name = "Music";
         this.list_filter_state = new Song();
         this.load();
-
         // Prepare drag and drop uploading
-        this.element.addEventListener("dragenter", function (e) {
+        this.element.parentElement.addEventListener("dragenter", function (e) {
             _this.drag_target = e.target;
-            if (!_this.element.classList.contains("dragging")) {
-                _this.element.classList.add("dragging");
+            if (!_this.element.parentElement.classList.contains("dragging")) {
+                _this.element.parentElement.classList.add("dragging");
             }
             e.stopPropagation();
             e.preventDefault();
         }, false);
-        this.element.addEventListener("dragover", function (e) {
+        this.element.parentElement.addEventListener("dragover", function (e) {
             e.stopPropagation();
             e.preventDefault();
         });
-        this.element.addEventListener("dragleave", function (e) {
+        this.element.parentElement.addEventListener("dragleave", function (e) {
             if (e.target == _this.drag_target) {
-                if (_this.element.classList.contains("dragging")) {
-                    _this.element.classList.remove("dragging");
+                if (_this.element.parentElement.classList.contains("dragging")) {
+                    _this.element.parentElement.classList.remove("dragging");
                 }
             }
             e.stopPropagation();
             e.preventDefault();
         }, false);
-        this.element.addEventListener("drop", function (e) {
-            if (_this.element.classList.contains("dragging")) {
-                _this.element.classList.remove("dragging");
+        this.element.parentElement.addEventListener("drop", function (e) {
+            if (_this.element.parentElement.classList.contains("dragging")) {
+                _this.element.parentElement.classList.remove("dragging");
             }
             _this.readFiles(e.dataTransfer.files);
             _this.drag_target = null;
@@ -52,14 +51,12 @@ var LibraryHelper = (function (_super) {
             e.preventDefault();
         }, false);
     };
-
     LibraryHelper.prototype.readFiles = function (files) {
         var _this = this;
         var formData = new FormData();
         for (var i = 0; i < files.length; i++) {
             formData.append('file', files[i]);
         }
-
         // now post a new XHR request
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/Library');
@@ -73,7 +70,6 @@ var LibraryHelper = (function (_super) {
                 }
             }
         };
-
         xhr.upload.onprogress = function (event) {
             if (event.lengthComputable) {
                 var complete = (event.loaded / event.total * 100 | 0);
@@ -86,10 +82,9 @@ var LibraryHelper = (function (_super) {
         }
         xhr.send(formData);
     };
-
     /**
-    * Loads user's library from the server, then triggers root list render.
-    */
+     * Loads user's library from the server, then triggers root list render.
+     */
     LibraryHelper.prototype.load = function () {
         var _this = this;
         this.parent.getTunr().library.load().then(function () {
@@ -98,37 +93,31 @@ var LibraryHelper = (function (_super) {
             console.error("failed to load library.");
         });
     };
-
     LibraryHelper.prototype.getFilterState = function () {
         return this.list_filter_state;
     };
-
     LibraryHelper.prototype.loadChild = function (value) {
         // Get current property name
         var prop = this.tree_structure[this.list_helpers.length - 1];
-
         // Set filter state
         this.list_filter_state[prop] = value;
-
         // Load the next list
         this.loadLevel(this.list_helpers.length);
     };
-
     LibraryHelper.prototype.loadLevel = function (levelIndex) {
         var _this = this;
         var value = this.root_name;
         if (levelIndex > 0) {
             // Get current property name
             var prop = this.tree_structure[this.list_helpers.length - 1];
-
             // Get new value
             if (Array.isArray(this.list_filter_state[prop])) {
                 value = this.list_filter_state[prop][0];
-            } else {
+            }
+            else {
                 value = this.list_filter_state[prop];
             }
         }
-
         // Add nav header
         var header = document.createElement("a");
         header.innerHTML = value;
@@ -136,7 +125,6 @@ var LibraryHelper = (function (_super) {
             _this.backLevel(levelIndex);
         });
         this.nav_element.appendChild(header);
-
         // Prepare list helper
         var listElement = document.createElement("ul");
         listElement.classList.add(this.tree_structure[levelIndex]);
@@ -145,42 +133,34 @@ var LibraryHelper = (function (_super) {
         var listHelper = new this.list_helper_classes[this.tree_structure[levelIndex]](this, listElement);
         this.list_helpers.push(listHelper);
         listHelper.init();
-
         for (var i = 0; i < this.list_helpers.length - 1; i++) {
             this.list_helpers[i].hide();
         }
     };
-
     LibraryHelper.prototype.backLevel = function (levelIndex) {
         if (levelIndex == this.list_helpers.length - 1) {
             return;
         }
         var headers = this.nav_element.getElementsByTagName("a");
-
         // Show the specified list level
         this.list_helpers[levelIndex].show();
-
         for (var i = this.list_helpers.length - 1; i > levelIndex; i--) {
             // Remove property of this from the filter state
             var prop = this.tree_structure[i];
             this.list_filter_state[prop] = "";
-
             // Remove the navigation header
             this.nav_element.removeChild(headers[i]);
-
             // Destroy the list
             var helper = this.list_helpers.pop();
             helper.destroy();
         }
     };
-
     LibraryHelper.prototype.selectSong = function (song) {
         var playlistHelper = this.parent.getHelper("PlaylistHelper");
         playlistHelper.addSong(song);
     };
     return LibraryHelper;
 })(Helper);
-
 var LibraryListHelper = (function (_super) {
     __extends(LibraryListHelper, _super);
     function LibraryListHelper(parent, element) {
@@ -190,17 +170,14 @@ var LibraryListHelper = (function (_super) {
     LibraryListHelper.prototype.hide = function () {
         this.element.classList.add("hidden");
     };
-
     LibraryListHelper.prototype.show = function () {
         this.element.classList.remove("hidden");
     };
-
     LibraryListHelper.prototype.destroy = function () {
         this.element.parentNode.removeChild(this.element);
     };
     return LibraryListHelper;
 })(Helper);
-
 var ArtistListHelper = (function (_super) {
     __extends(ArtistListHelper, _super);
     function ArtistListHelper() {
@@ -212,9 +189,7 @@ var ArtistListHelper = (function (_super) {
             filterState = this.library_helper.getFilterState();
         }
         var artists = this.parent.getTunr().library.fetchUniquePropertyValues(filterState, "tagPerformers");
-        artists.sort(function (a, b) {
-            return a.localeCompare(b);
-        });
+        artists.sort(function (a, b) { return a.localeCompare(b); });
         this.element.innerHTML = ''; // clear existing entries
         for (var i = 0; i < artists.length; i++) {
             var li = document.createElement("li");
@@ -236,7 +211,6 @@ var ArtistListHelper = (function (_super) {
     };
     return ArtistListHelper;
 })(LibraryListHelper);
-
 var AlbumListHelper = (function (_super) {
     __extends(AlbumListHelper, _super);
     function AlbumListHelper() {
@@ -269,7 +243,6 @@ var AlbumListHelper = (function (_super) {
     };
     return AlbumListHelper;
 })(LibraryListHelper);
-
 var SongListHelper = (function (_super) {
     __extends(SongListHelper, _super);
     function SongListHelper() {
@@ -278,9 +251,7 @@ var SongListHelper = (function (_super) {
     SongListHelper.prototype.init = function () {
         var _this = this;
         var songs = this.parent.getTunr().library.filter(this.library_helper.getFilterState());
-        songs.sort(function (a, b) {
-            return a.tagTrack - b.tagTrack;
-        });
+        songs.sort(function (a, b) { return a.tagTrack - b.tagTrack; });
         this.element.innerHTML = "";
         for (var i = 0; i < songs.length; i++) {
             var li = document.createElement("li");

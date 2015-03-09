@@ -17,30 +17,30 @@
 		this.load();
 
 		// Prepare drag and drop uploading
-		this.element.addEventListener("dragenter", (e) => {
+		this.element.parentElement.addEventListener("dragenter", (e) => {
 			this.drag_target = e.target;
-			if (!this.element.classList.contains("dragging")) {
-				this.element.classList.add("dragging");
+			if (!this.element.parentElement.classList.contains("dragging")) {
+				this.element.parentElement.classList.add("dragging");
 			}
 			e.stopPropagation();
 			e.preventDefault();
 		}, false);
-		this.element.addEventListener("dragover", (e) => {
+		this.element.parentElement.addEventListener("dragover", (e) => {
 			e.stopPropagation();
 			e.preventDefault();
 		});
-		this.element.addEventListener("dragleave", (e) => {
+		this.element.parentElement.addEventListener("dragleave", (e) => {
 			if (e.target == this.drag_target) {
-				if (this.element.classList.contains("dragging")) {
-					this.element.classList.remove("dragging");
+				if (this.element.parentElement.classList.contains("dragging")) {
+					this.element.parentElement.classList.remove("dragging");
 				}
 			}
 			e.stopPropagation();
 			e.preventDefault();
 		}, false);
-		this.element.addEventListener("drop", (e) => {
-			if (this.element.classList.contains("dragging")) {
-				this.element.classList.remove("dragging");
+		this.element.parentElement.addEventListener("drop", (e) => {
+			if (this.element.parentElement.classList.contains("dragging")) {
+				this.element.parentElement.classList.remove("dragging");
 			}
 			this.readFiles(e.dataTransfer.files);
 			this.drag_target = null;

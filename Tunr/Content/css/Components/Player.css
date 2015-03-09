@@ -183,6 +183,14 @@ div.player ul.frames {
   margin: 0;
   padding: 0;
   height: 100%;
+  -webkit-transition: border 200ms ease-in-out;
+  -moz-transition: border 200ms ease-in-out;
+  -o-transition: border 200ms ease-in-out;
+  transition: border 200ms ease-in-out;
+  border: 0 #fff dashed;
+}
+div.player ul.frames.dragging {
+  border: 8px #fff dashed;
 }
 div.player ul.frames > li {
   position: relative;
