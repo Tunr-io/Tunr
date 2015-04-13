@@ -151,6 +151,39 @@ namespace Tunr.Controllers
 			return Ok<ArtistInfo>(artistInfo);
 		}
 
+        [Route("Sync")]
+        public IHttpActionResult GetSyncBase()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var uid = User.Identity.GetUserId();
+                var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+                if (user == null)
+                {
+                    return InternalServerError(new Exception("User could not be found"));
+                }
+
+                // Pull the last changeset by this user
+                TableQuery<ChangeSet> changeSetQuery = new TableQuery<ChangeSet>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id));
+                var changeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderByDescending(c => c.LastModifiedTime).Take(1).FirstOrDefault();
+
+                // If this changeset was fresh, it is no longer.
+                if (changeSet != null && changeSet.IsFresh == true)
+                {
+                    changeSet.IsFresh = false;
+                    AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(changeSet));
+                }
+
+                // Pull the user's library
+                TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
+                var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
+
+                var baseSyncDetails = new Dictionary<string, object>() { { "lastSyncId", changeSet == null ? "" : changeSet.ChangeSetId.ToString() }, { "library", songs } };
+
+                return Ok<Dictionary<string, object>>(baseSyncDetails);
+            }
+        }
+
 		/// <summary>
 		/// Fetches all 
 		/// </summary>
@@ -173,7 +206,8 @@ namespace Tunr.Controllers
 					TableOperators.And,
 					TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, lastChangeId.ToString())));
 				var baseChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(baseQuery).FirstOrDefault();
-				if (baseChangeSet == null) {
+				if (baseChangeSet == null)
+                {
 					return NotFound();
 				}
 
