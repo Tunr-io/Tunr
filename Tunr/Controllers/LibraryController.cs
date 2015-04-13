@@ -178,9 +178,11 @@ namespace Tunr.Controllers
                 TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
                 var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
 
-                var baseSyncDetails = new Dictionary<string, object>() { { "lastSyncId", changeSet == null ? "" : changeSet.ChangeSetId.ToString() }, { "library", songs } };
-
-                return Ok<Dictionary<string, object>>(baseSyncDetails);
+                return Ok<SyncBaseModel>(new SyncBaseModel()
+                {
+                    LastSyncId = changeSet == null ? null : (Guid?)changeSet.ChangeSetId,
+                    Library = songs
+                });
             }
         }
 

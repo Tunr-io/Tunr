@@ -277,6 +277,7 @@
     <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.Designer.cs">
       <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\SyncBaseModel.cs" />
     <Compile Include="Services\INewsletterService.cs" />
     <Compile Include="Services\MailChimpNewsletterService.cs" />
     <Compile Include="Services\SendGridEmailService.cs" />
