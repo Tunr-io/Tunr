@@ -50,16 +50,14 @@ namespace Tunr.Controllers
 
 		// GET api/Library
 		[Route("")]
-		public IEnumerable<Song> Get()
+		public IEnumerable<SongModel> Get()
 		{
 			using (var db = new ApplicationDbContext())
 			{
 				var uid = User.Identity.GetUserId();
 				var user = db.Users.Where(u => u.Id == uid).FirstOrDefault();
 
-				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-				var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
-				return songs;
+                return db.Songs.Where(s => s.Owner.Id == user.Id).ToList();
 			}
 		}
 
@@ -72,29 +70,30 @@ namespace Tunr.Controllers
 		[AllowAnonymous] // HACK: Really shouldn't allow anonymous, but something's up with the cookie auth.
 		public async Task<HttpResponseMessage> GetAlbumArt(Guid id)
 		{
-			if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["XboxClientId"]))
-			{
-				TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-				var song = AzureStorageContext.SongTable.ExecuteQuery(query).FirstOrDefault();
-				if (song == null)
-				{
-					return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified track ID.");
-				}
-				IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
-				var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault() + " " + song.TagAlbum, filter: SearchFilter.Albums, maxItems: 1, country: "US");
-				if (response.Albums != null && response.Albums.TotalItemCount > 0)
-				{
-					var resp = Request.CreateResponse();
-					resp.StatusCode = HttpStatusCode.Redirect;
-					resp.Headers.Location = new Uri(response.Albums.Items[0].ImageUrl);
-					return resp;
-				}
-			}
-			// If our look-up fails, we just spit out the default album art.
-			var defaultResp = Request.CreateResponse();
-			defaultResp.StatusCode = HttpStatusCode.Redirect;
-			defaultResp.Headers.Location = new Uri("/Content/svg/album_cover.svg", UriKind.Relative);
-			return defaultResp;
+            using (var db = new ApplicationDbContext()) {
+                if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["XboxClientId"]))
+                {
+                    var song = db.Songs.SingleOrDefault(s => s.SongId == id);
+                    if (song == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Cannot locate specified track ID.");
+                    }
+                    IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
+                    var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault() + " " + song.TagAlbum, filter: SearchFilter.Albums, maxItems: 1, country: "US");
+                    if (response.Albums != null && response.Albums.TotalItemCount > 0)
+                    {
+                        var resp = Request.CreateResponse();
+                        resp.StatusCode = HttpStatusCode.Redirect;
+                        resp.Headers.Location = new Uri(response.Albums.Items[0].ImageUrl);
+                        return resp;
+                    }
+                }
+                // If our look-up fails, we just spit out the default album art.
+                var defaultResp = Request.CreateResponse();
+                defaultResp.StatusCode = HttpStatusCode.Redirect;
+                defaultResp.Headers.Location = new Uri("/Content/svg/album_cover.svg", UriKind.Relative);
+                return defaultResp;
+            }
 		}
 
 		/// <summary>
@@ -106,50 +105,52 @@ namespace Tunr.Controllers
 		[AllowAnonymous] // HACK: Really shouldn't allow anonymous, but something's up with the cookie auth.
 		public async Task<IHttpActionResult> GetImage(Guid id)
 		{
-			TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-			var song = AzureStorageContext.SongTable.ExecuteQuery(query).FirstOrDefault();
-			if (song == null) {
-				return BadRequest("Cannot locate specified track ID.");
-			}
-			var artistInfo = new ArtistInfo()
-			{
-				ImageUrls = new List<string>()
-			};
-			try
-			{
-				// Fetch images from Facebook
-				var fbClient = new FacebookClient();
-				dynamic tokenResult = fbClient.Get("oauth/access_token", new
-				{
-					client_id = ConfigurationManager.AppSettings["FacebookClientId"],
-					client_secret = ConfigurationManager.AppSettings["FacebookClientSecret"],
-					grant_type = "client_credentials"
-				});
-				fbClient.AccessToken = tokenResult.access_token;
+            using (var db = new ApplicationDbContext())
+            {
+                var song = db.Songs.SingleOrDefault(s => s.SongId == id);
+                if (song == null) {
+				    return BadRequest("Cannot locate specified track ID.");
+			    }
+			    var artistInfo = new ArtistInfo()
+			    {
+				    ImageUrls = new List<string>()
+			    };
+			    try
+			    {
+				    // Fetch images from Facebook
+				    var fbClient = new FacebookClient();
+				    dynamic tokenResult = fbClient.Get("oauth/access_token", new
+				    {
+					    client_id = ConfigurationManager.AppSettings["FacebookClientId"],
+					    client_secret = ConfigurationManager.AppSettings["FacebookClientSecret"],
+					    grant_type = "client_credentials"
+				    });
+				    fbClient.AccessToken = tokenResult.access_token;
 
-				FacebookSearchResponse fbRequest = fbClient.Get<FacebookSearchResponse>("search", new { q = song.TagPerformers.FirstOrDefault(), type = "page" });
-				IEnumerable<FacebookSearchResult> fbResults = fbRequest.data.Where(x => x.category.Equals("Musician/band"));
-				dynamic pageId = fbResults.FirstOrDefault().id;
+				    FacebookSearchResponse fbRequest = fbClient.Get<FacebookSearchResponse>("search", new { q = song.TagPerformers.FirstOrDefault(), type = "page" });
+				    IEnumerable<FacebookSearchResult> fbResults = fbRequest.data.Where(x => x.category.Equals("Musician/band"));
+				    dynamic pageId = fbResults.FirstOrDefault().id;
 
-				FacebookImageResponse fbImageRequest = fbClient.Get<FacebookImageResponse>(pageId + "/photos/uploaded?fields=images&limit=100");
-				Random rnd = new Random();
-				var hiresFbImages = fbImageRequest.data.Where(x => x.images.Count() > 0).Where(x => x.images.First().width * x.images.First().height > 750000).OrderBy(x => rnd.Next()).Take(5);
-				artistInfo.ImageUrls.AddRange(hiresFbImages.Select(x => x.images.First().source));
+				    FacebookImageResponse fbImageRequest = fbClient.Get<FacebookImageResponse>(pageId + "/photos/uploaded?fields=images&limit=100");
+				    Random rnd = new Random();
+				    var hiresFbImages = fbImageRequest.data.Where(x => x.images.Count() > 0).Where(x => x.images.First().width * x.images.First().height > 750000).OrderBy(x => rnd.Next()).Take(5);
+				    artistInfo.ImageUrls.AddRange(hiresFbImages.Select(x => x.images.First().source));
 			
-				// Fetch images from Xbox Music
-				IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
-				var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault(), filter: SearchFilter.Artists, maxItems: 1, country: "US");
-				if (response.Artists.TotalItemCount > 0)
-				{
-					artistInfo.ImageUrls.Add(response.Artists.Items[0].ImageUrl);
-				}
-			}
-			catch (Exception) { }
+				    // Fetch images from Xbox Music
+				    IXboxMusicClient client = XboxMusicClientFactory.CreateXboxMusicClient(ConfigurationManager.AppSettings["XboxClientId"], ConfigurationManager.AppSettings["XboxClientSecret"]);
+				    var response = await client.SearchAsync(Namespace.music, song.TagPerformers.FirstOrDefault(), filter: SearchFilter.Artists, maxItems: 1, country: "US");
+				    if (response.Artists.TotalItemCount > 0)
+				    {
+					    artistInfo.ImageUrls.Add(response.Artists.Items[0].ImageUrl);
+				    }
+			    }
+			    catch (Exception) { }
 
-			Random rand = new Random();
-			artistInfo.ImageUrls = artistInfo.ImageUrls.OrderBy(x => rand.Next()).ToList();
-			return Ok<ArtistInfo>(artistInfo);
-		}
+			    Random rand = new Random();
+			    artistInfo.ImageUrls = artistInfo.ImageUrls.OrderBy(x => rand.Next()).ToList();
+			    return Ok<ArtistInfo>(artistInfo);
+            }
+        }
 
         [Route("Sync")]
         public IHttpActionResult GetSyncBase()
@@ -157,30 +158,42 @@ namespace Tunr.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var uid = User.Identity.GetUserId();
-                var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+                var user = db.Users.SingleOrDefault(u => u.Id == uid);
                 if (user == null)
                 {
                     return InternalServerError(new Exception("User could not be found"));
                 }
 
                 // Pull the last changeset by this user
-                TableQuery<ChangeSet> changeSetQuery = new TableQuery<ChangeSet>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id));
-                var changeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderByDescending(c => c.LastModifiedTime).Take(1).FirstOrDefault();
+                var changeSet = db.ChangeSets.Where(c => c.Owner.Id == user.Id).OrderByDescending(c => c.LastModifiedTime).Take(1).FirstOrDefault();
 
-                // If this changeset was fresh, it is no longer.
-                if (changeSet != null && changeSet.IsFresh == true)
+                if (changeSet != null)
                 {
-                    changeSet.IsFresh = false;
-                    AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(changeSet));
+                    // If this changeset was fresh, it is no longer.
+                    // Update in a concurrency-safe way
+                    bool saveFailed;
+                    do
+                    {
+                        saveFailed = false;
+                        changeSet.IsFresh = false;
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (DbUpdateConcurrencyException e)
+                        {
+                            saveFailed = true;
+                            e.Entries.Single().Reload();
+                        }
+                    } while (saveFailed);
                 }
 
                 // Pull the user's library
-                TableQuery<Song> query = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-                var songs = AzureStorageContext.SongTable.ExecuteQuery(query);
+                var songs = db.Songs.Where(s => s.Owner.Id == user.Id).ToList();
 
                 return Ok<SyncBaseModel>(new SyncBaseModel()
                 {
-                    LastSyncId = changeSet == null ? null : (Guid?)changeSet.ChangeSetId,
+                    LastSyncId = changeSet == null ? Guid.Empty : (Guid?)changeSet.ChangeSetId,
                     Library = songs
                 });
             }
@@ -196,52 +209,62 @@ namespace Tunr.Controllers
 			using (var db = new ApplicationDbContext())
 			{
 				var uid = User.Identity.GetUserId();
-				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
+				var user = db.Users.SingleOrDefault(u => u.Id == uid);
 				if (user == null)
 				{
 					return InternalServerError(new Exception("User could not be found"));
 				}
 
-				// Find the changeset that they gave us
-				TableQuery<ChangeSet> baseQuery = new TableQuery<ChangeSet>().Where(TableQuery.CombineFilters(
-					TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id),
-					TableOperators.And,
-					TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, lastChangeId.ToString())));
-				var baseChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(baseQuery).FirstOrDefault();
-				if (baseChangeSet == null)
+                // Find the changeset that they gave us
+                // if they give us an empty ID, get all changesets
+                IOrderedQueryable<ChangeSetModel> newSets;
+                if (lastChangeId.Equals(Guid.Empty))
                 {
-					return NotFound();
-				}
+                    newSets = db.ChangeSets.OrderBy(c => c.LastModifiedTime);
+                } else
+                {
+                    var baseChangeSet = db.ChangeSets.Where(c => c.ChangeSetId == lastChangeId).FirstOrDefault();
+                    if (baseChangeSet == null)
+                    {
+                        return NotFound();
+                    }
+                    newSets = db.ChangeSets.Where(c => c.LastModifiedTime > baseChangeSet.LastModifiedTime).OrderBy(c => c.LastModifiedTime);
+                }
 
-				// Pull all of this user's changesets
-				TableQuery<ChangeSet> changeSetQuery = new TableQuery<ChangeSet>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id));
-				var changes = AzureStorageContext.ChangeSetTable.ExecuteQuery<ChangeSet>(changeSetQuery).OrderBy(c => c.LastModifiedTime).SkipWhile(i => i.ChangeSetId != lastChangeId).Skip(1);
+                // Pull all of this user's changesets
+                var changes = newSets.Select(c => new
+                {
+                    ChangeSetId = c.ChangeSetId,
+                    IsFresh = c.IsFresh,
+                    LastModifiedTime = c.LastModifiedTime,
+                    Changes = c.Changes.Select(c2 => new
+                    {
+                        Type = c2.Type,
+                        Song = db.Songs.Where(s => s.SongId == c2.SongId).FirstOrDefault()
+                    })
+                }).ToList();
 
-				// For each change set, pull all of the relevant library items
-				var changeDetailsList = new List<ChangeSetDetails>();
-				foreach (var changeSet in changes)
-				{
-					// If this changeset was fresh, it is no longer.
-					if (changeSet.IsFresh == true)
-					{
-						changeSet.IsFresh = false;
-						AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(changeSet));
-					}
-					var changeSetDetails = new ChangeSetDetails()
-					{
-						ChangeSetId = changeSet.ChangeSetId,
-						LastModifiedTime = changeSet.LastModifiedTime,
-						Changes = new List<KeyValuePair<ChangeSet.ChangeType,Song>>()
-					};
-					foreach (var changeInfo in changeSet.Changes)
-					{
-						var changedSongQuery = new TableQuery<Song>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, changeInfo.Value.ToString()));
-						var changedSong = AzureStorageContext.SongTable.ExecuteQuery<Song>(changedSongQuery).FirstOrDefault();
-						changeSetDetails.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Song>(changeInfo.Key, changedSong));
-					}
-					changeDetailsList.Add(changeSetDetails);
-				}
-				return Ok<List<ChangeSetDetails>>(changeDetailsList);
+                // Make sure we mark all the old changesets as un-fresh
+                foreach (var change in changes)
+                {
+                    bool saveFailed;
+                    do
+                    {
+                        saveFailed = false;
+                        db.ChangeSets.SingleOrDefault(c => c.ChangeSetId == change.ChangeSetId).IsFresh = false;
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (DbUpdateConcurrencyException e)
+                        {
+                            saveFailed = true;
+                            e.Entries.Single().Reload();
+                        }
+                    } while (saveFailed);
+                }
+
+				return Ok<IEnumerable<object>>(changes);
 			}
 		}
 
@@ -336,10 +359,10 @@ namespace Tunr.Controllers
 							sHash = BitConverter.ToString(md5h.ComputeHash(buf)).Replace("-", "");
 						}
 
-						var song = new Song()
+						var song = new SongModel()
 						{
 							SongId = Guid.NewGuid(),
-							OwnerId = new Guid(user.Id),
+							Owner = user,
 							FileName = Path.GetFileName(fileName),
 							FileType = extension,
 							FileSize = new FileInfo(file.LocalFileName).Length,
@@ -370,8 +393,8 @@ namespace Tunr.Controllers
 
 						tagFile.Dispose();
 
-						// Make sure this file isn't already there
-						var existing = AzureStorageContext.SongTable.CreateQuery<Song>().Where(x => x.PartitionKey == user.Id.ToString()).Where(x => x.Md5Hash == song.Md5Hash).FirstOrDefault();
+                        // Make sure this file isn't already there
+                        var existing = db.Songs.Where(s => s.Owner.Id == user.Id && s.Md5Hash == song.Md5Hash).FirstOrDefault();
 						if (existing != null)
 						{
 							File.Delete(file.LocalFileName);
@@ -387,48 +410,43 @@ namespace Tunr.Controllers
 							blockBlob.UploadFromStream(fileStream);
 						}
 
-						// Insert the song into table storage...
-						// Create the TableOperation that inserts the customer entity.
-						TableOperation insertOperation = TableOperation.Insert(song);
+                        // Insert the song into table storage...
+                        db.Songs.Add(song);
+                        db.SaveChanges();
 
-						// Execute the insert operation.
-						AzureStorageContext.SongTable.Execute(insertOperation);
-
-						// Is there a fresh change set?
-						TableQuery<ChangeSet> query = new TableQuery<ChangeSet>().Where(TableQuery.CombineFilters(
-							TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id),
-							TableOperators.And,
-							TableQuery.GenerateFilterConditionForBool("IsFresh", QueryComparisons.Equal, true)));
-						var freshChangeSet = AzureStorageContext.ChangeSetTable.ExecuteQuery(query).FirstOrDefault();
+                        // Is there a fresh change set?
+                        var freshChangeSet = db.ChangeSets.Where(c => c.Owner.Id == user.Id && c.IsFresh == true).FirstOrDefault();
 						if (freshChangeSet != null)
 						{
-							// Check if change set has hit its limit of stored changes.
-							if (freshChangeSet.Changes.Count < 500)
-							{
-								freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
-								freshChangeSet.LastModifiedTime = DateTimeOffset.Now;
-								AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
-							}
-							else
-							{
-								// This set is no longer fresh - set it to null, start a new one.
-								freshChangeSet.IsFresh = false;
-								AzureStorageContext.ChangeSetTable.Execute(TableOperation.InsertOrReplace(freshChangeSet));
-								freshChangeSet = null;
-							}
+							freshChangeSet.Changes.Add(new ChangeModel()
+                            {
+                                ChangeId = Guid.NewGuid(),
+                                SongId = song.SongId,
+                                Type = ChangeModel.ChangeType.Create
+                            });
+							freshChangeSet.LastModifiedTime = DateTimeOffset.Now;
+                            db.SaveChanges();
 						}
-						if (freshChangeSet == null) // If null, we have no fresh changeset, need to make a new one.
+						else if (freshChangeSet == null) // If null, we have no fresh changeset, need to make a new one.
 						{
-							freshChangeSet = new ChangeSet()
+							var newChangeSet = new ChangeSetModel()
 							{
 								ChangeSetId = Guid.NewGuid(),
-								OwnerId = Guid.Parse(user.Id),
-								Changes = new List<KeyValuePair<ChangeSet.ChangeType, Guid>>(),
+								Owner = user,
+								Changes = new List<ChangeModel>()
+                                {
+                                    new ChangeModel()
+                                    {
+                                        ChangeId = Guid.NewGuid(),
+                                        SongId = song.SongId,
+                                        Type = ChangeModel.ChangeType.Create
+                                    }
+                                },
 								IsFresh = true,
 								LastModifiedTime = DateTimeOffset.Now,
 							};
-							freshChangeSet.Changes.Add(new KeyValuePair<ChangeSet.ChangeType, Guid>(ChangeSet.ChangeType.Create, song.SongId));
-							AzureStorageContext.ChangeSetTable.Execute(TableOperation.Insert(freshChangeSet));
+                            db.ChangeSets.Add(newChangeSet);
+                            db.SaveChanges();
 						}
 
 						// Update user's library size in a concurrency-safe way

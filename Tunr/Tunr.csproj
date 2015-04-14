@@ -32,6 +32,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -273,10 +274,23 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.cs" />
     <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.Designer.cs">
       <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201504132215256_SongsToSql.cs" />
+    <Compile Include="Migrations\201504132215256_SongsToSql.Designer.cs">
+      <DependentUpon>201504132215256_SongsToSql.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504140124577_ChangeSetsToSql.cs" />
+    <Compile Include="Migrations\201504140124577_ChangeSetsToSql.Designer.cs">
+      <DependentUpon>201504140124577_ChangeSetsToSql.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ChangeModel.cs" />
+    <Compile Include="Models\ChangeSetDetails.cs" />
+    <Compile Include="Models\ChangeSetModel.cs" />
+    <Compile Include="Models\SongModel.cs" />
     <Compile Include="Models\SyncBaseModel.cs" />
     <Compile Include="Services\INewsletterService.cs" />
     <Compile Include="Services\MailChimpNewsletterService.cs" />
@@ -440,13 +454,13 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ArtistInfo.cs" />
     <Compile Include="Models\AzureStorageContext.cs" />
-    <Compile Include="Models\ChangeSetModel.cs" />
+    <Compile Include="Models\TableChangeSetModel.cs" />
     <Compile Include="Models\FacebookImageModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlaylistItemModel.cs" />
     <Compile Include="Models\PlaylistModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
-    <Compile Include="Models\SongModel.cs" />
+    <Compile Include="Models\TableSongModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\css\Components\LibraryPane.css.map">
       <DependentUpon>LibraryPane.css</DependentUpon>
@@ -604,6 +618,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.resx">
       <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504132215256_SongsToSql.resx">
+      <DependentUpon>201504132215256_SongsToSql.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504140124577_ChangeSetsToSql.resx">
+      <DependentUpon>201504140124577_ChangeSetsToSql.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

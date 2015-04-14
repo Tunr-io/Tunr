@@ -18,8 +18,8 @@ namespace Tunr.Migrations
 				var users = db.Users.ToList();
 				foreach (var user in users)
 				{
-					TableQuery<Tunr.Models.Song> songQuery = new TableQuery<Tunr.Models.Song>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-					IEnumerable<Tunr.Models.Song> songs = azureStorageContext.SongTable.ExecuteQuery(songQuery);
+					TableQuery<Tunr.Models.TableSong> songQuery = new TableQuery<Tunr.Models.TableSong>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
+					IEnumerable<Tunr.Models.TableSong> songs = azureStorageContext.SongTable.ExecuteQuery(songQuery);
 					var calculatedLibrarySize = songs.Sum(s => s.FileSize);
 					user.LibrarySize = calculatedLibrarySize;
 				}

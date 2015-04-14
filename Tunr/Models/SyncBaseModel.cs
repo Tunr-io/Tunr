@@ -8,6 +8,6 @@ namespace Tunr.Models
     public class SyncBaseModel
     {
         public Guid? LastSyncId { get; set; }
-        public IEnumerable<Song> Library { get; set; }
+        public IEnumerable<SongModel> Library { get; set; }
     }
 }

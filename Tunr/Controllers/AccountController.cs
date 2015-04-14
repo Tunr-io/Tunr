@@ -46,25 +46,6 @@ namespace Tunr.Controllers
 			}
 		}
 
-		[HttpPost]
-		[Route("AddAlphaToken")]
-		public async Task<IHttpActionResult> AddAlphaToken()
-		{
-			using (var db = new ApplicationDbContext())
-			{
-				var uid = User.Identity.GetUserId();
-				var user = db.Users.Where(u => u.Id == uid).Select(u => u).FirstOrDefault();
-				if (user.IsAdmin == false)
-				{
-					return BadRequest("You do not have permission to generate new alpha keys.");
-				}
-				var key = new AlphaToken() { AlphaTokenId = new Guid(), CreatedTime = DateTimeOffset.Now };
-				db.AlphaTokens.Add(key);
-				await db.SaveChangesAsync();
-				return Ok(key);
-			}
-		}
-
 		// POST: /Account/Register
 		[HttpPost]
 		[AllowAnonymous]

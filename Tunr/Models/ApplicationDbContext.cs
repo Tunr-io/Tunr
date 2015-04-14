@@ -21,6 +21,10 @@ namespace Tunr.Models
 			modelBuilder.Entity<TunrUser>()
 				.Property(s => s.LibrarySize)
 				.IsConcurrencyToken();
+
+            modelBuilder.Entity<ChangeSetModel>()
+                .Property(c => c.IsFresh)
+                .IsConcurrencyToken();
 		} 
 
 		public static ApplicationDbContext Create()
@@ -28,8 +32,9 @@ namespace Tunr.Models
 			return new ApplicationDbContext();
 		}
 
-		//public DbSet<Song> Songs { get; set; }
-		public DbSet<AlphaToken> AlphaTokens { get; set; }
+		public DbSet<SongModel> Songs { get; set; }
 		public DbSet<PlaylistModel> Playlists { get; set; }
+        public DbSet<ChangeSetModel> ChangeSets { get; set; }
+        public DbSet<ChangeModel> Changes { get; set; }
 	}
 }
