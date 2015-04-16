@@ -12,19 +12,19 @@ namespace Tunr.Migrations
         public override void Up()
         {
 			// Update everyone's library size to actually be correct ...
-			using (var db = new ApplicationDbContext())
-			{
-				var azureStorageContext = new AzureStorageContext();
-				var users = db.Users.ToList();
-				foreach (var user in users)
-				{
-					TableQuery<Tunr.Models.TableSong> songQuery = new TableQuery<Tunr.Models.TableSong>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
-					IEnumerable<Tunr.Models.TableSong> songs = azureStorageContext.SongTable.ExecuteQuery(songQuery);
-					var calculatedLibrarySize = songs.Sum(s => s.FileSize);
-					user.LibrarySize = calculatedLibrarySize;
-				}
-				db.SaveChanges();
-			}
+			//using (var db = new ApplicationDbContext())
+			//{
+			//	var azureStorageContext = new AzureStorageContext();
+			//	var users = db.Users.ToList();
+			//	foreach (var user in users)
+			//	{
+			//		TableQuery<Tunr.Models.TableSong> songQuery = new TableQuery<Tunr.Models.TableSong>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, user.Id.ToString()));
+			//		IEnumerable<Tunr.Models.TableSong> songs = azureStorageContext.SongTable.ExecuteQuery(songQuery);
+			//		var calculatedLibrarySize = songs.Sum(s => s.FileSize);
+			//		user.LibrarySize = calculatedLibrarySize;
+			//	}
+			//	db.SaveChanges();
+			//}
         }
         
         public override void Down()

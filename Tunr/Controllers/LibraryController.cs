@@ -220,15 +220,15 @@ namespace Tunr.Controllers
                 IOrderedQueryable<ChangeSetModel> newSets;
                 if (lastChangeId.Equals(Guid.Empty))
                 {
-                    newSets = db.ChangeSets.OrderBy(c => c.LastModifiedTime);
+                    newSets = db.ChangeSets.Where(c => c.Owner.Id == user.Id).OrderBy(c => c.LastModifiedTime);
                 } else
                 {
-                    var baseChangeSet = db.ChangeSets.Where(c => c.ChangeSetId == lastChangeId).FirstOrDefault();
+                    var baseChangeSet = db.ChangeSets.SingleOrDefault(c => c.ChangeSetId == lastChangeId && c.Owner.Id == user.Id);
                     if (baseChangeSet == null)
                     {
                         return NotFound();
                     }
-                    newSets = db.ChangeSets.Where(c => c.LastModifiedTime > baseChangeSet.LastModifiedTime).OrderBy(c => c.LastModifiedTime);
+                    newSets = db.ChangeSets.Where(c => c.Owner.Id == user.Id && c.LastModifiedTime > baseChangeSet.LastModifiedTime).OrderBy(c => c.LastModifiedTime);
                 }
 
                 // Pull all of this user's changesets
