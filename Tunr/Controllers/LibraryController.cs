@@ -26,6 +26,8 @@ using Microsoft.Xbox.Music.Platform.Contract.DataModel;
 using Facebook;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tunr.Controllers
 {
@@ -353,52 +355,112 @@ namespace Tunr.Controllers
 						}
 						tagFile = TagLib.File.Create(file.LocalFileName, type, TagLib.ReadStyle.Average);
 
-						// Run fingerprint calculation...
-						System.Diagnostics.Process fpcalc = new System.Diagnostics.Process();
-						fpcalc.StartInfo = new System.Diagnostics.ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/fpcalc.exe"), file.LocalFileName);
-						fpcalc.StartInfo.RedirectStandardOutput = true;
-						fpcalc.StartInfo.UseShellExecute = false;
-						StringBuilder fp = new StringBuilder();
-						fpcalc.Start();
-						while (!fpcalc.HasExited)
-						{
-							fp.Append(fpcalc.StandardOutput.ReadToEnd());
-						}
-						string fingerprint = fp.ToString();
-						fingerprint = fingerprint.Substring(fingerprint.IndexOf("FINGERPRINT=") + 12);
+                        // Run fingerprint calculation...
+                        string fingerprint = "";
+                        using (System.Diagnostics.Process fpcalc = new System.Diagnostics.Process())
+                        {
+                            fpcalc.StartInfo = new System.Diagnostics.ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/fpcalc.exe"), file.LocalFileName);
+                            fpcalc.StartInfo.RedirectStandardOutput = true;
+                            fpcalc.StartInfo.UseShellExecute = false;
+                            StringBuilder fp = new StringBuilder();
+                            fpcalc.Start();
 
-						// Calculate MD5 hash (only the first few KB to save time)
-						string sHash = "";
-						using (StreamReader sr = new StreamReader(file.LocalFileName))
-						{
-							var buf = new byte[LibraryController.c_md5size];
-							int bytesRead = 0;
-							while (true)
-							{
-								var read = sr.BaseStream.Read(buf, 0, LibraryController.c_md5size);
-								bytesRead += read;
-								if (bytesRead == LibraryController.c_md5size || read == 0)
-								{
-									break;
-								}
-							}
+                            while (!fpcalc.StandardOutput.EndOfStream)
+                            {
+                                fp.Append(fpcalc.StandardOutput.ReadLine());
+                            }
+                            fingerprint = fp.ToString();
+                            fingerprint = fingerprint.Substring(fingerprint.IndexOf("FINGERPRINT=") + 12);
+                        }
 
-							MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
-							sHash = BitConverter.ToString(md5h.ComputeHash(buf)).Replace("-", "");
-						}
+                        // Calculate file's MD5 hash (only the first few KB to save time)
+                        string fileMd5Hash = "";
+                        using (StreamReader sr = new StreamReader(file.LocalFileName))
+                        {
+                            var buf = new byte[LibraryController.c_md5size];
+                            int bytesRead = 0;
+                            while (true)
+                            {
+                                var read = sr.BaseStream.Read(buf, 0, LibraryController.c_md5size);
+                                bytesRead += read;
+                                if (bytesRead == LibraryController.c_md5size || read == 0)
+                                {
+                                    break;
+                                }
+                            }
 
-						var song = new SongModel()
+                            MD5CryptoServiceProvider md5h = new MD5CryptoServiceProvider();
+                            fileMd5Hash = BitConverter.ToString(md5h.ComputeHash(buf)).Replace("-", "");
+                        }
+
+                        // Calculate MD5 hash of raw audio
+                        string audioMd5Hash = "";
+                        using (System.Diagnostics.Process ffhash = new System.Diagnostics.Process())
+                        {
+                            string args = "-i \"" + file.LocalFileName + "\" -acodec copy -vn -f md5 - ";
+                            ffhash.StartInfo = new System.Diagnostics.ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffmpeg.exe"), args);
+                            ffhash.StartInfo.RedirectStandardOutput = true;
+                            ffhash.StartInfo.UseShellExecute = false;
+                            StringBuilder ffhashOutput = new StringBuilder();
+                            ffhash.Start();
+                            while (!ffhash.StandardOutput.EndOfStream)
+                            {
+                                ffhashOutput.Append(ffhash.StandardOutput.ReadLine());
+                            }
+                            audioMd5Hash = ffhashOutput.ToString();
+                            audioMd5Hash = audioMd5Hash.Substring(audioMd5Hash.IndexOf("MD5=") + 4, 32);
+                        }
+
+                        // Grab a little bit more data
+                        string codecName = "";
+                        int channels = 0;
+                        int sampleRate = 0;
+                        double duration = 0;
+                        double bitrate = 0;
+                        using (System.Diagnostics.Process ffprobe = new System.Diagnostics.Process())
+                        {
+                            ffprobe.StartInfo = new System.Diagnostics.ProcessStartInfo(HostingEnvironment.MapPath("~/App_Data/executables/ffprobe.exe"), "-v quiet -print_format json -show_format -show_streams \"" + file.LocalFileName + "\"");
+                            ffprobe.StartInfo.RedirectStandardOutput = true;
+                            ffprobe.StartInfo.UseShellExecute = false;
+                            StringBuilder ffprobeOutput = new StringBuilder();
+                            ffprobe.Start();
+                            while (!ffprobe.StandardOutput.EndOfStream)
+                            {
+                                ffprobeOutput.Append(ffprobe.StandardOutput.ReadLine());
+                            }
+                            var ffprobeObject = JObject.Parse(ffprobeOutput.ToString());
+                            duration = ffprobeObject.SelectToken("format").Value<double>("duration");
+                            bitrate = ffprobeObject.SelectToken("format").Value<long>("bit_rate") / (double)1024;
+                            // Find the first audio stream to get audio stream data
+                            foreach (JObject stream in ffprobeObject.SelectToken("streams"))
+                            {
+                                if (stream.Value<string>("codec_type") == "audio")
+                                {
+                                    codecName = stream.Value<string>("codec_name");
+                                    channels = stream.Value<int>("channels");
+                                    sampleRate = stream.Value<int>("sample_rate");
+                                    break;
+                                }
+                            }
+                        }
+
+                        var song = new SongModel()
 						{
 							SongId = Guid.NewGuid(),
 							Owner = user,
 							FileName = Path.GetFileName(fileName),
-							FileType = extension,
+							//FileType = extension,
+                            FileType = codecName,
 							FileSize = new FileInfo(file.LocalFileName).Length,
-							AudioBitrate = tagFile.Properties.AudioBitrate,
-							AudioChannels = tagFile.Properties.AudioChannels,
-							AudioSampleRate = tagFile.Properties.AudioSampleRate,
+							//AudioBitrate = tagFile.Properties.AudioBitrate,
+                            AudioBitrate = bitrate,
+							//AudioChannels = tagFile.Properties.AudioChannels,
+                            AudioChannels = channels,
+							//AudioSampleRate = tagFile.Properties.AudioSampleRate,
+                            AudioSampleRate = sampleRate,
 							Fingerprint = fingerprint,
-							Md5Hash = sHash,
+                            FileMd5Hash = fileMd5Hash,
+							AudioMd5Hash = audioMd5Hash,
 							Duration = tagFile.Properties.Duration.TotalSeconds,
 							TagTitle = tagFile.Tag.Title,
 							TagAlbum = tagFile.Tag.Album,
@@ -422,7 +484,7 @@ namespace Tunr.Controllers
 						tagFile.Dispose();
 
                         // Make sure this file isn't already there
-                        var existing = db.Songs.SingleOrDefault(s => s.Owner.Id == user.Id && (s.Md5Hash == song.Md5Hash || s.Fingerprint == song.Fingerprint));
+                        var existing = db.Songs.SingleOrDefault(s => s.Owner.Id == user.Id && s.AudioMd5Hash == song.AudioMd5Hash);
 						if (existing != null)
 						{
 							File.Delete(file.LocalFileName);
@@ -443,7 +505,7 @@ namespace Tunr.Controllers
                         db.SaveChanges();
 
                         // Is there a fresh change set?
-                        var freshChangeSet = db.ChangeSets.Where(c => c.Owner.Id == user.Id && c.IsFresh == true).FirstOrDefault();
+                        var freshChangeSet = db.ChangeSets.SingleOrDefault(c => c.Owner.Id == user.Id && c.IsFresh == true);
 						if (freshChangeSet != null)
 						{
 							freshChangeSet.Changes.Add(new ChangeModel()

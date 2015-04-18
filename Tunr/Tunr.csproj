@@ -291,6 +291,14 @@
     <Compile Include="Migrations\201504180547169_NewIndices.Designer.cs">
       <DependentUpon>201504180547169_NewIndices.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201504182058568_NewAudioMd5Hash.cs" />
+    <Compile Include="Migrations\201504182058568_NewAudioMd5Hash.Designer.cs">
+      <DependentUpon>201504182058568_NewAudioMd5Hash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504182130417_DoubleBitrate.cs" />
+    <Compile Include="Migrations\201504182130417_DoubleBitrate.Designer.cs">
+      <DependentUpon>201504182130417_DoubleBitrate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ChangeModel.cs" />
     <Compile Include="Models\ChangeSetDetails.cs" />
     <Compile Include="Models\ChangeSetModel.cs" />
@@ -301,6 +309,7 @@
     <Compile Include="Services\SendGridEmailService.cs" />
     <Compile Include="TinyIoC.cs" />
     <Content Include="App_Data\executables\ffmpeg.exe" />
+    <Content Include="App_Data\executables\ffprobe.exe" />
     <Content Include="App_Data\executables\fpcalc.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -631,6 +640,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504180547169_NewIndices.resx">
       <DependentUpon>201504180547169_NewIndices.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504182058568_NewAudioMd5Hash.resx">
+      <DependentUpon>201504182058568_NewAudioMd5Hash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504182130417_DoubleBitrate.resx">
+      <DependentUpon>201504182130417_DoubleBitrate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

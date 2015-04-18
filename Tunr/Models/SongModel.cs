@@ -31,10 +31,18 @@ namespace Tunr.Models
         /// <summary>
         /// MD5 hash of the first few KB of the file. Used to prevent duplicates.
         /// </summary>
-        [JsonProperty("md5Hash")]
+        [JsonProperty("fileMd5Hash")]
         [Index]
         [StringLength(36)]
-        public string Md5Hash { get; set; }
+        public string FileMd5Hash { get; set; }
+
+        /// <summary>
+        /// MD5 hash of the file audio contents. Used to prevent duplicates.
+        /// </summary>
+        [JsonProperty("AudioMd5Hash")]
+        [Index]
+        [StringLength(36)]
+        public string AudioMd5Hash { get; set; }
 
         /// <summary>
         /// Full name of the file originally uploaded.
@@ -64,7 +72,7 @@ namespace Tunr.Models
         /// Bitrate of the audio.
         /// </summary>
         [JsonProperty("audioBitrate")]
-        public int AudioBitrate { get; set; }
+        public double AudioBitrate { get; set; }
 
         /// <summary>
         /// Sample rate of the audio.
