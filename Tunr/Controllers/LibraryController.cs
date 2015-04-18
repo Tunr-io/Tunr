@@ -152,6 +152,34 @@ namespace Tunr.Controllers
             }
         }
 
+        [Route("{id}/Download")]
+        [AllowAnonymous] // HACK: Really shouldn't allow anonymous, but something's up with the cookie auth.
+        public HttpResponseMessage GetDownload(Guid id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var song = db.Songs.SingleOrDefault(s => s.SongId == id);
+                if (song == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, new ApplicationException("Specified song could not be found"));
+                }
+                HttpResponseMessage response = new HttpResponseMessage();
+                
+                var storageContainer = AzureStorageContext.UploadsContainer;
+                var storageBlob = storageContainer.GetBlockBlobReference(song.SongId.ToString());
+
+                response.Content = new StreamContent(storageBlob.OpenRead());
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                var disposition = new ContentDispositionHeaderValue("attachment");
+                disposition.FileName = song.FileName;
+                disposition.Size = song.FileSize;
+                response.Content.Headers.ContentDisposition = disposition;
+                response.Content.Headers.ContentLength = song.FileSize;
+
+                return response;
+            }
+        }
+
         [Route("Sync")]
         public IHttpActionResult GetSyncBase()
         {
@@ -394,23 +422,23 @@ namespace Tunr.Controllers
 						tagFile.Dispose();
 
                         // Make sure this file isn't already there
-                        var existing = db.Songs.Where(s => s.Owner.Id == user.Id && s.Md5Hash == song.Md5Hash).FirstOrDefault();
+                        var existing = db.Songs.SingleOrDefault(s => s.Owner.Id == user.Id && (s.Md5Hash == song.Md5Hash || s.Fingerprint == song.Fingerprint));
 						if (existing != null)
 						{
 							File.Delete(file.LocalFileName);
 							return BadRequest("This song already exists.");
 						}
 
-						// Retrieve reference to a blob named "myblob".
+						// Retrieve reference to a blob
 						CloudBlockBlob blockBlob = AzureStorageContext.UploadsContainer.GetBlockBlobReference(song.SongId.ToString());
 
-						// Create or overwrite the "myblob" blob with contents from a local file.
+						// Create or overwrite blob with contents from a local file.
 						using (var fileStream = File.OpenRead(file.LocalFileName))
 						{
 							blockBlob.UploadFromStream(fileStream);
 						}
 
-                        // Insert the song into table storage...
+                        // Insert the song into database...
                         db.Songs.Add(song);
                         db.SaveChanges();
 

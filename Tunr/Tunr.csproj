@@ -287,6 +287,10 @@
     <Compile Include="Migrations\201504140124577_ChangeSetsToSql.Designer.cs">
       <DependentUpon>201504140124577_ChangeSetsToSql.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201504180547169_NewIndices.cs" />
+    <Compile Include="Migrations\201504180547169_NewIndices.Designer.cs">
+      <DependentUpon>201504180547169_NewIndices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ChangeModel.cs" />
     <Compile Include="Models\ChangeSetDetails.cs" />
     <Compile Include="Models\ChangeSetModel.cs" />
@@ -624,6 +628,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504140124577_ChangeSetsToSql.resx">
       <DependentUpon>201504140124577_ChangeSetsToSql.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504180547169_NewIndices.resx">
+      <DependentUpon>201504180547169_NewIndices.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

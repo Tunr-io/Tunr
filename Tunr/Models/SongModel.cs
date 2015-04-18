@@ -32,6 +32,8 @@ namespace Tunr.Models
         /// MD5 hash of the first few KB of the file. Used to prevent duplicates.
         /// </summary>
         [JsonProperty("md5Hash")]
+        [Index]
+        [StringLength(36)]
         public string Md5Hash { get; set; }
 
         /// <summary>
