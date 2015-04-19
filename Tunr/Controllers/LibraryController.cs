@@ -430,7 +430,7 @@ namespace Tunr.Controllers
                             }
                             var ffprobeObject = JObject.Parse(ffprobeOutput.ToString());
                             duration = ffprobeObject.SelectToken("format").Value<double>("duration");
-                            bitrate = ffprobeObject.SelectToken("format").Value<long>("bit_rate") / (double)1024;
+                            bitrate = (double)(ffprobeObject.SelectToken("format").Value<long>("bit_rate") / (double)1024);
                             // Find the first audio stream to get audio stream data
                             foreach (JObject stream in ffprobeObject.SelectToken("streams"))
                             {
