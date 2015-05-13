@@ -23,6 +23,7 @@
     <IISExpressUseClassicPipelineMode />
     <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
     <NuGetPackageImportStamp>b2d56d8d</NuGetPackageImportStamp>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -275,6 +276,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ForgotController.cs" />
     <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.cs" />
     <Compile Include="Migrations\201503080514464_LibrarySizeConcurrencyFix.Designer.cs">
       <DependentUpon>201503080514464_LibrarySizeConcurrencyFix.cs</DependentUpon>
@@ -299,6 +301,8 @@
     <Compile Include="Migrations\201504182130417_DoubleBitrate.Designer.cs">
       <DependentUpon>201504182130417_DoubleBitrate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\BindingModels\ForgotPasswordBindingModel.cs" />
+    <Compile Include="Models\BindingModels\PasswordResetBindingModel.cs" />
     <Compile Include="Models\ChangeModel.cs" />
     <Compile Include="Models\ChangeSetDetails.cs" />
     <Compile Include="Models\ChangeSetModel.cs" />
@@ -493,6 +497,7 @@
     <Content Include="Content\svg\album_cover.svg" />
     <Content Include="Content\svg\down_black.svg" />
     <Content Include="Content\svg\down_white.svg" />
+    <Content Include="Content\svg\LogoHorizontal.svg" />
     <Content Include="Content\svg\pause_black.svg" />
     <Content Include="Content\svg\pause_white.svg" />
     <Content Include="Content\svg\play_black.svg" />
@@ -516,6 +521,12 @@
     <Content Include="Scripts\js\jquery-2.1.0.min.map" />
     <Content Include="Views\Tunr\Components\Registration.cshtml" />
     <Content Include="Views\Tunr\Components\Player.cshtml" />
+    <Content Include="Views\Forgot\_Layout.cshtml" />
+    <Content Include="Views\Forgot\Index.cshtml" />
+    <Content Include="Views\Forgot\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Forgot\ResetPassword.cshtml" />
+    <Content Include="Views\Forgot\ResetSuccess.cshtml" />
+    <Content Include="Views\Forgot\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -664,7 +675,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>34415</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

@@ -1,0 +1,17 @@
+﻿@model Tunr.Models.BindingModels.ForgotPasswordBindingModel
+
+@{
+    ViewBag.Title = "Forgot Password";
+    Layout = "~/Views/Forgot/_Layout.cshtml";
+}
+
+<h2>I Forgot My Password</h2>
+<p>Whoops! Don't worry. It happens.</p>
+<p>Tell us which e-mail address belongs to your account and we can reset your password.</p>
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(model => model.Email)
+    @Html.TextBoxFor(model => model.Email)
+
+    <input type="submit" value="Submit" />
+}
